@@ -4,8 +4,8 @@ import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Button, Input } from '@imkon/ui';
 
-// Faqat mahalliy dev muhitida ishlatiladigan demo hisob (barcha rollar bilan) —
-// production'da hech qachon ko'rsatilmaydi (LoginPage `isDev` server-side hisoblaydi).
+// Grant demo hisobi (barcha rollar bilan) — hakamlar sinab ko'rishi uchun
+// kirish sahifasida doim ko'rinadi.
 const DEMO_PHONE = '+998900000001';
 const DEMO_PASSWORD = 'demo12345';
 
@@ -29,7 +29,7 @@ const DEMO_ROLE_LINKS: { label: string; href: string }[] = [
   { label: 'Admin', href: '/admin' },
 ];
 
-export function LoginForm({ isDev = false }: { isDev?: boolean }) {
+export function LoginForm() {
   const router = useRouter();
   const params = useSearchParams();
   const explicitNext = params.get('next');
@@ -106,41 +106,39 @@ export function LoginForm({ isDev = false }: { isDev?: boolean }) {
         <span className="font-semibold text-primary">Maxfiylik siyosati</span>ga rozilik bildirasiz.
       </p>
 
-      {isDev && (
-        <div className="rounded-2xl border border-dashed border-line p-3">
-          <p className="font-mono text-xs text-ink-soft">
-            DEV: {DEMO_PHONE} / {DEMO_PASSWORD} (barcha rollar)
-          </p>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="mt-2 w-full"
-            disabled={loading}
-            onClick={() => void login(DEMO_PHONE, DEMO_PASSWORD)}
-          >
-            Demo hisob bilan kirish
-          </Button>
+      <div className="rounded-2xl border border-dashed border-line p-3">
+        <p className="font-mono text-xs text-ink-soft">
+          Demo: {DEMO_PHONE} / {DEMO_PASSWORD} (barcha rollar)
+        </p>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="mt-2 w-full"
+          disabled={loading}
+          onClick={() => void login(DEMO_PHONE, DEMO_PASSWORD)}
+        >
+          Demo hisob bilan kirish
+        </Button>
 
-          <p className="mt-3 font-mono text-xs uppercase tracking-wide text-ink-soft">
-            Rol kabinetiga to&apos;g&apos;ridan-to&apos;g&apos;ri kirish
-          </p>
-          <div className="mt-1.5 flex flex-wrap gap-1.5" role="group" aria-label="Rol bo'yicha demo kirish">
-            {DEMO_ROLE_LINKS.map((r) => (
-              <Button
-                key={r.href}
-                type="button"
-                variant="ghost"
-                size="sm"
-                disabled={loading}
-                onClick={() => void login(DEMO_PHONE, DEMO_PASSWORD, r.href)}
-              >
-                {r.label}
-              </Button>
-            ))}
-          </div>
+        <p className="mt-3 font-mono text-xs uppercase tracking-wide text-ink-soft">
+          Rol kabinetiga to&apos;g&apos;ridan-to&apos;g&apos;ri kirish
+        </p>
+        <div className="mt-1.5 flex flex-wrap gap-1.5" role="group" aria-label="Rol bo'yicha demo kirish">
+          {DEMO_ROLE_LINKS.map((r) => (
+            <Button
+              key={r.href}
+              type="button"
+              variant="ghost"
+              size="sm"
+              disabled={loading}
+              onClick={() => void login(DEMO_PHONE, DEMO_PASSWORD, r.href)}
+            >
+              {r.label}
+            </Button>
+          ))}
         </div>
-      )}
+      </div>
     </form>
   );
 }

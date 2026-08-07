@@ -10,7 +10,6 @@ export const metadata: Metadata = {
 };
 
 export default function LoginPage() {
-  const isDev = process.env.NODE_ENV !== 'production';
   return (
     <div className="grid min-h-screen lg:grid-cols-[0.85fr_1fr]">
       {/* Chap: quyuq brend panel — IMKON Interface.dc.html 4c-blok */}
@@ -35,7 +34,7 @@ export default function LoginPage() {
           </div>
 
           <Suspense fallback={null}>
-            <LoginForm isDev={isDev} />
+            <LoginForm />
           </Suspense>
         </div>
       </div>
