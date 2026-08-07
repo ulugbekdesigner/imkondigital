@@ -1,12 +1,18 @@
 """Celery ilovasi — video transcode navbati + kunlik beat vazifalari.
 
-Beat scheduler worker jarayonining o'zida ishlaydi (`celery worker --beat`,
-Railway worker xizmati start command'ida) — alohida beat xizmati emas, bitta
-worker instansi bo'lgani uchun bu yetarli (ko'p-instansli scale qilinsa
-alohida beat xizmatiga o'tish kerak bo'ladi).
+Beat scheduler worker jarayonining o'zida, HAR DOIM ishga tushadi — Railway
+worker xizmatining start command'ini o'zgartirish imkoni bo'lmagani sabab
+(`--beat` CLI bayrog'i o'rniga) shartsiz bootstep orqali ilova darajasida
+yoqilgan (pastdagi `_BeatStep`, Celery'ning ichki `celery.worker.components:Beat`
+komponentini takrorlaydi, lekin `beat=True` CLI argumentiga bog'liq emas).
+Bitta worker instansi bo'lgani uchun bu yetarli — ko'p-instansli scale
+qilinsa, bir nechta beat bir vaqtda ishlab vazifalarni takrorlab yuborishi
+mumkin, shu holatda alohida beat xizmatiga o'tish kerak bo'ladi.
 """
 
-from celery import Celery
+from typing import Any
+
+from celery import Celery, bootsteps
 from celery.schedules import crontab
 
 from app.core.config import get_settings
@@ -37,3 +43,28 @@ celery_app.conf.update(
         },
     },
 )
+
+
+class _BeatStep(bootsteps.StartStopStep):  # type: ignore[misc]
+    """`celery worker --beat` ichki komponentining shartsiz nusxasi.
+
+    Railway worker start command'ini `--beat` bilan yangilab bo'lmagani
+    uchun (infratuzilma cheklovi) — shu bootstep o'rniga har doim yoqilgan
+    holda ishlaydi, CLI bayrog'iga muhtoj emas.
+    """
+
+    def create(self, worker: Any) -> object:
+        import os
+
+        from celery.beat import EmbeddedService
+
+        # /app (Dockerfile WORKDIR) root'ga tegishli, worker esa "imkon"
+        # (non-root) sifatida ishlaydi — schedule faylini yoziladigan
+        # HOME ostiga qo'yamiz (Dockerfile'da allaqachon chown qilingan).
+        schedule_path = os.path.join(os.environ.get("HOME", "/tmp"), "celerybeat-schedule")
+        return EmbeddedService(
+            worker.app, schedule_filename=schedule_path, scheduler_cls=worker.scheduler
+        )
+
+
+celery_app.steps["worker"].add(_BeatStep)

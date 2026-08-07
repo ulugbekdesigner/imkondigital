@@ -43,3 +43,6 @@ redis-data/
 # Test / coverage
 coverage/
 playwright-report/
+
+# Celery beat local schedule state (production uses in-memory scheduler via Redis)
+celerybeat-schedule*
