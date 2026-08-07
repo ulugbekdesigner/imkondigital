@@ -1,0 +1,68 @@
+[project]
+name = "imkon-api"
+version = "0.1.0"
+description = "IMKON Digital — FastAPI backend"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115.6",
+    "uvicorn[standard]>=0.34.0",
+    "pydantic[email]>=2.10.4",
+    "pydantic-settings>=2.7.0",
+    "sqlalchemy[asyncio]>=2.0.36",
+    "asyncpg>=0.30.0",
+    "alembic>=1.14.0",
+    "argon2-cffi>=23.1.0",
+    "pyjwt>=2.10.1",
+    "boto3>=1.35.0",
+    "celery[redis]>=5.4.0",
+    "python-multipart>=0.0.20",
+    "fpdf2>=2.8.1",
+    "qrcode[pil]>=8.0",
+    "httpx>=0.28.1",
+    "google-genai>=1.0.0,<2.0.0",
+    "faster-whisper>=1.1.0",
+    "redis>=5.2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3.4",
+    "pytest-asyncio>=0.25.0",
+    "httpx>=0.28.1",
+    "ruff>=0.8.4",
+    "mypy>=1.14.0",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "ASYNC", "RUF"]
+# B008: FastAPI'da Depends(...) argument default sifatida — standart idioma
+ignore = ["B008"]
+
+[tool.ruff.lint.per-file-ignores]
+# O'zbekcha apostrof variantlarini ataylab translyatsiya qilish uchun kerak
+"app/core/usernames.py" = ["RUF001", "RUF003"]
+# AI (Gemini) chiqargan "smart" tinish belgilarini ataylab almashtirish uchun kerak
+"app/core/pdf_text.py" = ["RUF001", "RUF003"]
+"tests/test_cv_pdf.py" = ["RUF001", "RUF003"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+plugins = ["pydantic.mypy"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["app*"]

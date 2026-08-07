@@ -1,0 +1,214 @@
+/* ============================================================================
+   IMKON â parts.css Â· KARTOCHKA, ORQA FON NAQSHI, HOLATLAR
+   ----------------------------------------------------------------------------
+   Bu fayl "qolib ketadigan" narsalarni bitta klassga aylantiradi: kartochka
+   ichki tuzilishi, orqa fon bezaklari, bo'sh/xato/yuklanish holatlari.
+   Klassni yozdingizmi â dizayn to'liq chiqadi. Qo'lda qayta yozish TAQIQLANADI.
+
+   Ulash tartibi:  tokens.css â themes.css â parts.css
+   ============================================================================ */
+
+/* ââ 1 Â· BO'LIM (Section) ââââââââââââââââââââââââââââââââââââââââââââââââââ
+   Har bir bo'lim shu klass bilan o'raladi. Naqsh qatlami shu yerda tug'iladi. */
+.imk-section {
+  position: relative;
+  overflow: hidden;
+  padding: var(--s-section-y) var(--s-section-x);
+  background: var(--bg);
+  color: var(--text);
+}
+.imk-section--dark {
+  background:
+    radial-gradient(900px 500px at 12% -5%, var(--glow-1), transparent 60%),
+    radial-gradient(760px 460px at 92% 12%, var(--glow-2), transparent 62%),
+    var(--surface-dark);
+  color: var(--text-on-dark);
+}
+.imk-section--light {
+  background:
+    radial-gradient(900px 500px at 12% -5%, var(--glow-1), transparent 60%),
+    radial-gradient(680px 420px at 50% 100%, var(--glow-3), transparent 60%),
+    var(--bg);
+}
+.imk-section > * { position: relative; z-index: 1; }
+
+/* ââ 2 Â· MILLIY NAQSH â orqa fon elementlari âââââââââââââââââââââââââââââââ
+   Bo'limga BITTA naqsh. .imk-orn ni .imk-section ning BIRINCHI farzandi qiling.
+   <div class="imk-orn imk-orn--medallion"></div>                              */
+.imk-orn {
+  position: absolute;
+  right: -70px;
+  top: -50px;
+  width: 340px;
+  height: 340px;
+  z-index: 0;
+  pointer-events: none;
+  opacity: var(--orn-opacity);
+  background-repeat: no-repeat;
+  background-size: contain;
+  animation: imk-spin 280s linear infinite;
+}
+.imk-orn--left  { left: -70px; right: auto; }
+.imk-orn--sm    { width: 240px; height: 240px; }
+.imk-orn--lg    { width: 460px; height: 460px; }
+
+/* Islimi medalyoni â kabinet, katalog, profil */
+.imk-orn--medallion {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cg fill='none' stroke='%23294a7a' stroke-width='1.2'%3E%3Ccircle cx='100' cy='100' r='72'/%3E%3Ccircle cx='100' cy='100' r='44'/%3E%3Cpath d='M100 28c9 14 9 26 0 40-9-14-9-26 0-40Z'/%3E%3Cpath d='M100 172c-9-14-9-26 0-40 9 14 9 26 0 40Z'/%3E%3Cpath d='M28 100c14-9 26-9 40 0-14 9-26 9-40 0Z'/%3E%3Cpath d='M172 100c-14 9-26 9-40 0 14-9 26-9 40 0Z'/%3E%3Ccircle cx='100' cy='100' r='7'/%3E%3C/g%3E%3C/svg%3E");
+}
+/* Girih yulduzi â hero, tabrik, marketing */
+.imk-orn--star {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cg fill='none' stroke='%23294a7a' stroke-width='1.2'%3E%3Cpath d='M100 6 122 56 176 40 156 92 200 100 156 108 176 160 122 144 100 194 78 144 24 160 44 108 0 100 44 92 24 40 78 56Z'/%3E%3Cpath d='M100 34 116 70 154 60 140 96 172 100 140 104 154 140 116 130 100 166 84 130 46 140 60 104 28 100 60 96 46 60 84 70Z'/%3E%3Ccircle cx='100' cy='100' r='23'/%3E%3C/g%3E%3C/svg%3E");
+}
+/* Banna'i panjara â hero yon qirralari (aylanmaydi) */
+.imk-orn--lattice {
+  right: auto;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 220px;
+  height: auto;
+  animation: none;
+  opacity: calc(var(--orn-opacity) * 4);
+  background-image:
+    repeating-linear-gradient(45deg,  color-mix(in srgb, var(--orn-stroke) 55%, transparent) 0 1px, transparent 1px 24px),
+    repeating-linear-gradient(-45deg, color-mix(in srgb, var(--orn-stroke) 55%, transparent) 0 1px, transparent 1px 24px);
+  -webkit-mask-image: linear-gradient(to right, #000, transparent 88%);
+          mask-image: linear-gradient(to right, #000, transparent 88%);
+}
+/* Naqsh TAQIQLANGAN bo'limlar: .imk-section--plain (masalan "Ruhiy kuch") */
+.imk-section--plain .imk-orn { display: none; }
+
+/* ââ 3 Â· KARTOCHKA va uning ICHKI qismlari ââââââââââââââââââââââââââââââââ
+   <article class="imk-card imk-card--dark">
+     <span class="imk-card__kicker">Yorliq</span>
+     <h3 class="imk-card__title">Sarlavha</h3>
+     <p  class="imk-card__body">Matn</p>
+     <div class="imk-card__meta"><span>10 hafta</span><span>Bepul</span></div>
+   </article>                                                                  */
+.imk-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  padding: var(--s-6);
+  border-radius: var(--r-card);
+  background: var(--surface);
+  border: var(--border-width) solid var(--border);
+  box-shadow: var(--shadow-md);
+  color: var(--text);
+  transition: transform var(--d-hover) var(--ease), box-shadow var(--d-hover) var(--ease);
+}
+.imk-card:hover { transform: translateY(-7px); box-shadow: var(--shadow-hover); }
+
+.imk-card--dark {
+  background:
+    radial-gradient(520px 240px at 100% 0%, color-mix(in srgb, var(--accent-2) 22%, transparent), transparent 62%),
+    linear-gradient(150deg, var(--surface-dark), var(--surface-dark-2));
+  border-color: var(--border-dark);
+  color: var(--text-on-dark);
+}
+.imk-card--dark .imk-card__kicker { color: var(--text-on-dark-dim); }
+.imk-card--dark .imk-card__title  { color: var(--text-on-dark); }
+.imk-card--dark .imk-card__body,
+.imk-card--dark .imk-card__meta   { color: var(--text-on-dark-muted); }
+
+.imk-card--glass {
+  background: linear-gradient(155deg, rgba(255,255,255,0.135), rgba(255,255,255,0.055));
+  -webkit-backdrop-filter: var(--glass-blur);
+          backdrop-filter: var(--glass-blur);
+  border-color: rgba(255,255,255,0.20);
+  color: var(--text-on-dark);
+}
+.imk-card--flat  { box-shadow: none; }
+.imk-card--flat:hover { transform: none; box-shadow: var(--shadow-sm); }
+
+.imk-card__kicker {
+  font-size: var(--t-label); font-weight: 700;
+  letter-spacing: var(--t-label-ls); text-transform: uppercase;
+  color: var(--text-dim);
+}
+.imk-card__title { font-size: var(--t-h4); font-weight: 700; margin: 0; color: var(--text); }
+.imk-card__body  { font-size: var(--t-small); line-height: 1.55; margin: 0; color: var(--text-muted); }
+.imk-card__meta  {
+  margin-top: auto; display: flex; align-items: center; justify-content: space-between;
+  gap: var(--s-2); font-size: var(--t-meta); color: var(--text-dim);
+}
+.imk-card__foot {
+  margin-top: var(--s-2); padding-top: var(--s-3);
+  border-top: 1px solid var(--border); display: flex; gap: var(--s-2);
+}
+.imk-card__media { margin: calc(var(--s-6) * -1) calc(var(--s-6) * -1) 0; height: 116px; border-radius: var(--r-card) var(--r-card) 0 0; }
+
+/* Bento tarmoq â kartalar joylashuvi */
+.imk-bento { display: grid; grid-template-columns: repeat(6, 1fr); gap: var(--s-4); }
+.imk-bento > .span-2 { grid-column: span 2; }
+.imk-bento > .span-3 { grid-column: span 3; }
+.imk-bento > .span-4 { grid-column: span 4; }
+.imk-bento > .span-6 { grid-column: span 6; }
+
+/* ââ 4 Â· MAJBURIY HOLATLAR ââââââââââââââââââââââââââââââââââââââââââââââââ
+   Har bir ro'yxat/jadval/panelda uchalasi ham bo'lishi shart.               */
+.imk-skeleton {
+  position: relative; overflow: hidden;
+  height: 14px; border-radius: var(--r-pill); background: var(--surface-2);
+}
+.imk-skeleton::after {
+  content: ''; position: absolute; inset: 0; transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--surface) 90%, transparent), transparent);
+  animation: imk-shimmer 1.6s infinite;
+}
+.imk-empty, .imk-error {
+  display: flex; flex-direction: column; align-items: flex-start; gap: var(--s-3);
+  padding: var(--s-6); border-radius: var(--r-card); background: var(--surface);
+}
+.imk-empty { border: 1px dashed var(--border-strong); }
+.imk-error { border: var(--border-width) solid var(--err-line); }
+.imk-empty__icon, .imk-error__icon {
+  width: 52px; height: 52px; border-radius: var(--r-inner);
+  display: flex; align-items: center; justify-content: center;
+}
+.imk-empty__icon { background: var(--accent-soft); color: var(--accent-text); }
+.imk-error__icon { background: var(--err-soft);    color: var(--err-text); }
+.imk-locked { display: flex; align-items: center; gap: var(--s-3); padding: var(--s-5);
+  border-radius: var(--r-inner); background: var(--surface-2); color: var(--text-dim); }
+
+/* ââ 5 Â· TOAST va TABRIK ââââââââââââââââââââââââââââââââââââââââââââââââââ
+   .imk-toast--ok / --err / --info Â· .imk-celebrate rol bo'yicha              */
+.imk-toast {
+  display: flex; align-items: center; gap: var(--s-3);
+  padding: var(--s-3) var(--s-4); border-radius: var(--r-row);
+  background: var(--surface); border: 1px solid var(--border);
+  box-shadow: var(--shadow-md); animation: imk-toast-in 420ms var(--ease) both;
+}
+.imk-toast--ok   { background: var(--ok-soft);   border-color: var(--ok-line);   color: var(--ok-text); }
+.imk-toast--err  { background: var(--err-soft);  border-color: var(--err-line);  color: var(--err-text); }
+.imk-toast--info { background: var(--info-soft); border-color: var(--info-line); color: var(--info-text); }
+.imk-toast__icon { width: 22px; height: 22px; border-radius: var(--r-pill); display: flex;
+  align-items: center; justify-content: center; animation: imk-check-pop 520ms var(--ease) both; }
+
+.imk-celebrate { position: relative; overflow: hidden; }
+.imk-celebrate__bit {
+  position: absolute; bottom: 10px; width: 12px; height: 12px; border-radius: 3px;
+  transform: rotate(45deg); animation: imk-rise 2.2s ease-out both;   /* BIR MARTA */
+}
+.imk-celebrate__bit:nth-child(1) { left: 22%; background: color-mix(in srgb, var(--accent-2) 70%, transparent); }
+.imk-celebrate__bit:nth-child(2) { left: 52%; border-radius: 999px; background: color-mix(in srgb, var(--gold) 80%, transparent); animation-delay: .35s; }
+.imk-celebrate__bit:nth-child(3) { left: 76%; background: rgba(255,255,255,0.55); animation-delay: .7s; }
+
+/* ââ 6 Â· HARAKAT ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+   Cheksiz takrorlanish FAQAT: imk-spin (naqsh), imk-dot (status), imk-shimmer */
+@keyframes imk-spin      { to { transform: rotate(360deg); } }
+@keyframes imk-shimmer   { 100% { transform: translateX(100%); } }
+@keyframes imk-fade-up   { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes imk-toast-in  { 0% { opacity: 0; transform: translateY(10px) scale(.98); } 100% { opacity: 1; transform: none; } }
+@keyframes imk-check-pop { 0% { transform: scale(.6); opacity: 0; } 60% { transform: scale(1.08); opacity: 1; } 100% { transform: scale(1); } }
+@keyframes imk-dot       { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.35); opacity: .65; } }
+@keyframes imk-rise      { 0% { transform: translateY(14px) rotate(45deg); opacity: 0; } 30% { opacity: 1; } 100% { transform: translateY(-52px) rotate(45deg); opacity: 0; } }
+.imk-reveal { animation: imk-fade-up var(--d-reveal) var(--ease) both; }
+.imk-dot    { animation: imk-dot 2.6s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .imk-reveal { opacity: 1; transform: none; }
+}

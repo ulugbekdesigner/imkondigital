@@ -1,0 +1,352 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import './tokens.css';
+/* Bosh sahifa uchun qoshimcha dizayn qatlami. Mavjud Oyna tokenlarini
+   almashtirmaydi, alohida nomlangan (--navy/--land/.imk) qoshimcha. */
+@import './landing-tokens.css';
+@import './landing-ui.css';
+/* Sayt bo'ylab (kabinet/admin) holat va kartochka ichki qismlari — semantik
+   tokenlardan foydalanadi, landing-ui.css bilan ziddiyatga kirmaydi
+   (docs/design/parts.css standartidan, 2026-08-01). */
+@import './parts.css';
+
+/*
+ * IMKON Digital — Design System 4.0, "Oyna" (white/glass-first, v3.0'dan meros).
+ * Hex qiymatlar faqat shu yerda. Boshqa joyda Tailwind token sinflari ishlatiladi.
+ * Rejim: BITTA data-theme atributi — "oq" (yorug', DEFAULT) | "tun" (qorong'i) |
+ * "kontrast" (AAA yuqori kontrast, mustaqil uchinchi rejim — 2026-08-01 gacha
+ * data-theme+data-contrast ikki mustaqil atribut edi; docs/design/README.md/themes.css
+ * standartiga moslab BITTA atributga birlashtirildi).
+ *
+ * Barcha juftliklar WCAG AA (matn 4.5:1, struktura elementlari 3:1) uchun
+ * dasturiy hisoblab tekshirilgan (relative luminance formulasi bo'yicha) —
+ * eyeball emas.
+ *
+ * SEMANTIK TOKENLAR (docs/design/README.md standarti): --bg, --surface,
+ * --surface-2, --text, --text-muted, --border, --accent, --accent-text,
+ * --ok, --warn, --err, --info va h.k. — bular yuqoridagi "Oyna" palitrasidan
+ * ALIAS qilinadi (CONTRIBUTING.md 4-qoidasi: bitta token manbai). Yangi komponentlar
+ * shu semantik nomlardan foydalanadi — --imkon-primary, --ink, --paper kabi
+ * xom palitra nomlarini to'g'ridan-to'g'ri ishlatmaydi.
+ */
+
+:root {
+  /* Brend 5.0 — "Robot Aurora" tizimidan tenglashtirilgan (docs/design/README.md/tokens.css,
+     2026-07-30 handoff). O'zgaruvchi NOMLARI saqlanadi, faqat QIYMATLAR yangilanadi.
+     --line'ning berilgan xom qiymati (#e7e1d5) oq fonda 1.30:1 chiqib WCAG 1.4.11
+     (3:1) ni buzgani uchun ATAYLAB qayta hisoblangan (bir xil issiq ohang, mos
+     kontrast) — boshqa hammasi hujjatdagi bilan aynan bir xil. */
+  /* DIQQAT: quyidagi 8 tokenning qiymati "R G B" (bo'shliq bilan ajratilgan
+     triplet), XOM HEX EMAS — Tailwind'ning opacity-modifikator sintaksisi
+     (masalan bg-mint/40) CSS o'zgaruvchisidan olingan rangni FAQAT shu
+     formatda tushunadi (tailwind-preset.js'da rgb(var(--x) / <alpha-value>)
+     bilan o'raladi). Xom hex qoldirilgan bo'lsa (masalan --paper), opacity
+     modifikatorlari HECH QACHON ishlatilmaydi — bunday joyda oddiy
+     var(--paper) yetarli. Har joyda ushbu 8 tokendan TO'G'RIDAN-TO'G'RI
+     (Tailwind sinfisiz) foydalanilsa — rgb(var(--x)) bilan o'ralishi shart,
+     aks holda CSS "16 26 51" kabi yaroqsiz rang qiymati sifatida sinadi.
+     (Topilma: bg-mint/40, text-deep-fg/70 kabi ~90 joy butun ilovada shu
+     sabab ko'rinmas/noto'g'ri rang chiqarayotgan edi — xom var() edi.) */
+  --imkon-deep: 16 26 51; /* #101a33 — CTA panellari, quyuq bo'lim foni */
+  --imkon-deep-fg: 255 255 255; /* #ffffff — 17.2:1 */
+  --imkon-primary: #101a33; /* tugma foni — 17.2:1 oq matn bilan */
+  --imkon-primary-fg: #ffffff;
+  --imkon-bright: 63 114 207; /* #3f72cf — brend ko'k aksent — fokus halqa/havola, paper ustida 4.7:1 */
+  --imkon-teal: 111 179 207; /* #6fb3cf — Ziyo AI, grafik, milliy naqsh — faqat fon/ikonka, matn uchun emas */
+  --imkon-mint: 246 243 236; /* #f6f3ec — issiq ivory — hover/faol fon to'ldiruvchisi */
+  --surface-2: #eef1f7; /* ikkinchi darajali sirt to'ldiruvchisi */
+  --imkon-mist: #b8c4ea; /* faqat --imkon-deep panel ustida matn uchun — 10.0:1 */
+  /* Neytral */
+  --ink: 16 26 51; /* #101a33 — paper ustida 17.2:1 */
+  --ink-soft: #5b6a86; /* paper ustida 5.5:1 */
+  --paper: #ffffff;
+  --line: #968a76; /* struktura chegarasi — 3.4:1 (WCAG 1.4.11 non-text), issiq ohang */
+  /* Semantik — matn rangi (belgi/tugma) + yumshoq fon juftligi (faqat belgi
+     "tint" foni uchun; tugma/qattiq fonlar --warn/--error/--info matn rangini
+     ishlatadi). Barchasi WCAG 4.5:1 hisoblab tekshirilgan (4b-blok: belgi
+     ro'yxati). */
+  --warn: #8a5a10; /* IMKON Interface.dc.html 4b-blok — "Ko'rib chiqilmoqda" belgi matni, --warn-bg ustida 5.33:1, paper ustida 5.91:1 */
+  --warn-bg: #fdf2dd;
+  --error: 179 38 30; /* #b3261e */
+  --error-fg: #ffffff;
+  --error-bg: #fdeceb; /* "Rad etilgan" belgi foni — --error matni bilan 5.72:1 */
+  --info: #1d5fa0;
+  --info-bg: #e7f0f9; /* "Qoralama" belgi foni — --info matni bilan 5.70:1 */
+  --success: #1f6b52; /* "Tasdiqlangan" belgi — yangi semantik rang, avval yo'q edi (--imkon-primary bilan noto'g'ri ifodalanardi) */
+  --success-fg: #ffffff;
+  --success-bg: #e4f4ee; /* --success matni bilan 5.63:1 */
+  /* Narvon pog'onalari 0→4 — ko'kdan (boshlang'ich) tadbirkorlik cho'qqisiga (zarhal) */
+  --step-0: #b4c4f5;
+  --step-1: #8fa6ed;
+  --step-2: #6b85e8;
+  --step-3: #5b76f5;
+  --step-4: #e8a93d;
+  /* Milliy mikro-detal aksentlari (A3-bo'lim: girih, zardo'zlik) */
+  --imkon-gold: 232 169 61; /* #e8a93d */
+  --imkon-gold-fg: #241704;
+  --imkon-coral: #e86a5c;
+
+  /* Font o'lchov shkalasi (A− / A / A+) — html font-size'ga ta'sir qiladi */
+  --font-scale: 100%;
+
+  /* Animatsiya tokenlari (A5-bo'lim) — prefers-reduced-motion pastda o'chiradi */
+  --motion-fast: 150ms;
+  --motion-base: 300ms;
+  --motion-slow: 400ms;
+  --motion-ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* ---------- SEMANTIK ALIASLAR — "oq" (yorug', standart) ---------- */
+  --bg: var(--imkon-mint);
+  --surface: var(--paper);
+  --surface-3: #f4f6fa;
+  --surface-dark: rgb(var(--imkon-deep));
+  --surface-dark-2: #1b2c50;
+  --text: rgb(var(--ink));
+  --text-muted: var(--ink-soft);
+  --text-dim: #5b6a86;
+  --text-on-dark: rgb(var(--imkon-deep-fg));
+  --text-on-dark-muted: var(--imkon-mist);
+  --border: var(--line);
+  --border-strong: #c3ccdd;
+  --accent: rgb(var(--imkon-bright));
+  --accent-hover: #2c5896;
+  --accent-text: #1d3a72;
+  --accent-soft: #eef4fc;
+  --ok: var(--success);
+  --ok-text: var(--success);
+  --ok-soft: var(--success-bg);
+  --ok-line: #bfe3d5;
+  --err: rgb(var(--error));
+  --err-text: rgb(var(--error));
+  --err-soft: var(--error-bg);
+  --err-line: #f3c8c5;
+  --info-text: var(--info);
+  --info-soft: var(--info-bg);
+  --info-line: #c3daf0;
+  --orn-stroke: #294a7a;
+  --orn-opacity: 0.08;
+  --glow-1: rgba(111, 179, 207, 0.16);
+  --glow-2: rgba(63, 114, 207, 0.12);
+  --glow-3: rgba(232, 169, 61, 0.1);
+
+  /* Doim-yorug' ("oq") qatlamlar uchun MUZLATILGAN aliaslar — data-theme
+     "tun"/"kontrast" bo'lganda ham o'zgarmasligi kerak bo'lgan kartalar
+     (masalan /verify) shu tokenlardan foydalanadi, xom hex qaytarmaydi
+     (CONTRIBUTING.md 4-qoidasi). Qiymatlar yuqoridagi "oq" --paper/--ink-soft/
+     --line/--surface-2 bilan bir xil, lekin [data-theme] selektorlarida
+     QAYTA E'LON QILINMAYDI — shu sabab doim yorug' bo'lib qoladi. */
+  --static-oq-paper: #ffffff;
+  --static-oq-ink-soft: #5b6a86;
+  --static-oq-line: #968a76;
+  --static-oq-surface-2: #eef1f7;
+}
+
+/* ─── KONTRAST — mustaqil uchinchi rejim, WCAG AAA (qora fon, oq matn) ───
+   Avval [data-contrast='high'] (yorug' ustida) va
+   [data-theme='dark'][data-contrast='high'] (qorong'i ustida) ikkita alohida
+   qatlam edi — endi BITTA data-theme="kontrast" qiymatiga birlashtirildi
+   (2026-08-01, foydalanuvchi tanlovi bilan). Eski "yorug'+yuqori kontrast"
+   va "tungi+yuqori kontrast" kombinatsiyalari endi mavjud emas — kontrast
+   endi doim qora fon asosida ishlaydi. */
+[data-theme='kontrast'] {
+  --imkon-deep: 0 0 0;
+  --imkon-deep-fg: 255 255 255;
+  --imkon-primary: #a5b4fc;
+  --imkon-primary-fg: #0b1024;
+  --imkon-bright: 165 180 252; /* #a5b4fc */
+  --imkon-teal: 165 180 252;
+  --imkon-mint: 11 11 11; /* #0b0b0b */
+  --imkon-mist: #ffffff;
+  --ink: 255 255 255;
+  --ink-soft: #ffffff;
+  --paper: #000000;
+  --line: #a5b4fc;
+  --warn: #f0c178;
+  --warn-bg: #2b2103;
+  --error: 255 180 171; /* #ffb4ab */
+  --error-bg: #2e0b08;
+  --info: #a8cdf0;
+  --info-bg: #10203f;
+  --success: #6fe0b4;
+  --success-bg: #05291d;
+  --step-0: #a5b4fc;
+  --step-1: #a5b4fc;
+  --step-2: #a5b4fc;
+  --step-3: #a5b4fc;
+  --step-4: #ffd479;
+  --imkon-gold: 255 212 121; /* #ffd479 */
+  --imkon-gold-fg: #241704;
+  --imkon-coral: #ffb4ab;
+
+  --bg: #000000;
+  --surface: #000000;
+  --surface-2: #0b0b0b;
+  --surface-3: #0b0b0b;
+  --surface-dark: #000000;
+  --surface-dark-2: #000000;
+  --text-dim: #e9edf7;
+  --border-strong: #a5b4fc;
+  --accent-hover: #cfe6f2;
+  --accent-text: #a5b4fc;
+  --accent-soft: #10203f;
+  --ok-text: #6fe0b4;
+  --ok-line: #6fe0b4;
+  --err-text: #ffb4ab;
+  --err-line: #ffb4ab;
+  --info-text: #a8cdf0;
+  --info-line: #a8cdf0;
+  --orn-stroke: #a5b4fc;
+  --orn-opacity: 0.05;
+  --glow-1: transparent;
+  --glow-2: transparent;
+  --glow-3: transparent;
+}
+
+/* ─── TUN — qorong'i rejim ("Tun Osmoni", v3.0'dan meros) ─────────────── */
+[data-theme='tun'] {
+  --imkon-deep: 15 22 48; /* #0f1630 */
+  --imkon-deep-fg: 255 255 255; /* #ffffff */
+  --imkon-primary: #818cf8;
+  --imkon-primary-fg: #0b1024;
+  --imkon-bright: 165 180 252; /* #a5b4fc */
+  --imkon-mint: 20 27 54; /* #141b36 */
+  --imkon-mist: #b8c4ea;
+  --ink: 233 237 247; /* #e9edf7 */
+  --ink-soft: #9fb0d0;
+  --paper: #0b1220;
+  --line: #4d63a8;
+  --warn: #e0a343;
+  --error: 255 138 128; /* #ff8a80 */
+  --error-fg: #2b0705;
+  --info: #7db3e6;
+  --step-0: #b4c4f5;
+  --step-1: #8fa6ed;
+  --step-2: #6b85e8;
+  --step-3: #5b76f5;
+  --step-4: #e8a93d;
+  --imkon-gold: 232 169 61; /* #e8a93d */
+  --imkon-gold-fg: #241704;
+  --imkon-coral: #f08a7d;
+
+  /* ---------- SEMANTIK ALIASLAR — "tun" ---------- */
+  --bg: rgb(var(--imkon-deep));
+  --surface: rgb(var(--imkon-mint));
+  --surface-3: #1a2440;
+  --surface-dark: #0b1226;
+  --surface-dark-2: #16223d;
+  --text: rgb(var(--ink));
+  --text-muted: var(--ink-soft);
+  --text-dim: #a9b8d4;
+  --text-on-dark: #ffffff;
+  --text-on-dark-muted: var(--imkon-mist);
+  --border: var(--line);
+  --border-strong: #3e4c6f;
+  --accent: rgb(var(--imkon-bright));
+  --accent-hover: #8fb8e0;
+  --accent-text: #a8cbe8;
+  --accent-soft: #1f2d4e;
+  --ok: #4fb98d;
+  --ok-text: #8fe0c0;
+  --ok-soft: #183c31;
+  --ok-line: #315c4c;
+  --err: rgb(var(--error));
+  --err-text: #ff9d94;
+  --err-soft: #3c1f1d;
+  --err-line: #5c3432;
+  --info-text: #a8cdf0;
+  --info-soft: #1f2e46;
+  --info-line: #2d4360;
+  --orn-stroke: #cfe6f2;
+  --orn-opacity: 0.1;
+  --glow-1: rgba(111, 179, 207, 0.22);
+  --glow-2: rgba(63, 114, 207, 0.18);
+  --glow-3: rgba(232, 169, 61, 0.1);
+}
+
+/* Nozik nuqta-to'r fon — texnik/tuzilgan tuyg'u uchun (hero va boshqa
+   panellarda ixtiyoriy .bg-dot-grid klassi bilan ishlatiladi) */
+.bg-dot-grid {
+  background-image: radial-gradient(var(--line) 1px, transparent 1px);
+  background-size: 28px 28px;
+  background-position: -14px -14px;
+  opacity: 0.35;
+}
+[data-theme='tun'] .bg-dot-grid,
+[data-theme='kontrast'] .bg-dot-grid {
+  opacity: 1;
+}
+
+/* Font o'lchov darajalari — 5 bosqich, A−/A+ har bosishda BITTA bosqichga
+   siljiydi (avval faqat 3 ta qat'iy qiymat bo'lib, A+ "lg"ga sakragach
+   yana bosish hech narsa qilmasdi — foydalanuvchi "bir marta kattalashib,
+   keyin to'xtab qolyapti" deb shikoyat qildi). */
+[data-font-scale='xs'] {
+  --font-scale: 87.5%;
+} /* 14px */
+[data-font-scale='sm'] {
+  --font-scale: 93.75%;
+} /* 15px */
+[data-font-scale='md'] {
+  --font-scale: 100%;
+} /* 16px (default) */
+[data-font-scale='lg'] {
+  --font-scale: 112.5%;
+} /* 18px */
+[data-font-scale='xl'] {
+  --font-scale: 125%;
+} /* 20px */
+
+html {
+  font-size: var(--font-scale);
+}
+
+html {
+  /* Mobil'da gorizontal skroll oldini olish — ba'zi bo'limlar (masalan uzun
+     so'z/raqamlar) tor ekranda tashqariga chiqib ketishining oldini oladi.
+     Faqat html'da (body'da EMAS) — ikkalasida ham qo'yilsa, brauzer
+     overflow-y'ni ikkalasida ham "auto"ga majburlaydi (CSS overflow
+     qoidasi), bu esa ikkita mustaqil scroll konteksti hosil qilib,
+     `position: sticky`ni butun saytda buzadi. */
+  overflow-x: hidden;
+}
+
+body {
+  background-color: var(--paper);
+  color: rgb(var(--ink));
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Klaviatura foydalanuvchilari uchun aniq skip-link */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  z-index: 999;
+}
+.skip-link:focus {
+  left: 1rem;
+  top: 1rem;
+}
+
+/* Harakatni kamaytirish sozlamasi — barcha animatsiyalarni o'chiradi */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Xuddi shu qoida — /profil "Qulaylik sozlamalari"dagi qo'lda tanlov uchun
+   (tizim prefers-reduced-motion'idan mustaqil, localStorage'da saqlanadi). */
+[data-motion='reduced'] *,
+[data-motion='reduced'] *::before,
+[data-motion='reduced'] *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}

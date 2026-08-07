@@ -1,0 +1,7 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+
+# esbuild (vitest orqali) o'z platforma binarini o'rnatishi uchun ruxsat
+allowBuilds:
+  esbuild: true

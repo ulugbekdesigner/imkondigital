@@ -1,0 +1,157 @@
+name: imkondigital
+
+# Production compose — VPS'da ishga tushiriladi (docs/deploy.md'ga qarang).
+# docker-compose.yml (dev)'dan farqi:
+#   - postgres/redis host'ga ochilmaydi (faqat ichki tarmoq)
+#   - web/api hardened Dockerfile bilan (non-root, dev bog'liqliklarsiz)
+#   - nginx TLS terminatsiya va reverse proxy qiladi (certbot bilan)
+#   - majburiy sirlar ${VAR:?xato} orqali — .env'da yo'q bo'lsa ishga tushmaydi
+#   - video/fayl ombori: dev'dagi o'z-VPS-ichidagi MinIO o'rniga Cloudflare R2
+#     (S3-mos, egress bepul) — bucket/public-domen Cloudflare panelida oldindan
+#     qo'lda sozlanadi, shu sabab bu faylda "minio" xizmati YO'Q.
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: imkon
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD .env da kerak}
+      POSTGRES_DB: imkon
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U imkon -d imkon']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: always
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: always
+
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    environment: &api-env
+      ENVIRONMENT: production
+      DEBUG: 'false'
+      SECRET_KEY: ${SECRET_KEY:?SECRET_KEY .env da kerak}
+      DATABASE_URL: postgresql+asyncpg://imkon:${POSTGRES_PASSWORD}@postgres:5432/imkon
+      REDIS_URL: redis://redis:6379/0
+      S3_PROVIDER: r2
+      S3_ENDPOINT: https://${R2_ACCOUNT_ID:?R2_ACCOUNT_ID .env da kerak}.r2.cloudflarestorage.com
+      S3_PUBLIC_ENDPOINT: https://media.${DOMAIN:?DOMAIN .env da kerak}
+      S3_ACCESS_KEY: ${R2_ACCESS_KEY_ID:?R2_ACCESS_KEY_ID .env da kerak}
+      S3_SECRET_KEY: ${R2_SECRET_ACCESS_KEY:?R2_SECRET_ACCESS_KEY .env da kerak}
+      S3_BUCKET: ${R2_BUCKET:-imkon-media}
+      CELERY_BROKER_URL: redis://redis:6379/1
+      CELERY_RESULT_BACKEND: redis://redis:6379/2
+      CORS_ORIGINS: https://${DOMAIN}
+      SITE_URL: https://${DOMAIN}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:?GEMINI_API_KEY .env da kerak}
+      PAYME_MERCHANT_ID: ${PAYME_MERCHANT_ID:-}
+      PAYME_MERCHANT_KEY: ${PAYME_MERCHANT_KEY:-}
+      CLICK_SERVICE_ID: ${CLICK_SERVICE_ID:-}
+      CLICK_MERCHANT_ID: ${CLICK_MERCHANT_ID:-}
+      CLICK_SECRET_KEY: ${CLICK_SECRET_KEY:-}
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
+      TELEGRAM_BOT_USERNAME: ${TELEGRAM_BOT_USERNAME:-imkon_digital_bot}
+      TELEGRAM_INTERNAL_SECRET: ${TELEGRAM_INTERNAL_SECRET:?TELEGRAM_INTERNAL_SECRET .env da kerak}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:8000/health']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: always
+
+  worker:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    command: ['celery', '-A', 'app.worker.celery_app', 'worker', '--loglevel=info', '--concurrency=2']
+    environment: *api-env
+    volumes:
+      # faster-whisper (AI subtitr) modelini birinchi ishlatishda Hugging
+      # Face'dan yuklab oladi (~75MB, "tiny") — bu volume bo'lmasa, worker
+      # qayta qurilganda/deploy qilinganda har safar qaytadan yuklanadi.
+      - whisper-cache:/home/imkon/.cache
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: always
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: https://api.${DOMAIN}
+    environment:
+      NEXT_PUBLIC_API_URL: https://api.${DOMAIN}
+      API_INTERNAL_URL: http://api:8000
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:3000']
+      interval: 10s
+      timeout: 5s
+      retries: 15
+    restart: always
+
+  bot:
+    build:
+      context: ./apps/bot
+      dockerfile: Dockerfile
+    environment:
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
+      TELEGRAM_INTERNAL_SECRET: ${TELEGRAM_INTERNAL_SECRET}
+      API_INTERNAL_URL: http://api:8000
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: always
+
+  nginx:
+    image: nginx:1.27-alpine
+    volumes:
+      - ./deploy/nginx.conf:/etc/nginx/nginx.conf:ro
+      - certbot-www:/var/www/certbot:ro
+      - certbot-etc:/etc/letsencrypt:ro
+    ports:
+      - '80:80'
+      - '443:443'
+    depends_on:
+      - web
+      - api
+    restart: always
+
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - certbot-www:/var/www/certbot
+      - certbot-etc:/etc/letsencrypt
+    entrypoint: >-
+      sh -c 'trap exit TERM; while :; do certbot renew --webroot -w /var/www/certbot --quiet; sleep 12h; done'
+    restart: always
+
+volumes:
+  postgres-data:
+  redis-data:
+  whisper-cache:
+  certbot-www:
+  certbot-etc:

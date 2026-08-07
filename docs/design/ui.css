@@ -1,0 +1,117 @@
+/* IMKON Digital â shared UI primitives.
+   Import AFTER tokens.css. Plain CSS: works in Next.js, Vite, Astro, Django templates.
+   Class names are stable contracts â do not rename per page. */
+
+/* ââ Page frame âââââââââââââââââââââââââââââââââââââââââââââ */
+.imk-frame { position: relative; overflow: hidden; border-radius: var(--r-frame); background: var(--ivory-100); box-shadow: var(--sh-frame); }
+.imk-grain {                 /* page-wide film grain, sits above everything, ignores pointer */
+  position: absolute; inset: 0; z-index: 5; pointer-events: none;
+  opacity: .5; mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.32'/%3E%3C/svg%3E");
+}
+
+/* ââ Sections âââââââââââââââââââââââââââââââââââââââââââââââ */
+.imk-section        { position: relative; overflow: hidden; padding: var(--s-section-y) var(--s-section-x); }
+.imk-section--dark  { background: var(--navy-900); color: var(--text-on-dark); }
+.imk-section--light { background: var(--ivory-100); color: var(--text-on-light); }
+.imk-section--brand { background: linear-gradient(118deg, #1d3a72 0%, #2c5896 34%, #3f72cf 62%, #4f9fb5 100%); color: var(--text-on-dark); }
+/* Sections animate in on scroll; JS sets the start state (see useReveal). */
+
+/* ââ Cards ââââââââââââââââââââââââââââââââââââââââââââââââââ */
+.imk-card {
+  position: relative; border-radius: var(--r-card); padding: var(--s-6);
+  background: var(--card-fill); border: 1px solid var(--line-dark);
+  color: var(--text-on-dark); box-shadow: var(--sh-card);
+  display: flex; flex-direction: column; gap: var(--s-4);
+  transition: transform var(--d-hover) var(--ease), box-shadow var(--d-hover) ease;
+}
+.imk-card:hover { transform: translateY(-7px); box-shadow: var(--sh-hover); }
+.imk-card__label { font-size: var(--t-label); font-weight: 700; letter-spacing: var(--t-label-ls); text-transform: uppercase; color: var(--text-on-dark-dim); }
+.imk-card__title { font-size: var(--t-h4); letter-spacing: var(--t-h4-ls); color: var(--text-on-dark); }
+.imk-card__body  { font-size: 16px; line-height: 1.55; color: var(--text-on-dark-muted); }
+.imk-card__row   { display: flex; align-items: center; gap: var(--s-3); border: 1px solid rgba(255,255,255,.14); border-radius: var(--r-row); padding: var(--s-3) var(--s-4); }
+
+/* ââ Glass panel (only over gradients / imagery, never over flat white) ââ */
+.imk-glass {
+  border-radius: var(--r-panel); padding: var(--s-5);
+  background: var(--glass-fill); backdrop-filter: var(--glass-blur);
+  border: 1px solid rgba(255,255,255,.20); box-shadow: var(--sh-glass);
+  color: var(--text-on-dark);
+  transition: transform var(--d-hover) var(--ease), box-shadow var(--d-hover) ease;
+}
+.imk-glass:hover { transform: translateY(-7px); box-shadow: var(--sh-hover); }
+
+/* ââ Buttons ââââââââââââââââââââââââââââââââââââââââââââââââ */
+.imk-btn { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; border: 0;
+  font-family: var(--font-ui); font-size: 16px; font-weight: 600; border-radius: var(--r-pill);
+  padding: 15px 28px; text-decoration: none; transition: background 200ms ease, transform 200ms var(--ease); }
+.imk-btn:active { transform: translateY(1px); }
+.imk-btn--primary { background: var(--brand-500); color: #fff; box-shadow: 0 10px 30px rgba(63,114,207,.45); }
+.imk-btn--primary:hover { background: var(--brand-600); }
+.imk-btn--ghost   { background: rgba(255,255,255,.13); color: #fff; border: 1px solid rgba(255,255,255,.30); backdrop-filter: blur(14px); }
+.imk-btn--ghost:hover { background: rgba(255,255,255,.20); }
+.imk-btn--ink     { background: var(--ink-900); color: #fff; }
+.imk-btn--ink:hover { background: #1c1c1c; }
+
+/* ââ Chips / tags âââââââââââââââââââââââââââââââââââââââââââ */
+.imk-chip { font-size: var(--t-meta); font-weight: 600; border-radius: var(--r-pill); padding: 7px 13px;
+  background: rgba(255,255,255,.10); border: 1px solid rgba(255,255,255,.18); color: var(--teal-200); }
+.imk-chip--active { background: var(--brand-500); border-color: var(--brand-500); color: #fff; }
+
+/* ââ Progress âââââââââââââââââââââââââââââââââââââââââââââââ */
+.imk-progress { height: 10px; border-radius: var(--r-pill); background: rgba(255,255,255,.16); overflow: hidden; }
+.imk-progress > i { display: block; height: 100%; border-radius: var(--r-pill); background: linear-gradient(90deg, var(--brand-500), var(--teal-300)); }
+
+/* ââ Cursor glow (one per section, JS moves it) âââââââââââââ */
+.imk-glow { position: absolute; left: 0; top: 0; width: var(--glow-size); height: var(--glow-size);
+  margin-left: calc(var(--glow-size) / -2); margin-top: calc(var(--glow-size) / -2);
+  border-radius: var(--r-pill); pointer-events: none; opacity: 0;
+  transition: opacity var(--d-fade) ease; filter: blur(var(--glow-blur)); }
+.imk-glow--dark  { background: var(--glow-dark);  mix-blend-mode: screen; }
+.imk-glow--light { background: var(--glow-light); mix-blend-mode: multiply; }
+
+/* ââ Uzbek ornament layers (decoration only, aria-hidden) âââ */
+.imk-orn { position: absolute; pointer-events: none; }
+
+/* girih star â one oversized instance, bleeds off a corner, turns very slowly */
+.imk-orn--star {
+  width: 620px; height: 620px; opacity: .16;
+  animation: spinSlow 220s linear infinite, lineIn 3s ease-out both;
+  background-repeat: no-repeat; background-size: contain;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cg fill='none' stroke='%23cfe6f2' stroke-width='1.1'%3E%3Cpath d='M100 6 122 56 176 40 156 92 200 100 156 108 176 160 122 144 100 194 78 144 24 160 44 108 0 100 44 92 24 40 78 56Z'/%3E%3Cpath d='M100 34 116 70 154 60 140 96 172 100 140 104 154 140 116 130 100 166 84 130 46 140 60 104 28 100 60 96 46 60 84 70Z'/%3E%3Ccircle cx='100' cy='100' r='23'/%3E%3Ccircle cx='100' cy='100' r='9'/%3E%3C/g%3E%3C/svg%3E");
+}
+/* banna'i brick lattice â a narrow band on one edge, fades out */
+.imk-orn--lattice {
+  top: 0; bottom: 0; left: 0; width: 190px; opacity: .5;
+  animation: lineIn 3.4s ease-out .3s both;
+  background-image:
+    repeating-linear-gradient(45deg,  rgba(214,236,247,.14) 0 1px, transparent 1px 26px),
+    repeating-linear-gradient(-45deg, rgba(214,236,247,.14) 0 1px, transparent 1px 26px);
+  mask-image: linear-gradient(to right, #000, transparent 85%);
+}
+/* islimi medallion â one instance in a light section corner */
+.imk-orn--medallion {
+  width: 520px; height: 520px; opacity: .13;
+  animation: spinSlow 260s linear infinite, lineIn 3s ease-out both;
+  background-repeat: no-repeat; background-size: contain;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cg fill='none' stroke='%23294a7a' stroke-width='1.1' stroke-linecap='round'%3E%3Ccircle cx='100' cy='100' r='72'/%3E%3Ccircle cx='100' cy='100' r='44'/%3E%3Cpath d='M100 28c9 14 9 26 0 40-9-14-9-26 0-40Z'/%3E%3Cpath d='M100 172c-9-14-9-26 0-40 9 14 9 26 0 40Z'/%3E%3Cpath d='M28 100c14-9 26-9 40 0-14 9-26 9-40 0Z'/%3E%3Cpath d='M172 100c-14 9-26 9-40 0 14-9 26-9 40 0Z'/%3E%3Ccircle cx='100' cy='100' r='7'/%3E%3C/g%3E%3C/svg%3E");
+}
+/* seam â hairline with a girih diamond, marks the join between two sections */
+.imk-orn--seam {
+  left: 0; right: 0; height: 40px; animation: lineIn 3.6s ease-out .5s both;
+  background-repeat: no-repeat; background-size: 100% 100%;
+  mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1400 40' preserveAspectRatio='none'%3E%3Cg stroke='%23ffffff' fill='none' stroke-width='1' opacity='0.42'%3E%3Cpath d='M0 20h656M744 20h656'/%3E%3C/g%3E%3Cg stroke='%23ffffff' fill='none' stroke-width='1.1' opacity='0.5'%3E%3Cpath d='M700 6l14 14-14 14-14-14Z'/%3E%3Ccircle cx='670' cy='20' r='1.6'/%3E%3Ccircle cx='730' cy='20' r='1.6'/%3E%3C/g%3E%3C/svg%3E");
+}
+/* peshtoq arch â crown ends one section, legs continue in the next at the same x */
+.imk-orn--arch-crown, .imk-orn--arch-legs {
+  left: 50%; margin-left: -380px; width: 760px; background-repeat: no-repeat; background-size: 100% 100%;
+}
+.imk-orn--arch-crown { bottom: 0; height: 148px; opacity: .75; animation: lineIn 4s ease-out .4s both;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 760 220' preserveAspectRatio='none'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='1.3' opacity='0.55'%3E%3Cpath d='M60 220V130C60 66 202 22 380 22s320 44 320 108v90'/%3E%3Cpath d='M124 220V142c0-52 116-88 256-88s256 36 256 88v78'/%3E%3C/g%3E%3C/svg%3E"); }
+.imk-orn--arch-legs { top: 0; height: 210px; opacity: .8; animation: lineIn 4s ease-out .6s both;
+  mask-image: linear-gradient(to bottom, #000 45%, transparent);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 760 240' preserveAspectRatio='none'%3E%3Cg fill='none' stroke='%239fc4e0' stroke-width='1.3' opacity='0.6'%3E%3Cpath d='M60 0v240M700 0v240'/%3E%3Cpath d='M124 0v168M636 0v168'/%3E%3C/g%3E%3C/svg%3E"); }
+
+/* aurora blobs â 2â3 per dark section, JS adds parallax */
+.imk-blob { position: absolute; border-radius: var(--r-pill); pointer-events: none; filter: blur(46px); }

@@ -1,0 +1,262 @@
+/* ============================================================================
+   IMKON Digital — parts.css · sayt bo'ylab (kabinet, admin, marketing) HOLAT
+   va KARTOCHKA ICHKI QISMLARI.
+   ----------------------------------------------------------------------------
+   docs/design/parts.css standartidan moslashtirilgan. Semantik tokenlardan
+   (globals.css :root / [data-theme='tun'] / [data-theme='kontrast']) ishlatadi
+   — shu sabab uchala rejimda ham to'g'ri chiqadi.
+
+   DIQQAT: .imk-card / .imk-section / .imk-orn ASOSIY qoidalari bu yerda emas,
+   landing-ui.css'da — ular marketing sahifalarida ATAYLAB mavzudan mustaqil
+   ("Robot Aurora" doim navy/ivory). Shu fayl FAQAT hali hech qayerda
+   band qilinmagan klasslarni qo'shadi (kartochka ichki qismlari + majburiy
+   holatlar), shuning uchun landing bilan ziddiyat yo'q.
+   ============================================================================ */
+
+/* ── Kartochka ICHKI qismlari (mavzuga mos, .imk-card ichida ishlatiladi) ── */
+.imk-card__kicker {
+  font-size: var(--fs-caption);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.imk-card__meta {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  font-size: var(--fs-caption);
+  color: var(--text-dim);
+}
+.imk-card__foot {
+  margin-top: var(--sp-2);
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: var(--sp-2);
+}
+.imk-card__media {
+  margin: calc(var(--sp-6) * -1) calc(var(--sp-6) * -1) 0;
+  height: 116px;
+  border-radius: var(--r-card) var(--r-card) 0 0;
+  object-fit: cover;
+}
+
+/* ── Majburiy holatlar (docs/design/README.md: har ro'yxat/jadval/panelda) ─────────── */
+.imk-skeleton {
+  position: relative;
+  overflow: hidden;
+  height: 14px;
+  border-radius: var(--r-full);
+  background: var(--surface-2);
+}
+.imk-skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--surface) 90%, transparent), transparent);
+  animation: imk-shimmer 1.6s infinite;
+}
+
+.imk-empty,
+.imk-error {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  padding: var(--sp-6);
+  border-radius: var(--r-card);
+  background: var(--surface);
+}
+.imk-empty {
+  border: 1px dashed var(--border-strong);
+}
+.imk-error {
+  border: 1px solid var(--err-line);
+}
+.imk-empty__icon,
+.imk-error__icon {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--r-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.imk-empty__icon {
+  background: var(--accent-soft);
+  color: var(--accent-text);
+}
+.imk-error__icon {
+  background: var(--err-soft);
+  color: var(--err-text);
+}
+
+.imk-locked {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-5);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  color: var(--text-dim);
+}
+
+/* ── Toast va tabrik ───────────────────────────────────────────────────── */
+.imk-toast {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 22px rgba(16, 32, 60, 0.1);
+  animation: imk-toast-in 420ms var(--motion-ease) both;
+}
+.imk-toast--ok {
+  background: var(--ok-soft);
+  border-color: var(--ok-line);
+  color: var(--ok-text);
+}
+.imk-toast--err {
+  background: var(--err-soft);
+  border-color: var(--err-line);
+  color: var(--err-text);
+}
+.imk-toast--info {
+  background: var(--info-soft);
+  border-color: var(--info-line);
+  color: var(--info-text);
+}
+.imk-toast__icon {
+  width: 22px;
+  height: 22px;
+  border-radius: var(--r-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: imk-check-pop 520ms var(--motion-ease) both;
+}
+
+.imk-celebrate {
+  position: relative;
+  overflow: hidden;
+}
+.imk-celebrate__bit {
+  position: absolute;
+  bottom: 10px;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  transform: rotate(45deg);
+  animation: imk-rise 2.2s ease-out both; /* BIR MARTA, cheksiz emas */
+}
+.imk-celebrate__bit:nth-child(1) {
+  left: 22%;
+  background: color-mix(in srgb, var(--accent) 70%, transparent);
+}
+.imk-celebrate__bit:nth-child(2) {
+  left: 52%;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--step-4) 80%, transparent);
+  animation-delay: 0.35s;
+}
+.imk-celebrate__bit:nth-child(3) {
+  left: 76%;
+  background: rgba(255, 255, 255, 0.55);
+  animation-delay: 0.7s;
+}
+
+/* ── Harakat — cheksiz takrorlanish FAQAT: imk-spin/imk-dot/imk-shimmer ── */
+@keyframes imk-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes imk-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+@keyframes imk-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes imk-toast-in {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes imk-check-pop {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes imk-dot {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.35);
+    opacity: 0.65;
+  }
+}
+@keyframes imk-rise {
+  0% {
+    transform: translateY(14px) rotate(45deg);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-52px) rotate(45deg);
+    opacity: 0;
+  }
+}
+.imk-reveal {
+  animation: imk-fade-up var(--motion-slow) var(--motion-ease) both;
+}
+.imk-dot {
+  animation: imk-dot 2.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .imk-skeleton::after,
+  .imk-celebrate__bit,
+  .imk-toast,
+  .imk-toast__icon,
+  .imk-reveal,
+  .imk-dot {
+    animation: none !important;
+  }
+  .imk-reveal {
+    opacity: 1;
+    transform: none;
+  }
+}

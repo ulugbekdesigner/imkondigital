@@ -1,0 +1,27 @@
+# Dev image — monorepo root'dan quriladi (context: repo root).
+# Ishlab chiqarish uchun alohida multi-stage Dockerfile v0.3+ da qo'shiladi.
+# Node 22: pnpm 11 `node:sqlite` builtin'iga tayanadi (Node 22+ da mavjud).
+FROM node:22-alpine
+
+RUN corepack enable && corepack prepare pnpm@11.8.0 --activate
+# Healthcheck uchun
+RUN apk add --no-cache curl
+
+WORKDIR /repo
+
+# Workspace manifestlari — bog'liqliklar keshi uchun avval nusxalanadi
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml .npmrc ./
+COPY packages/config/package.json packages/config/
+COPY packages/ui/package.json packages/ui/
+COPY apps/web/package.json apps/web/
+
+RUN pnpm install --frozen-lockfile
+
+# Manba kod
+COPY packages ./packages
+COPY apps/web ./apps/web
+
+WORKDIR /repo/apps/web
+EXPOSE 3000
+
+CMD ["pnpm", "dev", "--hostname", "0.0.0.0"]

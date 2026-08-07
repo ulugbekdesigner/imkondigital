@@ -1,0 +1,8 @@
+# Barcha matnli fayllar repoda LF bilan saqlanadi (izchillik uchun)
+* text=auto eol=lf
+
+# Binar fayllar
+*.png binary
+*.jpg binary
+*.woff2 binary
+*.pdf binary

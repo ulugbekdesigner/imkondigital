@@ -1,0 +1,18 @@
+{
+  "name": "@imkon/config",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./tailwind-preset": "./tailwind-preset.js",
+    "./eslint": "./eslint.config.js",
+    "./tsconfig.base.json": "./tsconfig.base.json"
+  },
+  "files": ["tailwind-preset.js", "eslint.config.js", "tsconfig.base.json"],
+  "dependencies": {
+    "@eslint/js": "^9.17.0",
+    "eslint": "^9.17.0",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "typescript-eslint": "^8.18.0"
+  }
+}

@@ -1,0 +1,143 @@
+/* IMKON Digital â design tokens
+   Single source of truth. Import once in app/globals.css (Next.js) or src/index.css.
+   Every color / size / duration in the UI must come from a variable here. */
+
+:root {
+  /* ââ Ground âââââââââââââââââââââââââââââââââââââââââââââââ */
+  --ink-900: #0a0a0a;         /* pure ink, CTA fills on light */
+  --navy-900: #101a33;        /* primary dark ground (hero, dark sections, footer) */
+  --navy-800: #14203d;
+  --navy-700: #1b2c50;        /* card gradient end */
+  --ivory-100: #f6f3ec;       /* warm light section ground */
+  --white: #ffffff;
+
+  /* ââ Brand blue (single accent family) ââââââââââââââââââââ */
+  --brand-100: #e9f0f8;
+  --brand-200: #d3e2f0;
+  --brand-300: #93b4de;
+  --brand-400: #6f9fe0;
+  --brand-500: #3f72cf;       /* base â buttons, active states, data */
+  --brand-600: #2c5896;
+  --brand-700: #1d3a72;
+
+  /* ââ Samarkand turquoise (accent's quiet sibling) âââââââââ */
+  --teal-200: #cfe6f2;
+  --teal-300: #a8cbe8;
+  --teal-400: #6fb3cf;        /* ZIYO eyes, glows, ornament strokes */
+  --teal-500: #4f9fb5;
+
+  /* ââ Text âââââââââââââââââââââââââââââââââââââââââââââââââ */
+  --text-on-dark: #ffffff;
+  --text-on-dark-muted: #c9d6e6;   /* body copy on navy â AA at 16px+ */
+  --text-on-dark-dim: #9fb3d1;     /* labels, meta */
+  --text-on-light: #0a0a0a;
+  --text-on-light-muted: #3f4a5c;
+  --text-on-light-dim: #6f7787;
+
+  /* ââ Lines & surfaces âââââââââââââââââââââââââââââââââââââ */
+  --line-dark: rgba(255, 255, 255, 0.13);
+  --line-dark-strong: rgba(255, 255, 255, 0.26);
+  --line-light: #e7e1d5;
+  --glass-fill: linear-gradient(155deg, rgba(255,255,255,0.135), rgba(255,255,255,0.055));
+  --glass-blur: blur(24px) saturate(1.2);
+  --card-fill: radial-gradient(520px 240px at 100% 0%, rgba(111,179,207,0.20), transparent 62%),
+               linear-gradient(150deg, #101a33, #1b2c50);
+
+  /* ââ Radii ââââââââââââââââââââââââââââââââââââââââââââââââ */
+  --r-chip: 12px;
+  --r-row: 14px;
+  --r-inner: 18px;
+  --r-panel: 22px;
+  --r-card: 24px;
+  --r-frame: 28px;
+  --r-pill: 999px;
+
+  /* ââ Spacing scale (px) âââââââââââââââââââââââââââââââââââ */
+  --s-1: 4px;  --s-2: 8px;  --s-3: 12px; --s-4: 16px; --s-5: 20px;
+  --s-6: 26px; --s-7: 32px; --s-8: 40px; --s-9: 48px;
+  --s-section-x: 62px;        /* section horizontal padding */
+  --s-section-y: 104px;       /* section vertical padding */
+
+  /* ââ Type âââââââââââââââââââââââââââââââââââââââââââââââââ */
+  --font-ui: 'Onest', system-ui, -apple-system, sans-serif;
+  --font-accent: 'Instrument Serif', Georgia, serif;  /* italic, single accent word only */
+
+  --t-h1: 72px;   --t-h1-lh: 1.05;  --t-h1-ls: -0.035em;
+  --t-h2: 46px;   --t-h2-lh: 1.10;  --t-h2-ls: -0.030em;
+  --t-h3: 26px;   --t-h3-ls: -0.025em;
+  --t-h4: 22px;   --t-h4-ls: -0.020em;
+  --t-lead: 20px; --t-lead-lh: 1.65;
+  --t-body: 17px; --t-body-lh: 1.60;
+  --t-small: 15px;
+  --t-meta: 14px;
+  --t-label: 13px; --t-label-ls: 0.08em;   /* uppercase */
+
+  /* ââ Elevation ââââââââââââââââââââââââââââââââââââââââââââ */
+  --sh-card: 0 18px 44px rgba(16, 32, 60, 0.18);
+  --sh-glass: 0 16px 40px rgba(9, 16, 34, 0.28);
+  --sh-frame: 0 30px 70px rgba(16, 32, 60, 0.22);
+  --sh-hover: 0 28px 60px rgba(9,16,34,0.40),
+              0 0 0 1px rgba(143,200,230,0.50),
+              0 0 46px rgba(111,179,207,0.26);   /* lift + glowing edge */
+
+  /* ââ Motion âââââââââââââââââââââââââââââââââââââââââââââââ */
+  --ease: cubic-bezier(.2, .7, .2, 1);
+  --d-hover: 460ms;
+  --d-reveal: 900ms;
+  --reveal-shift: 36px;
+  --d-fade: 600ms;
+
+  /* ââ Cursor glow ââââââââââââââââââââââââââââââââââââââââââ */
+  --glow-dark: radial-gradient(circle, rgba(84,146,180,0.18), rgba(45,86,158,0.10) 46%, rgba(45,86,158,0) 74%);
+  --glow-light: radial-gradient(circle, rgba(72,102,146,0.16), rgba(150,128,102,0.10) 48%, rgba(150,128,102,0) 74%);
+  --glow-size: 620px;
+  --glow-blur: 28px;
+}
+
+/* Base */
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: var(--t-body);
+  line-height: var(--t-body-lh);
+  color: var(--text-on-light);
+  background: var(--ivory-100);
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, h4 { font-family: var(--font-ui); font-weight: 700; margin: 0; }
+h1 { font-size: var(--t-h1); line-height: var(--t-h1-lh); letter-spacing: var(--t-h1-ls); text-wrap: balance; }
+h2 { font-size: var(--t-h2); line-height: var(--t-h2-lh); letter-spacing: var(--t-h2-ls); text-wrap: balance; }
+h3 { font-size: var(--t-h3); letter-spacing: var(--t-h3-ls); }
+h4 { font-size: var(--t-h4); letter-spacing: var(--t-h4-ls); }
+p  { margin: 0; text-wrap: pretty; }
+em.accent, .accent {          /* the one italic serif word per heading */
+  font-family: var(--font-accent);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--teal-300);
+}
+a { color: var(--brand-500); text-underline-offset: 3px; }
+a:hover { color: var(--brand-600); }
+:focus-visible { outline: 2px solid var(--brand-500); outline-offset: 2px; }
+::selection { background: rgba(63, 114, 207, 0.25); }
+
+/* Accessibility fallbacks â required, not optional */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .glass { backdrop-filter: none !important; background: rgba(16, 26, 51, 0.92) !important; }
+}
+
+/* Keyframes used across the product */
+@keyframes drift1 { 0%,100% { transform: translate3d(0,0,0) scale(1); }    50% { transform: translate3d(6%,-4%,0) scale(1.12); } }
+@keyframes drift2 { 0%,100% { transform: translate3d(0,0,0) scale(1.05); } 50% { transform: translate3d(-5%,5%,0) scale(0.95); } }
+@keyframes drift3 { 0%,100% { transform: translate3d(0,0,0) scale(1); }    50% { transform: translate3d(4%,6%,0) scale(1.08); } }
+@keyframes spinSlow { to { transform: rotate(360deg); } }
+@keyframes lineIn  { from { opacity: 0; } }
+@keyframes ticker  { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes blink   { 0%,92%,100% { transform: scaleY(1); } 96% { transform: scaleY(0.12); } }
+@keyframes bob     { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+@keyframes halo    { 0%,100% { opacity: .45; transform: scale(1); } 50% { opacity: .9; transform: scale(1.14); } }
+@keyframes typing  { 0%,60%,100% { opacity: .25; } 30% { opacity: 1; } }

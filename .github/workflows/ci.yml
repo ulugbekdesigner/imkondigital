@@ -1,0 +1,109 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  frontend:
+    name: Frontend (lint · typecheck · test · a11y)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.8.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint (eslint + jsx-a11y)
+        run: pnpm lint
+
+      - name: Typecheck (tsc)
+        run: pnpm typecheck
+
+      - name: Test (vitest + axe-core a11y smoke)
+        run: pnpm test
+
+      - name: Build
+        run: pnpm --filter @imkon/web build
+
+  backend:
+    name: Backend (ruff · mypy · pytest)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: api
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: imkon
+          POSTGRES_PASSWORD: imkon
+          POSTGRES_DB: imkon
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U imkon -d imkon"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql+asyncpg://imkon:imkon@localhost:5432/imkon
+      TEST_DATABASE_URL: postgresql+asyncpg://imkon:imkon@localhost:5432/imkon_test
+      REDIS_URL: redis://localhost:6379/0
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install
+        run: pip install ".[dev]"
+
+      - name: Start MinIO (sertifikat PDF/QR va video testlari uchun)
+        run: |
+          docker run -d --name minio -p 9000:9000 \
+            -e MINIO_ROOT_USER=minioadmin -e MINIO_ROOT_PASSWORD=minioadmin \
+            minio/minio server /data
+          for i in $(seq 1 20); do
+            curl -sf http://localhost:9000/minio/health/live && break
+            sleep 2
+          done
+
+      - name: Lint (ruff)
+        run: ruff check .
+
+      - name: Format check (ruff)
+        run: ruff format --check .
+
+      - name: Typecheck (mypy)
+        run: mypy app
+
+      - name: Create test database
+        run: PGPASSWORD=imkon psql -h localhost -U imkon -d imkon -c "CREATE DATABASE imkon_test"
+
+      - name: Migratsiyalarni tekshirish (alembic upgrade head)
+        run: alembic upgrade head
+
+      - name: Test (pytest)
+        run: pytest -q

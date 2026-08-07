@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="_ds/organic-a2f41465-7576-49a2-9865-0bf787136d0d/styles.css">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Onest:wght@400;500;600;700;800&display=swap">
+<script src="_ds/organic-a2f41465-7576-49a2-9865-0bf787136d0d/_ds_bundle.js"></script>
+<style>
+  body { margin: 0; background: #ddd2bd; }
+  @keyframes drift1 { 0%,100% { transform: translate3d(0,0,0) scale(1); } 50% { transform: translate3d(6%,-4%,0) scale(1.12); } }
+  @keyframes drift2 { 0%,100% { transform: translate3d(0,0,0) scale(1.05); } 50% { transform: translate3d(-5%,5%,0) scale(0.95); } }
+  @keyframes drift3 { 0%,100% { transform: translate3d(0,0,0) scale(1); } 50% { transform: translate3d(4%,6%,0) scale(1.08); } }
+  @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @keyframes blink { 0%, 92%, 100% { transform: scaleY(1); } 96% { transform: scaleY(0.12); } }
+  @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+  @keyframes halo { 0%, 100% { opacity: 0.45; transform: scale(1); } 50% { opacity: 0.9; transform: scale(1.14); } }
+  @keyframes spinSlow { to { transform: rotate(360deg); } }
+  @keyframes lineIn { from { opacity: 0; } }
+  @keyframes typing { 0%, 60%, 100% { opacity: 0.25; } 30% { opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+  @media (prefers-reduced-transparency: reduce) { .glass { backdrop-filter: none !important; } }
+</style>
+</helmet>
+
+<section style="display: flex; flex-wrap: wrap; gap: 72px; align-items: flex-start; padding: 64px 64px 0">
+
+  <div id="3a" style="display: flex; flex: none; flex-direction: column; gap: 16px; width: 1440px">
+    <div style="position: relative; overflow: hidden; border-radius: 28px; background: #f6f3ec; box-shadow: 0 30px 70px rgba(16,32,60,0.22); font-family: 'Onest', system-ui, sans-serif; color: #0a0a0a">
+      <div style="position: absolute; inset: 0; pointer-events: none; z-index: 5; opacity: 0.5; mix-blend-mode: multiply; background-image: url(&quot;data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27180%27%20height%3D%27180%27%3E%3Cfilter%20id%3D%27n%27%3E%3CfeTurbulence%20type%3D%27fractalNoise%27%20baseFrequency%3D%270.9%27%20numOctaves%3D%274%27%2F%3E%3C%2Ffilter%3E%3Crect%20width%3D%27180%27%20height%3D%27180%27%20filter%3D%27url(%23n)%27%20opacity%3D%270.32%27%2F%3E%3C%2Fsvg%3E&quot;)"></div>
+
+      <div style="position: relative; overflow: hidden; background: #101a33; color: #fff; padding: 26px 40px 0">
+        <div data-blob="blobA" data-depth="1" style="position: absolute; left: 8%; top: -180px; width: 640px; height: 600px; border-radius: 999px; background: radial-gradient(circle, rgba(63,114,207,0.95), rgba(63,114,207,0)); filter: {{ blobFilter }}; animation: {{ blobA }}"></div>
+        <div data-blob="blobB" data-depth="2" style="position: absolute; right: -120px; top: 120px; width: 620px; height: 580px; border-radius: 999px; background: radial-gradient(circle, rgba(111,179,207,0.68), rgba(111,179,207,0)); filter: {{ blobFilter }}; animation: {{ blobB }}"></div>
+        <div data-glow="1" style="position: absolute; left: 0; top: 0; width: 620px; height: 620px; margin-left: -310px; margin-top: -310px; border-radius: 999px; pointer-events: none; opacity: 0; transition: opacity 600ms ease; background: radial-gradient(circle, rgba(84,146,180,0.18), rgba(45,86,158,0.10) 45%, rgba(45,86,158,0) 74%); filter: blur(28px); mix-blend-mode: screen"></div>
+        <div style="position: absolute; right: -130px; top: -120px; width: 620px; height: 620px; opacity: 0.16; animation: spinSlow 220s linear infinite, lineIn 3s ease-out both; background-image: url(&quot;data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20200%20200%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%23cfe6f2%27%20stroke-width%3D%271.1%27%3E%3Cpath%20d%3D%27M100%206%20122%2056%20176%2040%20156%2092%20200%20100%20156%20108%20176%20160%20122%20144%20100%20194%2078%20144%2024%20160%2044%20108%200%20100%2044%2092%2024%2040%2078%2056Z%27%2F%3E%3Cpath%20d%3D%27M100%2034%20116%2070%20154%2060%20140%2096%20172%20100%20140%20104%20154%20140%20116%20130%20100%20166%2084%20130%2046%20140%2060%20104%2028%20100%2060%2096%2046%2060%2084%2070Z%27%2F%3E%3Ccircle%20cx%3D%27100%27%20cy%3D%27100%27%20r%3D%2723%27%2F%3E%3Ccircle%20cx%3D%27100%27%20cy%3D%27100%27%20r%3D%279%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E&quot;); background-size: contain; background-repeat: no-repeat"></div>
+        <div style="position: absolute; left: 0; top: 0; bottom: 0; width: 190px; opacity: 0.5; animation: lineIn 3.4s ease-out 0.3s both; background-image: repeating-linear-gradient(45deg, rgba(214,236,247,0.14) 0 1px, transparent 1px 26px), repeating-linear-gradient(-45deg, rgba(214,236,247,0.14) 0 1px, transparent 1px 26px); mask-image: linear-gradient(to right, #000, transparent 85%)"></div>
+        
+        <div style="position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 40px; padding: 14px 20px 14px 22px; border-radius: 999px; background: linear-gradient(155deg, rgba(255,255,255,0.135), rgba(255,255,255,0.055)); backdrop-filter: blur(24px) saturate(1.2); border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 16px 40px rgba(9,16,34,0.28)" class="glass">
+          <div style="display: flex; align-items: center; gap: 30px">
+            <div style="display: flex; align-items: center; gap: 10px">
+              <div style="width: 30px; height: 30px; border-radius: 10px; background: linear-gradient(140deg, #3f72cf, #6fb3cf); display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700">I</div>
+              <span style="font-size: 19px; font-weight: 700; letter-spacing: -0.02em">IMKON</span>
+            </div>
+            <div style="display: flex; gap: 24px; font-size: 15px; font-weight: 500; color: #e3e9f3">
+              <span>Kurslar</span><span>Ish o'rinlari</span><span>ZIYO AI</span><span>Ish beruvchilarga</span><span>Xayriya</span>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px">
+            <span style="display: flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; color: #c9d6e6; border: 1px solid rgba(255,255,255,0.16); border-radius: 999px; padding: 8px 14px">Qulaylik rejimi <span style="width: 26px; height: 15px; border-radius: 999px; background: #3f72cf; display: inline-flex; align-items: center; justify-content: flex-end; padding: 2px"><span style="width: 11px; height: 11px; border-radius: 999px; background: #fff"></span></span></span>
+            <span style="font-size: 15px; font-weight: 600; color: #fff">Kirish</span>
+            <span style="font-size: 15px; font-weight: 600; background: #fff; color: #101a33; border-radius: 999px; padding: 11px 22px">Bepul boshlash â</span>
+          </div>
+        </div>
+
+        <div style="position: relative; z-index: 2; display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 64px; padding: 104px 22px 0; align-items: start">
+          <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 26px">
+            <span style="display: inline-flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600; letter-spacing: 0.03em; color: #d3e2f0; border: 1px solid rgba(255,255,255,0.2); border-radius: 999px; padding: 9px 18px"><span style="width: 7px; height: 7px; border-radius: 999px; background: #4ade80; box-shadow: 0 0 0 4px rgba(74,222,128,0.2)"></span>Bu oyda 128 kishi ishga joylashdi</span>
+            <h1 style="font-family: 'Onest', system-ui, sans-serif; font-weight: 700; font-size: 72px; line-height: 1.05; letter-spacing: -0.035em; margin: 0; max-width: 9.5em; text-wrap: balance">IMKON â AI bilan kasbga, kasbdan <span style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-weight: 400; color: #9cc4e8; letter-spacing: -0.005em">ishga</span></h1>
+            <p style="font-size: 20px; line-height: 1.65; color: #e8eef7; margin: 0; max-width: 26em; text-wrap: pretty">Nogironligi bor insonlar uchun kurslar, portfolio, vakansiyalar va 24/7 AI yordamchi. <span style="color: #fff; font-weight: 600">Interfeys sizga moslashadi â siz interfeysga emas.</span></p>
+            <div style="display: flex; gap: 12px; align-items: center">
+              <span style="font-size: 17px; font-weight: 600; background: #3f72cf; color: #fff; border-radius: 999px; padding: 16px 30px; box-shadow: 0 10px 30px rgba(63,114,207,0.45)">Bepul kursga yozilish â</span>
+              <span style="font-size: 17px; font-weight: 600; color: #fff; border-radius: 999px; padding: 15px 28px; background: rgba(255,255,255,0.13); backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,0.3)" class="glass">Ochiq vakansiyalar</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 14px; margin-top: 6px">
+              <div style="display: flex">
+                <div style="width: 34px; height: 34px; border-radius: 999px; background: linear-gradient(140deg, #6fb3cf, #3f72cf); border: 2px solid #101a33"></div>
+                <div style="width: 34px; height: 34px; border-radius: 999px; background: linear-gradient(140deg, #94a3b8, #475569); border: 2px solid #101a33; margin-left: -12px"></div>
+                <div style="width: 34px; height: 34px; border-radius: 999px; background: linear-gradient(140deg, #cfe2ee, #93b4de); border: 2px solid #101a33; margin-left: -12px"></div>
+                <div style="width: 34px; height: 34px; border-radius: 999px; background: rgba(255,255,255,0.12); border: 2px solid #101a33; margin-left: -12px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700">+12k</div>
+              </div>
+              <span style="font-size: 15px; color: #c4d3e4">12 400 o'quvchi Â· 3 100 ishga joylashgan Â· 96% qulaylik bahosi</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 14px; margin-top: 12px">
+              <div style="position: relative; flex: none; width: 54px; height: 54px; animation: bob 5.2s ease-in-out infinite">
+                <div style="position: absolute; inset: -9px; border-radius: 999px; background: radial-gradient(circle, rgba(111,179,207,0.6), rgba(111,179,207,0)); animation: halo 4.2s ease-in-out infinite"></div>
+                <div style="position: absolute; left: 50%; top: -11px; margin-left: -3px; width: 6px; height: 6px; border-radius: 999px; background: #6fb3cf; box-shadow: 0 0 10px #6fb3cf"></div>
+                <div style="position: relative; width: 54px; height: 54px; border-radius: 19px; background: linear-gradient(150deg, #f9f7f2, #cfd9e6); box-shadow: 0 10px 22px rgba(9,16,34,0.45); display: flex; align-items: center; justify-content: center">
+                  <div style="width: 35px; height: 23px; border-radius: 9px; background: #101a33; display: flex; align-items: center; justify-content: center; gap: 7px">
+                    <div style="width: 6px; height: 11px; border-radius: 999px; background: #6fb3cf; animation: blink 6s ease-in-out infinite"></div>
+                    <div style="width: 6px; height: 11px; border-radius: 999px; background: #6fb3cf; animation: blink 6s ease-in-out infinite"></div>
+                  </div>
+                </div>
+              </div>
+              <div style="border-radius: 16px 16px 16px 5px; padding: 12px 17px; background: rgba(255,255,255,0.13); border: 1px solid rgba(255,255,255,0.22); backdrop-filter: blur(16px); font-size: 15px; color: #f4f7fc">Salom! Men <span style="font-weight: 700">ZIYO</span> â kerak bo'lsa, shu yerdaman.</div>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: minmax(0, auto); gap: 14px">
+            <div style="grid-column: span 2; border-radius: 22px; padding: 24px; background: linear-gradient(155deg, rgba(255,255,255,0.135), rgba(255,255,255,0.055)); backdrop-filter: blur(24px) saturate(1.2); border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 16px 40px rgba(9,16,34,0.28); display: flex; flex-direction: column; gap: 16px; transition: transform 460ms cubic-bezier(.2,.7,.2,1), box-shadow 460ms ease" style-hover="transform: translateY(-7px); box-shadow: 0 28px 60px rgba(9,16,34,0.4), 0 0 0 1px rgba(143,200,230,0.5), 0 0 46px rgba(111,179,207,0.26)" class="glass">
+              <div style="display: flex; align-items: center; justify-content: space-between">
+                <span style="font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #c9d6e6">Sizga mos vakansiya</span>
+                <span style="font-size: 13px; font-weight: 700; color: #101a33; background: #8fb8e0; border-radius: 999px; padding: 5px 12px">92% mos</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 16px">
+                <div style="flex: none; width: 56px; height: 56px; border-radius: 18px; background: linear-gradient(140deg, #3f72cf, #8fb8e0); display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700">U</div>
+                <div style="display: flex; flex-direction: column; gap: 3px">
+                  <span style="font-size: 20px; font-weight: 700; letter-spacing: -0.02em">Junior Frontend dasturchi</span>
+                  <span style="font-size: 15px; color: #dfe8f4">Uzum Â· Masofadan Â· 8â12 mln so'm</span>
+                </div>
+              </div>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap">
+                <span style="font-size: 13px; font-weight: 600; border-radius: 999px; padding: 7px 13px; background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.26); color: #dde8f4">Moslashtirilgan ish joyi</span>
+                <span style="font-size: 13px; font-weight: 600; border-radius: 999px; padding: 7px 13px; background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.26); color: #dde8f4">Moslashuvchan jadval</span>
+                <span style="font-size: 13px; font-weight: 600; border-radius: 999px; padding: 7px 13px; background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.26); color: #dde8f4">Mentor bilan</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: #c9d6e6; border-top: 1px solid rgba(255,255,255,0.12); padding-top: 12px">
+                <span style="width: 7px; height: 7px; border-radius: 999px; background: #8fb8e0"></span>ZIYO yordamchisi buni sizning ko'nikmalaringizga qarab tanladi
+              </div>
+            </div>
+
+            <div style="border-radius: 22px; padding: 20px; background: linear-gradient(155deg, rgba(255,255,255,0.135), rgba(255,255,255,0.055)); backdrop-filter: blur(24px) saturate(1.2); border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 16px 40px rgba(9,16,34,0.28); display: flex; flex-direction: column; gap: 12px; transition: transform 460ms cubic-bezier(.2,.7,.2,1), box-shadow 460ms ease" style-hover="transform: translateY(-7px); box-shadow: 0 28px 60px rgba(9,16,34,0.4), 0 0 0 1px rgba(143,200,230,0.5), 0 0 46px rgba(111,179,207,0.26)" class="glass">
+              <span style="font-size: 14px; color: #c9d6e6">Haftalik maqsad</span>
+              <div style="display: flex; align-items: baseline; gap: 8px">
+                <span style="font-size: 34px; font-weight: 700; letter-spacing: -0.03em">68%</span>
+                <span style="font-size: 13px; font-weight: 600; color: #a8cbe8">+12%</span>
+              </div>
+              <div style="height: 8px; border-radius: 999px; background: rgba(255,255,255,0.16); overflow: hidden"><div style="width: 68%; height: 100%; border-radius: 999px; background: linear-gradient(90deg, #3f72cf, #8fb8e0)"></div></div>
+              <span style="font-size: 14px; color: #c9d6e6">Frontend asoslari Â· 7-dars</span>
+            </div>
+
+            <div style="border-radius: 22px; padding: 20px; background: linear-gradient(155deg, rgba(255,255,255,0.135), rgba(255,255,255,0.055)); backdrop-filter: blur(24px) saturate(1.2); border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 16px 40px rgba(9,16,34,0.28); display: flex; flex-direction: column; gap: 10px; transition: transform 460ms cubic-bezier(.2,.7,.2,1), box-shadow 460ms ease" style-hover="transform: translateY(-7px); box-shadow: 0 28px 60px rgba(9,16,34,0.4), 0 0 0 1px rgba(143,200,230,0.5), 0 0 46px rgba(111,179,207,0.26)" class="glass">
+              <span style="font-size: 14px; color: #c9d6e6">Yangi takliflar</span>
+              <div style="display: flex; align-items: center; justify-content: space-between; font-size: 14px; font-weight: 600"><span>Uzum Â· masofadan</span><span style="font-size: 11px; font-weight: 700; color: #101a33; background: #8fb8e0; border-radius: 999px; padding: 3px 8px">Mos</span></div>
+              <div style="display: flex; align-items: center; justify-content: space-between; font-size: 14px; font-weight: 600; color: #e3e9f3"><span>IT Park Â· stajirovka</span><span style="font-size: 13px; color: #c9d6e6">2 kun</span></div>
+              <div style="display: flex; align-items: center; justify-content: space-between; font-size: 14px; font-weight: 600; color: #e3e9f3"><span>UZINFOCOM Â· qisman</span><span style="font-size: 13px; color: #c9d6e6">4 kun</span></div>
+            </div>
+
+            <div style="grid-column: span 2; border-radius: 22px; padding: 18px 20px; background: linear-gradient(155deg, rgba(255,255,255,0.135), rgba(255,255,255,0.055)); backdrop-filter: blur(24px) saturate(1.2); border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 16px 40px rgba(9,16,34,0.28); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; transition: transform 460ms cubic-bezier(.2,.7,.2,1), box-shadow 460ms ease" style-hover="transform: translateY(-7px); box-shadow: 0 28px 60px rgba(9,16,34,0.4), 0 0 0 1px rgba(143,200,230,0.5), 0 0 46px rgba(111,179,207,0.26)" class="glass">
+              <span style="font-size: 14px; color: #c4d3e4; letter-spacing: 0.02em">Qulaylik yoqilgan:</span>
+              <span style="font-size: 14px; font-weight: 600; color: #f4f7fc">Subtitr</span>
+              <span style="width: 4px; height: 4px; border-radius: 999px; background: rgba(255,255,255,0.3)"></span>
+              <span style="font-size: 14px; font-weight: 600; color: #f4f7fc">Ekran o'quvchi</span>
+              <span style="width: 4px; height: 4px; border-radius: 999px; background: rgba(255,255,255,0.3)"></span>
+              <span style="font-size: 14px; font-weight: 600; color: #f4f7fc">Imo-ishora video</span>
+              <span style="margin-left: auto; font-size: 14px; color: #c9d6e6">Sozlash â</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="position: relative; z-index: 2; margin-top: 64px; overflow: hidden; border-top: 1px solid rgba(255,255,255,0.12); border-bottom: 1px solid rgba(255,255,255,0.12); padding: 16px 0">
+          <div style="display: flex; width: max-content; animation: ticker 28s linear infinite; font-size: 15px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.62)">
+            <span style="display: flex; gap: 34px; padding-right: 34px"><span>Subtitr</span><span>Â·</span><span>Ovozli izoh</span><span>Â·</span><span>Klaviatura navigatsiyasi</span><span>Â·</span><span>Imo-ishora tili</span><span>Â·</span><span>Yuqori kontrast</span><span>Â·</span><span>WCAG 2.2 AA</span><span>Â·</span></span>
+            <span style="display: flex; gap: 34px; padding-right: 34px"><span>Subtitr</span><span>Â·</span><span>Ovozli izoh</span><span>Â·</span><span>Klaviatura navigatsiyasi</span><span>Â·</span><span>Imo-ishora tili</span><span>Â·</span><span>Yuqori kontrast</span><span>Â·</span><span>WCAG 2.2 AA</span><span>Â·</span></span>
+          </div>
+        </div>
+      </div>
+
+      <div data-reveal="1" style="position: relative; padding: 104px 62px; background: #f6f3ec">
+        
+        <div data-glow="1" style="position: absolute; left: 0; top: 0; width: 560px; height: 560px; margin-left: -280px; margin-top: -280px; border-radius: 999px; pointer-events: none; opacity: 0; transition: opacity 600ms ease; background: radial-gradient(circle, rgba(72,102,146,0.16), rgba(150,128,102,0.10) 48%, rgba(150,128,102,0) 74%); filter: blur(30px); mix-blend-mode: multiply"></div>
+        <div style="position: absolute; right: -110px; top: 40px; width: 520px; height: 520px; opacity: 0.13; animation: spinSlow 260s linear infinite, lineIn 3s ease-out both; background-image: url(&quot;data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20200%20200%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%23294a7a%27%20stroke-width%3D%271.1%27%20stroke-linecap%3D%27round%27%3E%3Ccircle%20cx%3D%27100%27%20cy%3D%27100%27%20r%3D%2772%27%2F%3E%3Ccircle%20cx%3D%27100%27%20cy%3D%27100%27%20r%3D%2744%27%2F%3E%3Cg%3E%3Cpath%20d%3D%27M100%2028c9%2014%209%2026%200%2040-9-14-9-26%200-40Z%27%2F%3E%3Cpath%20d%3D%27M100%20172c-9-14-9-26%200-40%209%2014%209%2026%200%2040Z%27%2F%3E%3Cpath%20d%3D%27M28%20100c14-9%2026-9%2040%200-14%209-26%209-40%200Z%27%2F%3E%3Cpath%20d%3D%27M172%20100c-14%209-26%209-40%200%2014-9%2026-9%2040%200Z%27%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%27rotate(45%20100%20100)%27%3E%3Cpath%20d%3D%27M100%2040c7%2011%207%2021%200%2032-7-11-7-21%200-32Z%27%2F%3E%3Cpath%20d%3D%27M100%20160c-7-11-7-21%200-32%207%2011%207%2021%200%2032Z%27%2F%3E%3Cpath%20d%3D%27M40%20100c11-7%2021-7%2032%200-11%207-21%207-32%200Z%27%2F%3E%3Cpath%20d%3D%27M160%20100c-11%207-21%207-32%200%2011-7%2021-7%2032%200Z%27%2F%3E%3C%2Fg%3E%3Ccircle%20cx%3D%27100%27%20cy%3D%27100%27%20r%3D%277%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E&quot;); background-size: contain; background-repeat: no-repeat"></div>
+        <div style="position: relative; display: flex; align-items: flex-end; justify-content: space-between; gap: 40px; margin-bottom: 48px">
+          <h2 style="font-family: 'Onest', system-ui, sans-serif; font-weight: 700; font-size: 46px; line-height: 1.1; letter-spacing: -0.03em; margin: 0; max-width: 11em; text-wrap: balance">Ishga joylashish uchun kerak bo'lgan <span style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-weight: 400; color: #3f72cf">hammasi</span></h2>
+          <p style="margin: 0; font-size: 18px; line-height: 1.6; color: #3f4a5c; max-width: 24em; text-wrap: pretty">Ta'lim, portfolio va vakansiya bitta yo'lga bog'langan â ZIYO esa shu yo'lda yordam beradi.</p>
+        </div>
+
+        <div style="position: relative; display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px">
+          <div style="grid-column: span 3; border-radius: 24px; padding: 28px; background: radial-gradient(520px 240px at 100% 0%, rgba(111,179,207,0.20), transparent 62%), linear-gradient(150deg, #101a33, #1b2c50); border: 1px solid rgba(255,255,255,0.13); box-shadow: 0 18px 44px rgba(16,32,60,0.18); display: flex; flex-direction: column; gap: 16px; transition: transform 460ms cubic-bezier(.2,.7,.2,1), box-shadow 460ms ease" style-hover="transform: translateY(-8px); box-shadow: 0 30px 64px rgba(9,16,34,0.42), 0 0 0 1px rgba(143,200,230,0.55), 0 0 52px rgba(111,179,207,0.3)">
+            <div style="display: flex; align-items: center; justify-content: space-between">
+              <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #9fb3d1">Ta'lim</span>
+              <span style="font-size: 12px; font-weight: 700; color: #a8cbe8; background: rgba(168,203,232,0.16); border-radius: 999px; padding: 5px 11px">84 kurs</span>
+            </div>
+            <h3 style="font-family: 'Onest', system-ui, sans-serif; font-weight: 700; font-size: 26px; letter-spacing: -0.025em; margin: 0; color: #fff">Moslashadigan kurslar</h3>
+            <p style="margin: 0; font-size: 17px; line-height: 1.6; color: #c9d6e6; max-width: 30em; text-wrap: pretty">Har bir dars subtitr, transkript, ovozli izoh va to'liq klaviatura boshqaruvi bilan keladi.</p>
+            <div style="margin-top: 4px; display: flex; flex-direction: column; gap: 10px">
+              <div style="display: flex; align-items: center; gap: 12px; border: 1px solid rgba(255,255,255,0.14); border-radius: 14px; padding: 12px 14px">
+                <div style="width: 38px; height: 38px; border-radius: 12px; background: linear-gradient(140deg, #3f72cf, #93b4de)"></div>
+                <div style="flex: 1"><div style="font-size: 14px; font-weight: 700; color: #fff">Frontend asoslari</div><div style="font-size: 13px; color: #9fb3d1">10 hafta Â· 7/12 dars</div></div>
+                <div style="width: 54px; height: 6px; border-radius: 999px; background: rgba(255,255,255,0.14); overflow: hidden"><div style="width: 58%; height: 100%; background: #3f72cf"></div></div>
+              </div>
+              <div style="display: flex; align-items: center; gap: 12px; border: 1px solid rgba(255,255,255,0.14); border-radius: 14px; padding: 12px 14px">
+                <div style="width: 38px; height: 38px; border-radius: 12px; background: linear-gradient(140deg, #94a3b8, #cbd5e1)"></div>
+                <div style="flex: 1"><div style="font-size: 14px; font-weight: 700; color: #fff">Raqamli savodxonlik</div><div style="font-size: 13px; color: #9fb3d1">6 hafta Â· tugatilgan</div></div>
+                <span style="font-size: 12px; font-weight: 700; color: #a8cbe8">Sertifikat</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="grid-column: span 3; border-radius: 24px; padding: 28px; background: linear-gradient(150deg, #101a33, #1b2c50); color: #fff; display: flex; flex-direction: column; gap: 14px; overflow: hidden; position: relative; transition: transform 460ms cubic-bezier(.2,.7,.2,1), box-shadow 460ms ease" style-hover="transform: translateY(-8px); box-shadow: 0 30px 64px rgba(9,16,34,0.42), 0 0 0 1px rgba(143,200,230,0.55), 0 0 52px rgba(111,179,207,0.3)">
+            <div style="position: absolute; right: -60px; top: -60px; width: 260px; height: 260px; border-radius: 999px; background: radial-gradient(circle, rgba(111,179,207,0.7), rgba(111,179,207,0)); filter: blur(40px)"></div>
+            <span style="position: relative; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #a8cbe8">Karyera</span>
+            <h3 style="position: relative; font-family: 'Onest', system-ui, sans-serif; font-weight: 700; font-size: 26px; letter-spacing: -0.025em; margin: 0; color: #fff">Tekshirilgan ish beruvchilar</h3>
+            <p style="position: relative; margin: 0; font-size: 17px; line-height: 1.6; color: #e8eef7; max-width: 28em; text-wrap: pretty">240 kompaniya inklyuzivlik bo'yicha auditdan o'tgan â anketa emas, haqiqiy sinov.</p>
+            <div style="position: relative; margin-top: auto; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px">
+              <div style="border-radius: 14px; padding: 14px; background: rgba(255,255,255,0.11); border: 1px solid rgba(255,255,255,0.18)"><div style="font-size: 22px; font-weight: 700; color: #fff">7</div><div style="font-size: 13px; color: #c9d6e6">ochiq taklif</div></div>
+              <div style="border-radius: 14px; padding: 14px; background: rgba(255,255,255,0.11); border: 1px solid rgba(255,255,255,0.18)"><div style="font-size: 22px; font-weight: 700; color: #fff">64%</div><div style="font-size: 13px; color: #c9d6e6">joylashish</div></div>
+              <div style="border-radius: 14px; padding: 14px; background: rgba(255,255,255,0.11); border: 1px solid rgba(255,255,255,0.18)"><div style="font-size: 22px; font-weight: 700; color: #fff">14</div><div style="font-size: 13px; color: #c9d6e6">kun Â· o'rtacha</div></div>
+            </div>
+          </div>
+
+          <div style="grid-column: span 2; border-radius: 24px; padding: 26px; background: radial-gradient(520px 240px at 100% 0%, rgba(111,179,207,0.20), transparent 62%), linear-gradient(150deg, #101a33, #1b2c50); border: 1px solid rgba(255,255,255,0.13); box-shadow: 0 18px 44px rgba(16,32,60,0.18); display: flex; flex-direction: column; gap: 12px; transition: transform 460ms cubic-bezier(.2,.7,.2,1), box-shadow 460ms ease" style-hover="transform: translateY(-8px); box-shadow: 0 30px 64px rgba(9,16,34,0.42), 0 0 0 1px rgba(143,200,230,0.55), 0 0 52px rgba(111,179,207,0.3)">
+            <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #9fb3d1">Portfolio</span>
+            <h3 style="font-family: 'Onest', system-ui, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em; margin: 0; color: #fff">Ish namunalari to'plami</h3>
+            <p style="margin: 0; font-size: 16px; line-height: 1.55; color: #c9d6e6">Har bir kursdan keyin tayyor loyiha portfoliongizga qo'shiladi â ish beruvchi ko'radi.</p>
+            <div style="margin-top: auto; display: flex; gap: 8px">
+              <div style="flex: 1; height: 54px; border-radius: 12px; background: linear-gradient(140deg, rgba(143,200,230,0.4), rgba(143,200,230,0.08))"></div>
+              <div style="flex: 1; height: 54px; border-radius: 12px; background: linear-gradient(140deg, #d3e2f0, #eef4ff)"></div>
+              <div style="flex: 1; height: 54px; border-radius: 12px; background: linear-gradient(140deg, rgba(255,255,255,0.22), rgba(255,255,255,0.05))"></div>
+            </div>
+          </div>
+
+          <div style="grid-column: span 2; border-radius: 24px; padding: 26px; background: #3f72cf; color: #fff; display: flex; flex-direction: column; gap: 12px; transition: transform 460ms cubic-bezier(.2,.7,.2,1), box-shadow 460ms ease" style-hover="transform: translateY(-8px); box-shadow: 0 30px 64px rgba(9,16,34,0.42), 0 0 0 1px rgba(143,200,230,0.55), 0 0 52px rgba(111,179,207,0.3)">
+            <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.75)">Jamiyat</span>
+            <h3 style="font-family: 'Onest', system-ui, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em; margin: 0; color: #fff">Mentor va hamjihatlik</h3>
+            <p style="margin: 0; font-size: 16px; line-height: 1.55; color: rgba(255,255,255,0.92)">Har bir o'quvchiga soha mentori biriktiriladi â haftada 30 daqiqa jonli suhbat.</p>
+            <div style="margin-top: auto; display: flex; align-items: center; gap: -8px">
+              <div style="display: flex">
+                <div style="width: 30px; height: 30px; border-radius: 999px; background: #cfe2ee; border: 2px solid #3f72cf"></div>
+                <div style="width: 30px; height: 30px; border-radius: 999px; background: #a8cfe2; border: 2px solid #3f72cf; margin-left: -10px"></div>
+                <div style="width: 30px; height: 30px; border-radius: 999px; background: #e4ebf3; border: 2px solid #3f72cf; margin-left: -10px"></div>
+              </div>
+              <span style="font-size: 13px; font-weight: 600; margin-left: 10px">180 mentor</span>
+            </div>
+          </div>
+
+          <div style="grid-column: span 2; border-radius: 24px; padding: 26px; background: radial-gradient(520px 240px at 100% 0%, rgba(111,179,207,0.20), transparent 62%), linear-gradient(150deg, #101a33, #1b2c50); border: 1px solid rgba(255,255,255,0.13); box-shadow: 0 18px 44px rgba(16,32,60,0.18); display: flex; flex-direction: column; gap: 12px; transition: transform 460ms cubic-bezier(.2,.7,.2,1), box-shadow 460ms ease" style-hover="transform: translateY(-8px); box-shadow: 0 30px 64px rgba(9,16,34,0.42), 0 0 0 1px rgba(143,200,230,0.55), 0 0 52px rgba(111,179,207,0.3)">
+            <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #9fb3d1">Qulaylik</span>
+            <h3 style="font-family: 'Onest', system-ui, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em; margin: 0; color: #fff">Interfeys sizga moslashadi</h3>
+            <div style="display: flex; flex-direction: column; gap: 9px; margin-top: 2px">
+              <div style="display: flex; align-items: center; justify-content: space-between; font-size: 14px; font-weight: 600; color: #fff">Yuqori kontrast <span style="width: 34px; height: 19px; border-radius: 999px; background: #3f72cf; display: inline-flex; align-items: center; justify-content: flex-end; padding: 2px"><span style="width: 15px; height: 15px; border-radius: 999px; background: #fff"></span></span></div>
+              <div style="display: flex; align-items: center; justify-content: space-between; font-size: 14px; font-weight: 600; color: #c9d6e6">Katta shrift <span style="width: 34px; height: 19px; border-radius: 999px; background: rgba(255,255,255,0.22); display: inline-flex; align-items: center; padding: 2px"><span style="width: 15px; height: 15px; border-radius: 999px; background: #fff"></span></span></div>
+              <div style="display: flex; align-items: center; justify-content: space-between; font-size: 14px; font-weight: 600; color: #c9d6e6">Animatsiyani kamaytirish <span style="width: 34px; height: 19px; border-radius: 999px; background: #3f72cf; display: inline-flex; align-items: center; justify-content: flex-end; padding: 2px"><span style="width: 15px; height: 15px; border-radius: 999px; background: #fff"></span></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div data-reveal="1" style="position: relative; overflow: hidden; background: #101a33; color: #fff; padding: 104px 62px">
+        
+        <div data-glow="1" style="position: absolute; left: 0; top: 0; width: 600px; height: 600px; margin-left: -300px; margin-top: -300px; border-radius: 999px; pointer-events: none; opacity: 0; transition: opacity 600ms ease; background: radial-gradient(circle, rgba(84,146,180,0.18), rgba(45,86,158,0.10) 46%, rgba(45,86,158,0) 74%); filter: blur(28px); mix-blend-mode: screen"></div>
+        <div data-blob="blobC" data-depth="3" style="position: absolute; left: 20%; top: -140px; width: 700px; height: 620px; border-radius: 999px; background: radial-gradient(circle, rgba(63,114,207,0.8), rgba(63,114,207,0)); filter: {{ blobFilter }}; animation: {{ blobC }}"></div>
+        <div style="position: relative; display: grid; grid-template-columns: 0.95fr 1.05fr; gap: 56px; align-items: center">
+          <div style="display: flex; flex-direction: column; gap: 22px; align-items: flex-start">
+            <span style="font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #a8cbe8">Natijalar Â· Insonlar</span>
+            <h2 style="font-family: 'Onest', system-ui, sans-serif; font-weight: 700; font-size: 48px; line-height: 1.08; letter-spacing: -0.03em; margin: 0; max-width: 10em; text-wrap: balance">Umid â bu jadvaldagi raqam emas, ish joyi</h2>
+            <p style="margin: 0; font-size: 19px; line-height: 1.65; color: #e8eef7; max-width: 27em; text-wrap: pretty">Uch yil ichida 3 100 inson kursni tugatib haqiqiy ishga joylashdi. Har birining yo'li shu sahifadan boshlangan.</p>
+            <div style="display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 30em">
+              <div style="border-radius: 18px; padding: 18px 20px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.18); display: flex; gap: 14px; align-items: flex-start; transition: transform 460ms cubic-bezier(.2,.7,.2,1), box-shadow 460ms ease" style-hover="transform: translateY(-7px); box-shadow: 0 28px 60px rgba(9,16,34,0.4), 0 0 0 1px rgba(143,200,230,0.5), 0 0 46px rgba(111,179,207,0.26)">
+                <div style="flex: none; width: 44px; height: 44px; border-radius: 999px; background: linear-gradient(140deg, #6fb3cf, #3f72cf)"></div>
+                <div style="display: flex; flex-direction: column; gap: 5px">
+                  <p style="margin: 0; font-size: 16px; line-height: 1.6; color: #f4f7fc">"Uydan chiqmasdan kasb o'rgandim. Hozir jamoada frontend yozaman â birinchi maoshimni onamga berdim."</p>
+                  <span style="font-size: 14px; color: #c9d6e6">Dilnoza, 24 Â· Uzum</span>
+                </div>
+              </div>
+              <div style="border-radius: 18px; padding: 18px 20px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.18); display: flex; gap: 14px; align-items: flex-start; transition: transform 460ms cubic-bezier(.2,.7,.2,1), box-shadow 460ms ease" style-hover="transform: translateY(-7px); box-shadow: 0 28px 60px rgba(9,16,34,0.4), 0 0 0 1px rgba(143,200,230,0.5), 0 0 46px rgba(111,179,207,0.26)">
+                <div style="flex: none; width: 44px; height: 44px; border-radius: 999px; background: linear-gradient(140deg, #94a3b8, #475569)"></div>
+                <div style="display: flex; flex-direction: column; gap: 5px">
+                  <p style="margin: 0; font-size: 16px; line-height: 1.6; color: #f4f7fc">"Imo-ishora tilidagi darslar tufayli birinchi marta hech kimdan yordam so'ramay o'qidim."</p>
+                  <span style="font-size: 14px; color: #c9d6e6">Sardor, 29 Â· IT Park rezidenti</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="position: relative; border-radius: 26px; padding: 24px; background: linear-gradient(155deg, rgba(255,255,255,0.135), rgba(255,255,255,0.055)); backdrop-filter: blur(24px) saturate(1.2); border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 16px 40px rgba(9,16,34,0.28); transition: transform 460ms cubic-bezier(.2,.7,.2,1), box-shadow 460ms ease" style-hover="transform: translateY(-7px); box-shadow: 0 28px 60px rgba(9,16,34,0.4), 0 0 0 1px rgba(143,200,230,0.5), 0 0 46px rgba(111,179,207,0.26)" class="glass">
+            <div style="display: flex; align-items: center; gap: 14px; padding-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.12)">
+              <div style="position: relative; width: 52px; height: 52px; border-radius: 18px; background: linear-gradient(150deg, #f9f7f2, #cfd9e6); display: flex; align-items: center; justify-content: center">
+                <div style="width: 36px; height: 24px; border-radius: 10px; background: #101a33; display: flex; align-items: center; justify-content: center; gap: 6px">
+                  <div style="width: 7px; height: 10px; border-radius: 999px; background: #6fb3cf; animation: blink 6s ease-in-out infinite"></div>
+                  <div style="width: 7px; height: 10px; border-radius: 999px; background: #6fb3cf; animation: blink 6s ease-in-out infinite"></div>
+                </div>
+              </div>
+              <div style="display: flex; flex-direction: column">
+                <span style="font-size: 17px; font-weight: 700">ZIYO yordamchisi</span>
+                <span style="font-size: 14px; color: #c9d6e6">Yo'lda yolg'iz qolmaysiz Â· 24/7</span>
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 12px; padding: 18px 0">
+              <div style="align-self: flex-end; max-width: 78%; border-radius: 18px 18px 6px 18px; padding: 12px 16px; background: #3f72cf; font-size: 15px; line-height: 1.5">Menga qanday kurs mos keladi?</div>
+              <div style="align-self: flex-start; max-width: 88%; border-radius: 18px 18px 18px 6px; padding: 14px 16px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.16); font-size: 15px; line-height: 1.55; color: #f4f7fc">{{ ziyoAnswer }}</div>
+            </div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; padding-top: 4px">
+              <span onClick="{{ pickKurs }}" style="cursor: pointer; font-size: 13px; font-weight: 600; border-radius: 999px; padding: 9px 15px; {{ chipKurs }}">Kurs tanlash</span>
+              <span onClick="{{ pickIsh }}" style="cursor: pointer; font-size: 13px; font-weight: 600; border-radius: 999px; padding: 9px 15px; {{ chipIsh }}">Ish topish</span>
+              <span onClick="{{ pickRezyume }}" style="cursor: pointer; font-size: 13px; font-weight: 600; border-radius: 999px; padding: 9px 15px; {{ chipRezyume }}">Rezyume</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div data-reveal="1" style="position: relative; overflow: hidden; padding: 78px 62px 96px; background: linear-gradient(118deg, #1d3a72 0%, #2c5896 34%, #3f72cf 62%, #4f9fb5 100%)">
+        <div data-glow="1" style="position: absolute; left: 0; top: 0; width: 620px; height: 620px; margin-left: -310px; margin-top: -310px; border-radius: 999px; pointer-events: none; opacity: 0; transition: opacity 600ms ease; background: radial-gradient(circle, rgba(255,255,255,0.10), rgba(255,255,255,0.03) 45%, rgba(255,255,255,0) 72%); filter: blur(30px); mix-blend-mode: screen"></div>
+        <div style="position: absolute; inset: 0; background-image: repeating-linear-gradient(0deg, rgba(255,255,255,0.07) 0 1px, transparent 1px 52px); mask-image: linear-gradient(180deg, transparent, #000 45%, #000)"></div>
+        <div style="position: absolute; left: 50%; margin-left: -380px; bottom: 0; width: 760px; height: 148px; opacity: 0.75; animation: lineIn 4s ease-out 0.4s both; background-image: url(&quot;data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20760%20220%27%20preserveAspectRatio%3D%27none%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%23ffffff%27%20stroke-width%3D%271.3%27%20opacity%3D%270.55%27%3E%3Cpath%20d%3D%27M60%20220V130C60%2066%20202%2022%20380%2022s320%2044%20320%20108v90%27%2F%3E%3Cpath%20d%3D%27M124%20220V142c0-52%20116-88%20256-88s256%2036%20256%2088v78%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E&quot;); background-size: 100% 100%; background-repeat: no-repeat"></div>
+        <div style="position: absolute; left: 0; right: 0; bottom: 36px; height: 40px; animation: lineIn 3.6s ease-out 0.5s both; background-image: url(&quot;data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%201400%2040%27%20preserveAspectRatio%3D%27none%27%3E%3Cg%20stroke%3D%27%23ffffff%27%20fill%3D%27none%27%20stroke-width%3D%271%27%20opacity%3D%270.42%27%3E%3Cpath%20d%3D%27M0%2020h656M744%2020h656%27%2F%3E%3C%2Fg%3E%3Cg%20stroke%3D%27%23ffffff%27%20fill%3D%27none%27%20stroke-width%3D%271.1%27%20opacity%3D%270.5%27%3E%3Cpath%20d%3D%27M700%206l14%2014-14%2014-14-14Z%27%2F%3E%3Ccircle%20cx%3D%27670%27%20cy%3D%2720%27%20r%3D%271.6%27%2F%3E%3Ccircle%20cx%3D%27730%27%20cy%3D%2720%27%20r%3D%271.6%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E&quot;); background-size: 100% 100%; background-repeat: no-repeat; mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent)"></div>
+        
+        <div style="position: relative; display: grid; grid-template-columns: 1.05fr 1fr; gap: 46px; align-items: center">
+          <div style="display: flex; flex-direction: column; gap: 14px">
+            <h2 style="font-family: 'Onest', system-ui, sans-serif; font-weight: 700; font-size: 40px; letter-spacing: -0.03em; color: #fff; margin: 0">Bitta stipendiya â bitta karyera</h2>
+            <p style="margin: 0; font-size: 18px; line-height: 1.6; color: rgba(255,255,255,0.94); max-width: 27em; text-wrap: pretty">Har 1 200 000 so'm bir insonga to'liq kurs, mentor va yarim yillik ZIYO obunasini beradi.</p>
+          </div>
+          <div style="border-radius: 22px; padding: 26px; background: linear-gradient(155deg, rgba(14,23,45,0.72), rgba(14,23,45,0.6)); backdrop-filter: blur(24px) saturate(1.1); border: 1px solid rgba(255,255,255,0.3); transition: transform 460ms cubic-bezier(.2,.7,.2,1), box-shadow 460ms ease" style-hover="transform: translateY(-7px); box-shadow: 0 28px 60px rgba(9,16,34,0.4), 0 0 0 1px rgba(143,200,230,0.5), 0 0 46px rgba(111,179,207,0.26)" class="glass">
+            <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 14px">
+              <span style="font-size: 30px; font-weight: 700; color: #fff">412 mln so'm</span>
+              <span style="font-size: 15px; font-weight: 600; color: rgba(255,255,255,0.9)">600 mln dan</span>
+            </div>
+            <div style="height: 12px; border-radius: 999px; background: rgba(255,255,255,0.26); overflow: hidden; margin-bottom: 18px"><div style="width: 69%; height: 100%; border-radius: 999px; background: #fff"></div></div>
+            <div style="display: flex; align-items: center; gap: 14px">
+              <span style="font-size: 15px; font-weight: 600; background: #fff; color: #101a33; border-radius: 999px; padding: 13px 24px">Xayriya qilish</span>
+              <span style="font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.92)">343 nafar homiy</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="position: relative; overflow: hidden; background: #101a33; color: #8f9cb3; padding: 56px 62px 34px">
+        <div data-glow="1" style="position: absolute; left: 0; top: 0; width: 600px; height: 600px; margin-left: -300px; margin-top: -300px; border-radius: 999px; pointer-events: none; opacity: 0; transition: opacity 600ms ease; background: radial-gradient(circle, rgba(84,146,180,0.18), rgba(45,86,158,0.10) 46%, rgba(45,86,158,0) 74%); filter: blur(28px); mix-blend-mode: screen"></div>
+        
+        <div style="position: absolute; inset: 0; background-image: repeating-linear-gradient(0deg, rgba(255,255,255,0.05) 0 1px, transparent 1px 46px); mask-image: linear-gradient(90deg, #000 30%, transparent 96%)"></div>
+        <div style="position: absolute; left: 50%; margin-left: -380px; top: 0; width: 760px; height: 210px; opacity: 0.8; animation: lineIn 4s ease-out 0.6s both; background-image: url(&quot;data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20760%20240%27%20preserveAspectRatio%3D%27none%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%239fc4e0%27%20stroke-width%3D%271.3%27%20opacity%3D%270.6%27%3E%3Cpath%20d%3D%27M60%200v240M700%200v240%27%2F%3E%3Cpath%20d%3D%27M124%200v168M636%200v168%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E&quot;); background-size: 100% 100%; background-repeat: no-repeat; mask-image: linear-gradient(to bottom, #000 45%, transparent)"></div>
+        <div style="display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 36px; padding-bottom: 44px">
+          <div style="display: flex; flex-direction: column; gap: 12px">
+            <span style="font-size: 20px; font-weight: 700; color: #fff; letter-spacing: -0.02em">IMKON Digital</span>
+            <p style="margin: 0; font-size: 14px; max-width: 22em">Toshkent Â· imkon.uz â nogironligi bor insonlar uchun raqamli karyera platformasi.</p>
+            <span style="font-size: 14px; color: #a8cbe8">ZIYO AI Â· 24/7 o'zbek tilida</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 9px; font-size: 14px"><span style="font-weight: 700; color: #fff">Platforma</span><span>Kurslar</span><span>Ish o'rinlari</span><span>ZIYO AI</span></div>
+          <div style="display: flex; flex-direction: column; gap: 9px; font-size: 14px"><span style="font-weight: 700; color: #fff">Hamkorlik</span><span>Ish beruvchilar</span><span>Homiylar</span><span>NNTlar</span></div>
+          <div style="display: flex; flex-direction: column; gap: 9px; font-size: 14px"><span style="font-weight: 700; color: #fff">Qulaylik</span><span>Bayonot</span><span>Klaviatura yo'llari</span><span>Aloqa</span></div>
+        </div>
+        <div style="font-family: 'Onest', system-ui, sans-serif; font-weight: 700; font-size: 150px; line-height: 0.86; letter-spacing: -0.05em; color: rgba(255,255,255,0.07); user-select: none">IMKON</div>
+      </div>
+
+      <div style="position: sticky; bottom: 26px; z-index: 20; display: flex; justify-content: flex-end; padding: 0 34px 26px; margin-top: -108px; pointer-events: none">
+        <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 14px; pointer-events: auto">
+          <sc-if value="{{ ziyoOpen }}" hint-placeholder-val="{{ true }}">
+            <div style="width: 348px; border-radius: 24px; overflow: hidden; background: linear-gradient(155deg, rgba(30,46,84,0.95), rgba(14,23,45,0.94)); backdrop-filter: blur(26px) saturate(1.15); border: 1px solid rgba(168,196,228,0.24); box-shadow: 0 26px 60px rgba(9,16,34,0.5); color: #fff" class="glass">
+              <div style="display: flex; align-items: center; gap: 12px; padding: 16px 18px; border-bottom: 1px solid rgba(255,255,255,0.12)">
+                <div style="width: 38px; height: 38px; border-radius: 13px; background: linear-gradient(150deg, #f9f7f2, #cfd9e6); display: flex; align-items: center; justify-content: center">
+                  <div style="width: 26px; height: 17px; border-radius: 7px; background: #101a33; display: flex; align-items: center; justify-content: center; gap: 5px">
+                    <div style="width: 5px; height: 8px; border-radius: 999px; background: #6fb3cf; animation: blink 6s ease-in-out infinite"></div>
+                    <div style="width: 5px; height: 8px; border-radius: 999px; background: #6fb3cf; animation: blink 6s ease-in-out infinite"></div>
+                  </div>
+                </div>
+                <div style="flex: 1; display: flex; flex-direction: column">
+                  <span style="font-size: 15px; font-weight: 700">ZIYO</span>
+                  <span style="font-size: 13px; color: #a8cbe8">Onlayn Â· yordamga tayyor</span>
+                </div>
+                <span onClick="{{ toggleZiyo }}" style="cursor: pointer; width: 28px; height: 28px; border-radius: 999px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 14px; color: #e3e9f3">â</span>
+              </div>
+              <div style="padding: 16px 18px; display: flex; flex-direction: column; gap: 10px">
+                <div style="align-self: flex-start; max-width: 92%; border-radius: 16px 16px 16px 5px; padding: 12px 14px; background: rgba(255,255,255,0.1); font-size: 14px; line-height: 1.5; color: #f4f7fc">{{ ziyoAnswer }}</div>
+                <div style="display: flex; gap: 7px; flex-wrap: wrap; margin-top: 2px">
+                  <span onClick="{{ pickKurs }}" style="cursor: pointer; font-size: 12px; font-weight: 600; border-radius: 999px; padding: 8px 13px; {{ chipKurs }}">Kurs</span>
+                  <span onClick="{{ pickIsh }}" style="cursor: pointer; font-size: 12px; font-weight: 600; border-radius: 999px; padding: 8px 13px; {{ chipIsh }}">Ish</span>
+                  <span onClick="{{ pickRezyume }}" style="cursor: pointer; font-size: 12px; font-weight: 600; border-radius: 999px; padding: 8px 13px; {{ chipRezyume }}">Rezyume</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px; border-radius: 999px; padding: 10px 14px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.18)">
+                  <span style="flex: 1; font-size: 14px; color: #8f9cb3">Savolingizni yozing yoki aytingâ¦</span>
+                  <span style="width: 26px; height: 26px; border-radius: 999px; background: #3f72cf; display: flex; align-items: center; justify-content: center; font-size: 12px">â</span>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+          <div onClick="{{ toggleZiyo }}" style="cursor: pointer; position: relative; display: flex; align-items: center; gap: 12px; border-radius: 999px; padding: 10px 20px 10px 10px; background: #101a33; border: 1px solid rgba(255,255,255,0.18); box-shadow: 0 18px 40px rgba(9,16,34,0.45); color: #fff">
+            <div style="position: absolute; left: 4px; top: 4px; width: 48px; height: 48px; border-radius: 999px; background: radial-gradient(circle, rgba(63,114,207,0.9), rgba(63,114,207,0)); animation: halo 3.6s ease-in-out infinite"></div>
+            <div style="position: relative; width: 48px; height: 48px; border-radius: 17px; background: linear-gradient(150deg, #f9f7f2, #cfd9e6); display: flex; align-items: center; justify-content: center; animation: bob 5s ease-in-out infinite">
+              <div style="position: absolute; left: 50%; top: -9px; margin-left: -3px; width: 6px; height: 6px; border-radius: 999px; background: #6fb3cf; box-shadow: 0 0 10px #6fb3cf"></div>
+              <div style="width: 32px; height: 21px; border-radius: 9px; background: #101a33; display: flex; align-items: center; justify-content: center; gap: 6px">
+                <div style="width: 6px; height: 9px; border-radius: 999px; background: #6fb3cf; animation: blink 6s ease-in-out infinite"></div>
+                <div style="width: 6px; height: 9px; border-radius: 999px; background: #6fb3cf; animation: blink 6s ease-in-out infinite"></div>
+              </div>
+            </div>
+            <div style="position: relative; display: flex; flex-direction: column">
+              <span style="font-size: 15px; font-weight: 700">ZIYO bilan gaplashish</span>
+              <span style="font-size: 13px; color: #a8cbe8">AI yordamchi Â· o'zbek tilida</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  </section>
+
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;animateBackground&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Fon&quot;},&quot;blobBlur&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:50,&quot;min&quot;:20,&quot;max&quot;:110,&quot;step&quot;:5,&quot;unit&quot;:&quot;px&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Fon&quot;}}">
+class Component extends DCLogic {
+  state = { ziyoOpen: false, topic: 'ish' };
+
+  componentDidMount() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    this._t = { mx: 0, my: 0, cx: 0, cy: 0, sy: 0, csy: 0 };
+    this._onMove = (e) => {
+      const w = window.innerWidth || 1, h = window.innerHeight || 1;
+      this._t.mx = (e.clientX / w - 0.5) * 2;
+      this._t.my = (e.clientY / h - 0.5) * 2;
+    };
+    this._onScroll = () => { this._t.sy = window.scrollY || document.documentElement.scrollTop || 0; };
+    this._onRaw = (e) => { this._t.px = e.clientX; this._t.py = e.clientY; this._t.seen = true; };
+    const tick = () => {
+      const t = this._t;
+      t.cx += (t.mx - t.cx) * 0.055;
+      t.cy += (t.my - t.cy) * 0.055;
+      t.csy += (t.sy - t.csy) * 0.08;
+      document.querySelectorAll('[data-blob]').forEach((el) => {
+        const d = parseFloat(el.getAttribute('data-depth')) || 1;
+        const k = 70 + d * 38;
+        el.style.translate = (t.cx * k).toFixed(1) + 'px ' + (t.cy * k * 0.65 - t.csy * 0.07 * d).toFixed(1) + 'px';
+      });
+      if (t.seen) {
+        if (!t.g) t.g = new WeakMap();
+        document.querySelectorAll('[data-glow]').forEach((glow) => {
+          const host = glow.parentElement.getBoundingClientRect();
+          const tx = t.px - host.left, ty = t.py - host.top;
+          const p = t.g.get(glow) || { x: tx, y: ty };
+          p.x += (tx - p.x) * 0.12;
+          p.y += (ty - p.y) * 0.12;
+          t.g.set(glow, p);
+          glow.style.translate = p.x.toFixed(1) + 'px ' + p.y.toFixed(1) + 'px';
+          const inside = t.px >= host.left && t.px <= host.right && t.py >= host.top && t.py <= host.bottom;
+          glow.style.opacity = inside ? '1' : '0';
+        });
+      }
+      if (this._check && this._armed) this._check();
+      this._raf = requestAnimationFrame(tick);
+    };
+
+    const reveal = () => {
+      const els = document.querySelectorAll('[data-reveal]');
+      if (!els.length) { setTimeout(reveal, 200); return; }
+      els.forEach((el) => {
+        el.style.transition = 'opacity 900ms cubic-bezier(.2,.7,.2,1), translate 900ms cubic-bezier(.2,.7,.2,1)';
+        el.style.opacity = '0';
+        el.style.translate = '0 36px';
+      });
+      const show = (el) => { el.style.opacity = '1'; el.style.translate = '0 0'; };
+      const check = () => {
+        els.forEach((el) => {
+          if (el.style.opacity === '1') return;
+          const r = el.getBoundingClientRect();
+          const vh = window.innerHeight || 800;
+          if (r.top < vh * 0.88 && r.bottom > vh * 0.06) show(el);
+        });
+        const de = document.documentElement;
+        const atEnd = (window.scrollY || de.scrollTop || 0) + (window.innerHeight || 0) >= (de.scrollHeight || 0) - 8;
+        if (atEnd) els.forEach(show);
+      };
+      this._check = check;
+      window.addEventListener('scroll', check, { passive: true });
+      window.addEventListener('resize', check, { passive: true });
+      const settle = () => { this._armed = true; requestAnimationFrame(() => requestAnimationFrame(check)); };
+      setTimeout(settle, 450);
+      window.addEventListener('load', settle);
+    };
+    setTimeout(reveal, 60);
+
+    window.addEventListener('mousemove', this._onMove, { passive: true });
+    window.addEventListener('mousemove', this._onRaw, { passive: true });
+    window.addEventListener('scroll', this._onScroll, { passive: true });
+    this._raf = requestAnimationFrame(tick);
+  }
+
+  componentWillUnmount() {
+    cancelAnimationFrame(this._raf);
+    if (this._check) { window.removeEventListener('scroll', this._check); window.removeEventListener('resize', this._check); }
+    window.removeEventListener('mousemove', this._onMove);
+    window.removeEventListener('scroll', this._onScroll);
+  }
+  renderVals() {
+    const answers = {
+      kurs: 'Sizning imkoniyat xaritangizga qarab "Frontend asoslari" kursini tavsiya qilaman â barcha darslar subtitr va transkript bilan. Haftasiga 4 soat, 10 hafta.',
+      ish: 'Bugun 3 ta mos vakansiya topdim: Uzum (masofadan, junior), IT Park (stajirovka), UZINFOCOM (qisman bandlik). Uchalasi ham qulaylik uchun tekshirilgan.',
+      rezyume: 'Rezyumengizni "Junior Frontend" talablariga moslashtirdim: 2 ta loyiha tavsifi kuchaytirildi, ko\'nikmalar bo\'limi qayta tartiblandi. Ko\'rib chiqasizmi?'
+    };
+    const chip = (id) => this.state.topic === id
+      ? 'background: #2563eb; color: #fff; border: 1px solid #2563eb'
+      : 'background: rgba(255,255,255,0.08); color: #dbe6fe; border: 1px solid rgba(255,255,255,0.18)';
+    const motion = this.props.animateBackground ?? true;
+    const blur = this.props.blobBlur ?? 46;
+    const vals = {
+      blobA: motion ? 'drift1 28s ease-in-out infinite' : 'none',
+      blobB: motion ? 'drift2 34s ease-in-out infinite' : 'none',
+      blobC: motion ? 'drift3 40s ease-in-out infinite' : 'none',
+      blobFilter: 'blur(' + blur + 'px)'
+    };
+    return Object.assign(vals, {
+      ziyoOpen: this.state.ziyoOpen,
+      ziyoClosed: !this.state.ziyoOpen,
+      ziyoAnswer: answers[this.state.topic],
+      chipKurs: chip('kurs'),
+      chipIsh: chip('ish'),
+      chipRezyume: chip('rezyume'),
+      toggleZiyo: () => this.setState(s => ({ ziyoOpen: !s.ziyoOpen })),
+      pickKurs: () => this.setState({ topic: 'kurs' }),
+      pickIsh: () => this.setState({ topic: 'ish' }),
+      pickRezyume: () => this.setState({ topic: 'rezyume' })
+    });
+  }
+}
+</script>
+</body>
+</html>

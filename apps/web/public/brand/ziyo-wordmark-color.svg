@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 180">
+  <title>Ziyo AI — to'liq lockup</title>
+  <g transform="translate(10,15) scale(0.55)">
+    <path d="M87,57 A82,82 0 1 1 87,199" fill="none" stroke="#0a0a0a" stroke-width="3"/>
+    <circle cx="87" cy="57" r="8" fill="#3f72cf"/>
+    <path d="M128,58 L140.7,115.3 L172,128 L140.7,140.7 L128,172 L115.3,140.7 L84,128 L115.3,115.3 Z" fill="#6fb3cf"/>
+  </g>
+  <text x="150" y="98" font-family="Arial, sans-serif" font-size="52" font-weight="700" fill="#0a0a0a" letter-spacing="1">ZIYO</text>
+  <text x="150" y="130" font-family="Arial, sans-serif" font-size="18" fill="#6f7787">IMKON Digital AI yordamchisi</text>
+</svg>

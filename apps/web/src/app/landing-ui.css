@@ -1,0 +1,362 @@
+/* ============================================================
+   IMKON DIGITAL — "Robot Aurora" bosh sahifa komponent klasslari
+   Faqat `.imk-*` prefiksli — mavjud Tailwind sinflari bilan
+   to'qnashmaydi, faqat bosh sahifa komponentlari ishlatadi.
+   ============================================================ */
+
+.imk-frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--land-r-frame);
+  background: var(--ivory-100);
+  box-shadow: var(--land-sh-frame);
+}
+.imk-grain {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.32'/%3E%3C/svg%3E");
+}
+
+.imk-section {
+  position: relative;
+  overflow: hidden;
+  padding: 104px 62px;
+  font-family: var(--land-font-ui);
+}
+.imk-section--dark {
+  background: var(--navy-900);
+  color: var(--land-text-on-dark);
+}
+.imk-section--light {
+  background: var(--ivory-100);
+  color: var(--land-text-on-light);
+}
+.imk-section--brand {
+  background: linear-gradient(118deg, var(--land-brand-700) 0%, var(--land-brand-600) 34%, var(--land-brand-500) 62%, var(--land-teal-500) 100%);
+  color: var(--land-text-on-dark);
+}
+@media (max-width: 900px) {
+  .imk-section { padding: 64px 24px; }
+}
+
+.imk-card {
+  position: relative;
+  border-radius: var(--land-r-card);
+  padding: 26px;
+  background: var(--land-card-fill);
+  border: 1px solid var(--land-line-dark);
+  color: var(--land-text-on-dark);
+  font-family: var(--land-font-ui);
+  box-shadow: var(--land-sh-card);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: transform var(--land-d-hover) var(--land-ease), box-shadow var(--land-d-hover) ease;
+}
+.imk-card:hover { transform: translateY(-7px); box-shadow: var(--land-sh-hover); }
+.imk-card--onlight { background: var(--land-surface-onlight); color: var(--land-text-on-light); border-color: var(--land-line-light); }
+.imk-card__label { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--land-text-on-dark-dim); }
+.imk-card__title { font-size: 22px; letter-spacing: -0.02em; color: var(--land-text-on-dark); margin: 0; }
+.imk-card__body { font-size: 16px; line-height: 1.55; color: var(--land-text-on-dark-muted); margin: 0; }
+.imk-card__row { display: flex; align-items: center; gap: 12px; border: 1px solid rgba(255, 255, 255, 0.14); border-radius: var(--land-r-row); padding: 12px 14px; }
+.imk-card__row:focus-visible { outline: 2px solid var(--land-teal-300); outline-offset: 2px; }
+
+.imk-glass {
+  border-radius: var(--land-r-panel);
+  padding: 20px;
+  background: var(--land-glass-fill);
+  backdrop-filter: var(--land-glass-blur);
+  -webkit-backdrop-filter: var(--land-glass-blur);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: var(--land-sh-glass);
+  color: var(--land-text-on-dark);
+  font-family: var(--land-font-ui);
+  transition: transform var(--land-d-hover) var(--land-ease), box-shadow var(--land-d-hover) ease;
+}
+.imk-glass:hover { transform: translateY(-7px); box-shadow: var(--land-sh-hover); }
+@media (prefers-reduced-transparency: reduce) {
+  .imk-glass { backdrop-filter: none; background: rgba(16, 26, 51, 0.92); }
+}
+
+.imk-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  border: 0;
+  font-family: var(--land-font-ui);
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 15px 28px;
+  text-decoration: none;
+  transition: background 200ms ease, transform 200ms var(--land-ease);
+}
+.imk-btn:active { transform: translateY(1px); }
+.imk-btn:focus-visible, .imk-chip:focus-visible {
+  outline: 2px solid var(--land-teal-300);
+  outline-offset: 2px;
+}
+.imk-btn--primary { background: var(--land-brand-500); color: var(--land-text-on-dark); box-shadow: 0 10px 30px rgba(63, 114, 207, 0.45); }
+.imk-btn--primary:hover { background: var(--land-brand-600); }
+.imk-btn--ghost { background: rgba(255, 255, 255, 0.13); color: var(--land-text-on-dark); border: 1px solid rgba(255, 255, 255, 0.3); backdrop-filter: blur(14px); }
+.imk-btn--ghost:hover { background: rgba(255, 255, 255, 0.2); }
+.imk-btn--outline-onlight { background: transparent; color: var(--land-text-on-light); border: 1px solid var(--land-line-light); }
+.imk-btn--outline-onlight:hover { background: var(--land-brand-100); }
+
+.imk-chip { font-family: var(--land-font-ui); font-size: 14px; font-weight: 600; border-radius: 999px; padding: 7px 13px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.18); color: var(--land-teal-200); }
+.imk-chip--active { background: var(--land-brand-500); border-color: var(--land-brand-500); color: var(--land-text-on-dark); }
+.imk-chip--onlight { color: var(--land-brand-700); background: rgba(63, 114, 207, 0.08); border-color: rgba(63, 114, 207, 0.2); }
+.imk-chip--onlight.imk-chip--active { background: var(--land-brand-500); border-color: var(--land-brand-500); color: var(--land-text-on-dark); }
+
+.imk-progress { height: 10px; border-radius: 999px; background: rgba(255, 255, 255, 0.16); overflow: hidden; }
+.imk-progress > i { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--land-brand-500), var(--land-teal-300)); }
+
+.imk-glow {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--land-glow-size);
+  height: var(--land-glow-size);
+  margin-left: calc(var(--land-glow-size) / -2);
+  margin-top: calc(var(--land-glow-size) / -2);
+  border-radius: 999px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--land-d-fade) ease;
+  filter: blur(var(--land-glow-blur));
+}
+.imk-glow--dark { background: var(--land-glow-dark); mix-blend-mode: screen; }
+.imk-glow--light { background: var(--land-glow-light); mix-blend-mode: multiply; }
+
+.imk-orn { position: absolute; pointer-events: none; }
+
+.imk-orn--star {
+  width: 620px;
+  height: 620px;
+  opacity: 0.16;
+  animation: land-spin-slow 220s linear infinite, land-line-in 3s ease-out both;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cg fill='none' stroke='%23cfe6f2' stroke-width='1.1'%3E%3Cpath d='M100 6 122 56 176 40 156 92 200 100 156 108 176 160 122 144 100 194 78 144 24 160 44 108 0 100 44 92 24 40 78 56Z'/%3E%3Cpath d='M100 34 116 70 154 60 140 96 172 100 140 104 154 140 116 130 100 166 84 130 46 140 60 104 28 100 60 96 46 60 84 70Z'/%3E%3Ccircle cx='100' cy='100' r='23'/%3E%3Ccircle cx='100' cy='100' r='9'/%3E%3C/g%3E%3C/svg%3E");
+}
+.imk-orn--lattice {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 190px;
+  opacity: 0.5;
+  animation: land-line-in 3.4s ease-out 0.3s both;
+  background-image:
+    repeating-linear-gradient(45deg, rgba(214, 236, 247, 0.14) 0 1px, transparent 1px 26px),
+    repeating-linear-gradient(-45deg, rgba(214, 236, 247, 0.14) 0 1px, transparent 1px 26px);
+  mask-image: linear-gradient(to right, #000, transparent 85%);
+}
+.imk-orn--medallion {
+  width: 520px;
+  height: 520px;
+  opacity: 0.13;
+  animation: land-spin-slow 260s linear infinite, land-line-in 3s ease-out both;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cg fill='none' stroke='%23294a7a' stroke-width='1.1' stroke-linecap='round'%3E%3Ccircle cx='100' cy='100' r='72'/%3E%3Ccircle cx='100' cy='100' r='44'/%3E%3Cpath d='M100 28c9 14 9 26 0 40-9-14-9-26 0-40Z'/%3E%3Cpath d='M100 172c-9-14-9-26 0-40 9 14 9 26 0 40Z'/%3E%3Cpath d='M28 100c14-9 26-9 40 0-14 9-26 9-40 0Z'/%3E%3Cpath d='M172 100c-14 9-26 9-40 0 14-9 26-9 40 0Z'/%3E%3Ccircle cx='100' cy='100' r='7'/%3E%3C/g%3E%3C/svg%3E");
+}
+.imk-orn--seam {
+  left: 0;
+  right: 0;
+  height: 40px;
+  animation: land-line-in 3.6s ease-out 0.5s both;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1400 40' preserveAspectRatio='none'%3E%3Cg stroke='%23ffffff' fill='none' stroke-width='1' opacity='0.42'%3E%3Cpath d='M0 20h656M744 20h656'/%3E%3C/g%3E%3Cg stroke='%23ffffff' fill='none' stroke-width='1.1' opacity='0.5'%3E%3Cpath d='M700 6l14 14-14 14-14-14Z'/%3E%3Ccircle cx='670' cy='20' r='1.6'/%3E%3Ccircle cx='730' cy='20' r='1.6'/%3E%3C/g%3E%3C/svg%3E");
+}
+.imk-orn--arch-crown,
+.imk-orn--arch-legs {
+  left: 50%;
+  margin-left: -380px;
+  width: 760px;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+.imk-orn--arch-crown {
+  bottom: 0;
+  height: 148px;
+  opacity: 0.75;
+  animation: land-line-in 4s ease-out 0.4s both;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 760 220' preserveAspectRatio='none'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='1.3' opacity='0.55'%3E%3Cpath d='M60 220V130C60 66 202 22 380 22s320 44 320 108v90'/%3E%3Cpath d='M124 220V142c0-52 116-88 256-88s256 36 256 88v78'/%3E%3C/g%3E%3C/svg%3E");
+}
+.imk-orn--arch-legs {
+  top: 0;
+  height: 210px;
+  opacity: 0.8;
+  animation: land-line-in 4s ease-out 0.6s both;
+  mask-image: linear-gradient(to bottom, #000 45%, transparent);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 760 240' preserveAspectRatio='none'%3E%3Cg fill='none' stroke='%239fc4e0' stroke-width='1.3' opacity='0.6'%3E%3Cpath d='M60 0v240M700 0v240'/%3E%3Cpath d='M124 0v168M636 0v168'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+.imk-blob { position: absolute; border-radius: 999px; pointer-events: none; filter: blur(46px); }
+
+/* ZIYO mascot — div-based, rasm emas */
+.imk-mascot { position: relative; flex: none; }
+.imk-mascot__halo {
+  position: absolute;
+  inset: -9px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(111, 179, 207, 0.6), rgba(111, 179, 207, 0));
+  animation: land-halo 4.2s ease-in-out infinite;
+}
+.imk-mascot__antenna {
+  position: absolute;
+  left: 50%;
+  top: -11px;
+  margin-left: -3px;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--land-teal-400);
+  box-shadow: 0 0 10px var(--land-teal-400);
+}
+.imk-mascot__body {
+  position: relative;
+  border-radius: 19px;
+  background: linear-gradient(150deg, #f9f7f2, #cfd9e6);
+  box-shadow: 0 10px 22px rgba(9, 16, 34, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.imk-mascot__screen { border-radius: 9px; background: var(--navy-900); display: flex; align-items: center; justify-content: center; gap: 7px; }
+.imk-mascot__eye { border-radius: 999px; background: var(--land-teal-400); animation: land-blink 6s ease-in-out infinite; }
+.imk-mascot--bob { animation: land-bob 5.2s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .imk-mascot__halo,
+  .imk-mascot__eye,
+  .imk-mascot--bob {
+    animation: none !important;
+  }
+}
+
+/* Raqamli Narvon interaktiv paneli (hero o'ng ustuni) */
+.imk-ladder-tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 12px;
+  border-radius: var(--land-r-inner);
+  text-align: left;
+  border: none;
+  cursor: pointer;
+  background: transparent;
+  color: var(--land-text-on-dark-muted);
+  transition: background 200ms ease, color 200ms ease;
+}
+.imk-ladder-tab:hover { background: rgba(255, 255, 255, 0.08); }
+.imk-ladder-tab--active,
+.imk-ladder-tab--active:hover { background: var(--paper); color: var(--navy-900); }
+.imk-ladder-tab:focus-visible { outline: 2px solid var(--land-teal-300); outline-offset: 2px; }
+.imk-ladder-step {
+  display: flex;
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--land-r-chip);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+.imk-ladder-tab--active .imk-ladder-step { background: var(--land-brand-500); }
+.imk-ladder-panel { border-radius: var(--land-r-inner); background: rgba(255, 255, 255, 0.06); padding: 16px; }
+/* Faol tab'dagi pog'ona raqamini panel sarlavhasiga vizual bog'laydi —
+   xuddi shu raqam, kattaroq, brend fonida — "qaysi pog'ona ochilgani" bir
+   qarashda aniq bo'lishi uchun. */
+.imk-ladder-panel-step {
+  display: flex;
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--land-r-chip);
+  background: var(--land-brand-500);
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+}
+.imk-ladder-duration {
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--land-text-on-dark-muted);
+}
+.imk-ladder-quote {
+  margin-top: 14px;
+  border-radius: var(--land-r-chip);
+  border-left: 3px solid var(--land-brand-400);
+  background: rgba(255, 255, 255, 0.06);
+  padding: 12px;
+}
+
+/* ============================================================
+   Umumiy PublicHeader — bosh sahifada Robot Aurora rejimi.
+   LandingEffects mount bo'lganda <html data-landing-header="1">
+   qo'yiladi (boshqa sahifalarda yo'q — mavjud "Oyna" header
+   o'zgarishsiz qoladi). Popover panellar (Ko'proq/bildirishnoma/
+   mobil menyu) ataylab CHETLAB o'tiladi — ular ochilganda hamon
+   yorug' qoladi (o'qilishi uchun).
+   ============================================================ */
+:root[data-landing-header='1'] .imk-public-header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-topbar, 40);
+  margin-bottom: -69px;
+  border-color: transparent;
+  border-bottom: 1px solid var(--land-line-dark);
+  background: var(--land-glass-fill);
+  backdrop-filter: var(--land-glass-blur);
+  -webkit-backdrop-filter: var(--land-glass-blur);
+  box-shadow: var(--land-sh-glass);
+}
+:root[data-landing-header='1'] .imk-public-header :not(.imk-header-popover, .imk-header-popover *) {
+  font-family: var(--land-font-ui);
+}
+:root[data-landing-header='1'] .imk-public-header :is(.text-ink, .text-ink-soft):not(.imk-header-popover, .imk-header-popover *) {
+  color: var(--land-text-on-dark);
+}
+:root[data-landing-header='1'] .imk-public-header .text-primary:not(.imk-header-popover, .imk-header-popover *) {
+  color: var(--land-teal-300);
+}
+:root[data-landing-header='1'] .imk-public-header .border-line:not(.imk-header-popover, .imk-header-popover *) {
+  border-color: var(--land-line-dark);
+}
+:root[data-landing-header='1'] .imk-public-header .hover\:bg-mint:not(.imk-header-popover, .imk-header-popover *):hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+:root[data-landing-header='1'] .imk-public-header .bg-primary:not(.imk-header-popover, .imk-header-popover *) {
+  background-color: var(--land-brand-500);
+}
+:root[data-landing-header='1'] .imk-public-header .text-primary-fg:not(.imk-header-popover, .imk-header-popover *) {
+  color: var(--land-text-on-dark);
+}
+/* Logotip belgisi — quyuq hero ustida OQ versiya, oddiy yorug' holatda RANGLI
+   (BREND_QOLLANMASI.md "5. Qachon qaysi versiya" jadvali). */
+:root[data-landing-header='1'] .imk-public-header .imk-header-logo-color {
+  display: none;
+}
+:root[data-landing-header='1'] .imk-public-header .imk-header-logo-white {
+  display: block;
+}

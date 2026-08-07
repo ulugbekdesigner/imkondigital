@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 180">
+  <title>IMKON Digital — to'liq lockup</title>
+  <defs>
+    <linearGradient id="growth" x1="64.7" y1="178.7" x2="229.3" y2="44.4" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#a8cbe8"/>
+      <stop offset="55%" stop-color="#6fb3cf"/>
+      <stop offset="100%" stop-color="#1d3a72"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(10,15) scale(0.55)">
+    <path d="M219.76 103.41 A95 95 0 1 1 152.59 36.24" fill="none" stroke="#0a0a0a" stroke-width="14" stroke-linecap="round"/>
+    <rect x="64.7" y="155.9" width="32.9" height="22.8" rx="4" fill="url(#growth)"/>
+    <rect x="97.6" y="128" width="32.9" height="22.8" rx="4" fill="url(#growth)"/>
+    <rect x="130.5" y="100.1" width="32.9" height="22.8" rx="4" fill="url(#growth)"/>
+    <rect x="163.5" y="72.3" width="32.9" height="22.8" rx="4" fill="url(#growth)"/>
+    <rect x="196.4" y="44.4" width="32.9" height="22.8" rx="4" fill="url(#growth)"/>
+  </g>
+  <text x="160" y="88" font-family="Arial, sans-serif" font-size="46" font-weight="700" fill="#0a0a0a" letter-spacing="1">IMKON</text>
+  <text x="160" y="128" font-family="Georgia, serif" font-style="italic" font-size="28" font-weight="400" fill="#3f72cf" letter-spacing="0.5">Digital</text>
+  <text x="160" y="156" font-family="Arial, sans-serif" font-size="14" fill="#6f7787">Raqamli kasb — chegarasiz imkoniyat</text>
+</svg>

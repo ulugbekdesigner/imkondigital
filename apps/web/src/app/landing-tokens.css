@@ -1,0 +1,110 @@
+/* ============================================================
+   IMKON DIGITAL — Robot Aurora bosh sahifa dizayn tokenlari.
+   Faqat bosh sahifa (marketing landing) uchun. Mavjud Oyna tizimini
+   (globals.css :root) almashtirmaydi, ustiga qoshiladi. Nomlar ataylab
+   boshqa prefiks bilan: --navy, --brand, --teal, --ivory. Shu sabab
+   mavjud --imkon/--ink/--paper tokenlari bilan toqnashmaydi.
+   ============================================================ */
+:root {
+  --navy-900: #101a33;
+  --navy-800: #14203d;
+  --navy-700: #1b2c50;
+  --ivory-100: #f6f3ec;
+
+  --land-brand-100: #e9f0f8;
+  --land-brand-200: #d3e2f0;
+  --land-brand-300: #93b4de;
+  --land-brand-400: #6f9fe0;
+  --land-brand-500: #3f72cf;
+  --land-brand-600: #2c5896;
+  --land-brand-700: #1d3a72;
+
+  --land-teal-200: #cfe6f2;
+  --land-teal-300: #a8cbe8;
+  --land-teal-400: #6fb3cf;
+  --land-teal-500: #4f9fb5;
+
+  --land-text-on-dark: #ffffff;
+  --land-text-on-dark-muted: #c9d6e6;
+  --land-text-on-dark-dim: #9fb3d1;
+  --land-surface-onlight: #ffffff; /* --paper EMAS — --paper [data-theme='dark']da qorong'ilashadi, lekin --land-text-on-light hech qachon o'zgarmaydi (Robot Aurora token'lari doim mustaqil) */
+  --land-text-on-light: #0a0a0a;
+  --land-text-on-light-muted: #3f4a5c;
+  --land-text-on-light-dim: #666d7c; /* #6f7787 dan qorong'ilashtirildi — ivory-100 ustida 4.06:1 edi (WCAG 4.5:1 talabini o'tmagan), endi 4.69:1 */
+
+  --land-line-dark: rgba(255, 255, 255, 0.13);
+  --land-line-dark-strong: rgba(255, 255, 255, 0.26);
+  --land-line-light: #e7e1d5;
+  --land-glass-fill: linear-gradient(155deg, rgba(255, 255, 255, 0.135), rgba(255, 255, 255, 0.055));
+  --land-glass-blur: blur(24px) saturate(1.2);
+  --land-card-fill:
+    radial-gradient(520px 240px at 100% 0%, rgba(111, 179, 207, 0.2), transparent 62%),
+    linear-gradient(150deg, #101a33, #1b2c50);
+
+  --land-r-chip: 12px;
+  --land-r-row: 14px;
+  --land-r-inner: 18px;
+  --land-r-panel: 22px;
+  --land-r-card: 24px;
+  --land-r-frame: 28px;
+
+  --land-font-accent: var(--font-accent), Georgia, serif;
+  --land-font-ui: var(--font-display), system-ui, -apple-system, sans-serif;
+
+  --land-sh-card: 0 18px 44px rgba(16, 32, 60, 0.18);
+  --land-sh-glass: 0 16px 40px rgba(9, 16, 34, 0.28);
+  --land-sh-frame: 0 30px 70px rgba(16, 32, 60, 0.22);
+  --land-sh-hover:
+    0 28px 60px rgba(9, 16, 34, 0.4),
+    0 0 0 1px rgba(143, 200, 230, 0.5),
+    0 0 46px rgba(111, 179, 207, 0.26);
+
+  --land-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --land-d-hover: 460ms;
+  --land-d-reveal: 900ms;
+  --land-reveal-shift: 36px;
+  --land-d-fade: 600ms;
+
+  --land-glow-dark: radial-gradient(circle, rgba(84, 146, 180, 0.18), rgba(45, 86, 158, 0.1) 46%, rgba(45, 86, 158, 0) 74%);
+  --land-glow-light: radial-gradient(circle, rgba(72, 102, 146, 0.16), rgba(150, 128, 102, 0.1) 48%, rgba(150, 128, 102, 0) 74%);
+  --land-glow-size: 620px;
+  --land-glow-blur: 28px;
+
+  --land-blob-brand: radial-gradient(circle, rgba(63, 114, 207, 0.55), rgba(63, 114, 207, 0));
+  --land-blob-teal: radial-gradient(circle, rgba(111, 179, 207, 0.4), rgba(111, 179, 207, 0));
+}
+
+@keyframes land-drift1 {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(6%, -4%, 0) scale(1.12); }
+}
+@keyframes land-drift2 {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1.05); }
+  50% { transform: translate3d(-5%, 5%, 0) scale(0.95); }
+}
+@keyframes land-drift3 {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(4%, 6%, 0) scale(1.08); }
+}
+@keyframes land-spin-slow {
+  to { transform: rotate(360deg); }
+}
+@keyframes land-line-in {
+  from { opacity: 0; }
+}
+@keyframes land-ticker {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@keyframes land-blink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  96% { transform: scaleY(0.12); }
+}
+@keyframes land-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
+}
+@keyframes land-halo {
+  0%, 100% { opacity: 0.45; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.14); }
+}

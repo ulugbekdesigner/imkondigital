@@ -1,0 +1,8 @@
+node_modules
+.next
+dist
+build
+out
+api
+pnpm-lock.yaml
+*.md
