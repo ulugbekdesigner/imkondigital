@@ -44,7 +44,7 @@ export function SaveBenefitButton({
         onClick={toggle}
         aria-pressed={saved}
         aria-label={saved ? "Saqlanganlardan o'chirish" : "Saqlab qo'yish"}
-        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-line bg-paper text-coral transition-colors hover:bg-mint disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-line bg-paper text-coral transition-colors hover:bg-mint disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
       >
         <HeartIcon width={18} height={18} className={saved ? 'fill-current' : 'fill-none'} />
       </button>

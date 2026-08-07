@@ -80,9 +80,12 @@ export default async function PlacementTestSessionsPage() {
             ))}
           </ul>
         ) : (
-          <div className="mt-8 rounded-xl border border-dashed border-line bg-mint/40 p-8 text-center">
+          <div className="imk-empty mt-8 items-center text-center">
+            <span className="imk-empty__icon mx-auto">
+              <ClipboardIcon width={22} height={22} aria-hidden="true" />
+            </span>
             <h2 className="font-display text-lg font-bold text-ink">Hali test topshirilmagan</h2>
-            <p className="mx-auto mt-2 max-w-xl font-sans text-base text-ink-soft">
+            <p className="mx-auto max-w-xl font-sans text-base text-ink-soft">
               Yuqoridagi tugma orqali birinchi daraja aniqlash testingizni boshlang.
             </p>
           </div>

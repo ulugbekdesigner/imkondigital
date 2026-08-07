@@ -8,10 +8,12 @@ import { BecomeInstructorButton } from '@/components/become-instructor-button';
 import { ImpactCertificateButton } from '@/components/impact-certificate-button';
 import { InstructorPlacementCelebration } from '@/components/instructor-placement-celebration';
 import { CabinetPageHeader } from '@/components/cabinet-shell';
+import { buttonVariants, cn } from '@imkon/ui';
 import {
   AlertIcon,
   CheckIcon,
   ChevronRightIcon,
+  RefreshIcon,
   StarIcon,
   UsersIcon,
 } from '@/components/shell-icons';
@@ -62,21 +64,21 @@ export default async function InstructorDashboardPage() {
       {dashboard ? (
         <>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-2)' }}>
+            <div className="flex flex-col gap-2 rounded-xl border border-line bg-paper p-4">
               <UsersIcon width={20} height={20} className="text-primary" />
               <p className="font-mono text-2xl font-bold text-ink">{dashboard.students_count}</p>
-              <p className="t-caption text-ink-soft">
+              <p className="font-sans text-xs text-ink-soft">
                 O&apos;quvchilar
                 {dashboard.new_students_this_month > 0 &&
                   ` · +${dashboard.new_students_this_month} shu oyda`}
               </p>
             </div>
-            <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-2)' }}>
+            <div className="flex flex-col gap-2 rounded-xl border border-line bg-paper p-4">
               <StarIcon width={20} height={20} className="text-primary" />
               <p className="font-mono text-2xl font-bold text-ink">
                 {dashboard.completion_rate_pct}%
               </p>
-              <p className="t-caption text-ink-soft">
+              <p className="font-sans text-xs text-ink-soft">
                 Tugatish
                 {dashboard.average_rating !== null &&
                   ` · o'rtacha reyting ${dashboard.average_rating}`}
@@ -85,10 +87,7 @@ export default async function InstructorDashboardPage() {
           </div>
 
           {dashboard.most_dropped_lesson_title && (
-            <div
-              className="mt-4 flex items-start gap-3 rounded-xl border border-warn bg-warn-bg p-4"
-              style={{ marginTop: 'var(--sp-4)' }}
-            >
+            <div className="mt-4 flex items-start gap-3 rounded-xl border border-warn bg-warn-bg p-4">
               <AlertIcon width={18} height={18} className="mt-0.5 shrink-0 text-warn" />
               <div>
                 <p className="font-sans text-base font-semibold text-ink">
@@ -108,7 +107,6 @@ export default async function InstructorDashboardPage() {
           {students.length > 0 && (
             <section
               className="mt-4 rounded-xl border border-line bg-paper p-4"
-              style={{ marginTop: 'var(--sp-4)' }}
               aria-labelledby="dash-activity-title"
             >
               <div className="flex flex-wrap items-center justify-between gap-3">
@@ -149,10 +147,7 @@ export default async function InstructorDashboardPage() {
             </section>
           )}
 
-          <div
-            className="mt-4 flex flex-col gap-3 rounded-xl border border-line bg-paper p-4 sm:flex-row sm:items-center sm:gap-4"
-            style={{ marginTop: 'var(--sp-4)' }}
-          >
+          <div className="mt-4 flex flex-col gap-3 rounded-xl border border-line bg-paper p-4 sm:flex-row sm:items-center sm:gap-4">
             <div className="flex items-center gap-4">
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-mint text-primary">
                 <StarIcon width={20} height={20} />
@@ -227,24 +222,20 @@ export default async function InstructorDashboardPage() {
           </section>
         </>
       ) : (
-        <div
-          role="alert"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 'var(--sp-3)',
-            padding: 'var(--sp-5) var(--sp-6)',
-            border: '1.5px solid var(--c-danger)',
-            borderRadius: 'var(--r-card)',
-          }}
-        >
-          <AlertIcon width={20} height={20} className="text-error shrink-0" />
-          <div>
-            <p className="t-body text-ink">Dashboard ma&apos;lumotlarini yuklab bo&apos;lmadi.</p>
-            <Link href="/ustoz/kurslar/dashboard" className="t-body-sm text-primary underline-offset-4 hover:underline">
-              Qayta urinish
-            </Link>
+        <div className="imk-error" role="alert">
+          <span aria-hidden="true" className="imk-error__icon">
+            <AlertIcon width={22} height={22} />
+          </span>
+          <div className="flex flex-col gap-1">
+            <p className="font-sans text-base font-bold text-ink">Dashboard ma&apos;lumotlarini yuklab bo&apos;lmadi</p>
+            <p className="font-sans text-sm text-ink-soft">
+              Internet aloqasi yoki serverda vaqtinchalik muammo bo&apos;lishi mumkin.
+            </p>
           </div>
+          <Link href="/ustoz/kurslar/dashboard" className={cn(buttonVariants({ size: 'sm' }), 'gap-1.5')}>
+            <RefreshIcon width={16} height={16} aria-hidden="true" />
+            Qayta urinish
+          </Link>
         </div>
       )}
     </div>

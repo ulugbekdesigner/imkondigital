@@ -6,6 +6,7 @@ import { getMe } from '@/lib/server-api';
 import { getAuditLog } from '@/lib/admin-api';
 import { CabinetPageHeader } from '@/components/cabinet-shell';
 import { QueueEmpty } from '@/components/admin-queue-states';
+import { ErrorState } from '@/components/state-panels';
 import { ChevronRightIcon, DownloadIcon, LockIcon, LogIcon } from '@/components/shell-icons';
 import { formatDateTime } from '@/lib/format';
 
@@ -25,6 +26,15 @@ export default async function AdminAuditLogPage({
 
   const cursor = searchParams.cursor ? Number(searchParams.cursor) : undefined;
   const page = await getAuditLog(cursor);
+
+  if (!page) {
+    return (
+      <div className="max-w-4xl">
+        <CabinetPageHeader title="Audit jurnali" />
+        <ErrorState />
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl">

@@ -187,7 +187,7 @@ export function PeerSupportFeed({
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex items-start gap-2 rounded-xl border border-warn/30 bg-warn-bg p-3">
+      <div className="flex items-start gap-2 rounded-xl border border-warn bg-warn-bg p-3">
         <AlertIcon width={16} height={16} className="mt-0.5 shrink-0 text-warn" />
         <p className="font-sans text-xs text-ink">
           Bu — real odamlar orasidagi suhbat, AI emas. Tibbiy yoki psixologik yordam kerak bo'lsa,{' '}

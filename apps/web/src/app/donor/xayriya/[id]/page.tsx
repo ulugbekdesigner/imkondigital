@@ -90,7 +90,7 @@ export default async function DonorDonationProjectDetailPage({
         </Link>
 
         <div
-          className="mt-4 overflow-hidden rounded-[20px] p-6"
+          className="mt-4 overflow-hidden rounded-[18px] p-6"
           style={{
             background:
               'linear-gradient(118deg, rgb(var(--imkon-deep)) 0%, rgb(var(--imkon-bright)) 55%, rgb(var(--imkon-teal)) 100%)',

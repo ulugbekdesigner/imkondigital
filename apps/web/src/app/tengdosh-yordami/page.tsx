@@ -64,8 +64,14 @@ export default async function PeerSupportRoomsPage() {
             ))}
           </ul>
         ) : (
-          <div className="mt-8 rounded-xl border border-dashed border-line bg-mint/40 p-8 text-center">
+          <div className="imk-empty mt-8 items-center text-center">
+            <span className="imk-empty__icon mx-auto">
+              <UsersIcon width={22} height={22} aria-hidden="true" />
+            </span>
             <h2 className="font-display text-lg font-bold text-ink">Hozircha davra yo'q</h2>
+            <p className="mx-auto max-w-xl font-sans text-base text-ink-soft">
+              Tez orada yangi tengdosh davralari ochiladi — birozdan so'ng qayta kiring.
+            </p>
           </div>
         )}
       </div>

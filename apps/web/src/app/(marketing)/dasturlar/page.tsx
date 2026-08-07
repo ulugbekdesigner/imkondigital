@@ -40,7 +40,11 @@ export default async function ProgramsPage() {
         {!me && (
           <p className="mt-4 text-sm" style={{ color: 'var(--land-text-on-light-dim)' }}>
             Ariza berish uchun avval{' '}
-            <Link href="/kirish?next=/dasturlar" className="font-semibold underline" style={{ color: 'var(--land-brand-600)' }}>
+            <Link
+              href="/kirish?next=/dasturlar"
+              className="rounded font-semibold underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
+              style={{ color: 'var(--land-brand-600)' }}
+            >
               tizimga kiring
             </Link>
             .
@@ -49,7 +53,11 @@ export default async function ProgramsPage() {
         {me && !canApply && (
           <p className="mt-4 text-sm" style={{ color: 'var(--land-text-on-light-dim)' }}>
             Ariza berish uchun{' '}
-            <Link href="/profil" className="font-semibold underline" style={{ color: 'var(--land-brand-600)' }}>
+            <Link
+              href="/profil"
+              className="rounded font-semibold underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
+              style={{ color: 'var(--land-brand-600)' }}
+            >
               nogironlik profilingizni
             </Link>{' '}
             tasdiqlatishingiz kerak.

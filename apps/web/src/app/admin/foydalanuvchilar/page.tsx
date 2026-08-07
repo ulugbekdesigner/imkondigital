@@ -8,6 +8,7 @@ import { avatarGradient, initialsOf } from '@/lib/avatar';
 import { averageWaitDays, formatThousands } from '@/lib/format';
 import { AdminUserActions } from '@/components/admin-user-actions';
 import { CabinetPageHeader } from '@/components/cabinet-shell';
+import { ErrorState } from '@/components/state-panels';
 import {
   AlertIcon,
   ChevronRightIcon,
@@ -54,6 +55,15 @@ export default async function AdminUsersPage({
     getAdminUserStats(),
     getModerationQueue(),
   ]);
+
+  if (!page) {
+    return (
+      <div className="max-w-5xl">
+        <CabinetPageHeader title="Foydalanuvchilar" />
+        <ErrorState />
+      </div>
+    );
+  }
 
   const activeFilterKey =
     status === 'blocked'
@@ -119,6 +129,7 @@ export default async function AdminUsersPage({
           aria-current={activeFilterKey === 'blocked' ? 'page' : undefined}
           className={cn(
             'inline-flex h-9 items-center rounded-full bg-error-bg px-3.5 font-sans text-xs font-semibold text-error',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-paper',
             activeFilterKey === 'blocked' && 'ring-2 ring-error ring-offset-2 ring-offset-paper',
           )}
         >

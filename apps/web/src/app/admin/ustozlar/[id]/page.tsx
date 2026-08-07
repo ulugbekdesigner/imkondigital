@@ -93,7 +93,7 @@ export default async function AdminInstructorDetailPage({
       </div>
 
       <section className="mt-8">
-        <h2 className="t-h2 text-ink">Kurslari ({instructor.courses.length})</h2>
+        <h2 className="font-display text-lg font-bold text-ink">Kurslari ({instructor.courses.length})</h2>
         {instructor.courses.length > 0 ? (
           <ul className="mt-4 flex flex-col gap-2">
             {instructor.courses.map((c) => (

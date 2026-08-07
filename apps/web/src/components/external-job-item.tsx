@@ -19,7 +19,10 @@ const LADDER_LABEL: Record<number, string> = {
 export function ExternalJobItem({ job }: { job: ExternalJobCard }) {
   return (
     <li>
-      <Link href={`/xalqaro-ishlar/${job.id}`} className="block h-full">
+      <Link
+        href={`/xalqaro-ishlar/${job.id}`}
+        className="block h-full rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
+      >
         <GlassCard hover className="flex h-full flex-col gap-2 p-4">
           <div className="flex items-start justify-between gap-3">
             <div>

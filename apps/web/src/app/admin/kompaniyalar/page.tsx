@@ -7,6 +7,7 @@ import { getAdminCompanies } from '@/lib/admin-api';
 import { AdminCompanyVerifyButton } from '@/components/admin-company-verify-button';
 import { CabinetPageHeader } from '@/components/cabinet-shell';
 import { QueueEmpty } from '@/components/admin-queue-states';
+import { ErrorState } from '@/components/state-panels';
 import { BuildingIcon, ChevronRightIcon } from '@/components/shell-icons';
 
 export const metadata: Metadata = {
@@ -34,6 +35,15 @@ export default async function AdminCompaniesPage({
     cursor: cursor ? Number(cursor) : undefined,
     verified: verified === 'true' ? true : verified === 'false' ? false : undefined,
   });
+
+  if (!page) {
+    return (
+      <div className="max-w-4xl">
+        <CabinetPageHeader title="Kompaniyalar" />
+        <ErrorState />
+      </div>
+    );
+  }
 
   const activeKey = verified === 'true' || verified === 'false' ? verified : 'all';
 

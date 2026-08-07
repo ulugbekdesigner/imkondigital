@@ -135,7 +135,7 @@ export function PlacementTestChat({ session }: { session: PlacementTestSessionDe
                   aria-pressed={listening}
                   aria-label={listening ? 'Tinglanmoqda…' : 'Ovozli javob yozish'}
                   className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus ${
-                    listening ? 'bg-error text-white' : 'bg-white/10 text-mist hover:text-white'
+                    listening ? 'bg-error text-error-fg' : 'bg-white/10 text-mist hover:text-white'
                   }`}
                 >
                   <MicIcon width={18} height={18} />

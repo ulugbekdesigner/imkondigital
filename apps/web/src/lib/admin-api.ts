@@ -32,31 +32,29 @@ export function getAdminOverview(): Promise<AdminOverview | null> {
   return authedGet<AdminOverview>('/v1/analytics/admin/overview');
 }
 
+// `null` — yuklab bo'lmadi (xato), `{items: [], ...}` — haqiqatan bo'sh natija.
+// Sahifa komponenti bu ikkalasini ATAYLAB farqlaydi (ErrorState vs bo'sh holat).
 export function getAdminUsers(params: {
   cursor?: number;
   search?: string;
   role?: string;
   userStatus?: string;
-}): Promise<AdminUserPage> {
+}): Promise<AdminUserPage | null> {
   const qs = new URLSearchParams();
   if (params.cursor) qs.set('cursor', String(params.cursor));
   if (params.search) qs.set('search', params.search);
   if (params.role) qs.set('role', params.role);
   if (params.userStatus) qs.set('user_status', params.userStatus);
-  return authedGet<AdminUserPage>(`/v1/admin/users?${qs.toString()}`).then(
-    (page) => page ?? { items: [], next_cursor: null },
-  );
+  return authedGet<AdminUserPage>(`/v1/admin/users?${qs.toString()}`);
 }
 
 export function getAdminUserStats(): Promise<AdminUserStats | null> {
   return authedGet<AdminUserStats>('/v1/admin/users/stats');
 }
 
-export function getAuditLog(cursor?: number): Promise<AuditLogPage> {
+export function getAuditLog(cursor?: number): Promise<AuditLogPage | null> {
   const qs = cursor ? `?cursor=${cursor}` : '';
-  return authedGet<AuditLogPage>(`/v1/admin/audit-log${qs}`).then(
-    (page) => page ?? { items: [], next_cursor: null },
-  );
+  return authedGet<AuditLogPage>(`/v1/admin/audit-log${qs}`);
 }
 
 export function getAdminCourses(cursor?: number): Promise<AdminCoursePage> {
@@ -86,13 +84,11 @@ export function getModerationQueue(): Promise<DisabilityQueueItem[]> {
 export function getAdminInstructors(params: {
   cursor?: number;
   search?: string;
-}): Promise<AdminInstructorPage> {
+}): Promise<AdminInstructorPage | null> {
   const qs = new URLSearchParams();
   if (params.cursor) qs.set('cursor', String(params.cursor));
   if (params.search) qs.set('search', params.search);
-  return authedGet<AdminInstructorPage>(`/v1/admin/instructors?${qs.toString()}`).then(
-    (page) => page ?? { items: [], next_cursor: null },
-  );
+  return authedGet<AdminInstructorPage>(`/v1/admin/instructors?${qs.toString()}`);
 }
 
 export function getAdminInstructorDetail(id: number): Promise<AdminInstructorDetail | null> {
@@ -103,14 +99,12 @@ export function getAdminCompanies(params: {
   cursor?: number;
   verified?: boolean;
   limit?: number;
-}): Promise<AdminCompanyPage> {
+}): Promise<AdminCompanyPage | null> {
   const qs = new URLSearchParams();
   if (params.cursor) qs.set('cursor', String(params.cursor));
   if (params.verified !== undefined) qs.set('verified', String(params.verified));
   if (params.limit) qs.set('limit', String(params.limit));
-  return authedGet<AdminCompanyPage>(`/v1/admin/companies?${qs.toString()}`).then(
-    (page) => page ?? { items: [], next_cursor: null },
-  );
+  return authedGet<AdminCompanyPage>(`/v1/admin/companies?${qs.toString()}`);
 }
 
 export function getRegistrationsDaily(): Promise<RegistrationsDaily | null> {

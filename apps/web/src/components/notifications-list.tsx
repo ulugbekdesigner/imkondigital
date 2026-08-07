@@ -156,7 +156,7 @@ export function NotificationsList({ initialItems }: { initialItems: Notification
             const content = (
               <div
                 className={`flex flex-col gap-1 rounded-lg border border-line bg-paper p-4 transition-colors duration-fast ${
-                  unread ? 'border-l-4 border-l-info' : 'hover:border-ink-soft/40'
+                  unread ? 'border-l-4 border-l-info' : 'hover:border-ink-soft'
                 }`}
               >
                 <div className="flex items-center justify-between gap-2">

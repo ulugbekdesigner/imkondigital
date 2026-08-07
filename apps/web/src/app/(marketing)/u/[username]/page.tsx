@@ -127,13 +127,20 @@ export default async function PublicPassportPage({
               ))}
             </ul>
           ) : (
-            <div className="imk-empty mt-4">
+            <div
+              className="imk-empty mt-4"
+              style={{
+                background: 'var(--land-surface-onlight)',
+                color: 'var(--land-text-on-light)',
+                borderColor: 'var(--land-line-light)',
+              }}
+            >
               <span className="imk-empty__icon" aria-hidden="true">
                 <BookIcon width={24} height={24} />
               </span>
               <div>
                 <h3 className="m-0 text-base font-bold">Hali sertifikat yo'q</h3>
-                <p className="m-0 mt-1 text-sm" style={{ color: 'var(--text-muted)' }}>
+                <p className="m-0 mt-1 text-sm" style={{ color: 'var(--land-text-on-light-muted)' }}>
                   Kurslarni tugatgach, sertifikatlar shu yerda ko'rinadi.
                 </p>
               </div>
@@ -152,13 +159,20 @@ export default async function PublicPassportPage({
               ))}
             </ul>
           ) : (
-            <div className="imk-empty mt-4">
+            <div
+              className="imk-empty mt-4"
+              style={{
+                background: 'var(--land-surface-onlight)',
+                color: 'var(--land-text-on-light)',
+                borderColor: 'var(--land-line-light)',
+              }}
+            >
               <span className="imk-empty__icon" aria-hidden="true">
                 <BriefcaseIcon width={24} height={24} />
               </span>
               <div>
                 <h3 className="m-0 text-base font-bold">Hali portfolio elementi yo'q</h3>
-                <p className="m-0 mt-1 text-sm" style={{ color: 'var(--text-muted)' }}>
+                <p className="m-0 mt-1 text-sm" style={{ color: 'var(--land-text-on-light-muted)' }}>
                   Bajarilgan ishlar qo'shilgach, portfolio shu yerda ko'rinadi.
                 </p>
               </div>

@@ -49,7 +49,7 @@ export function ZiyoPreviewChat() {
             key={t.label}
             type="button"
             onClick={() => ask(t.query)}
-            className="imk-chip"
+            className="imk-chip inline-flex min-h-touch items-center"
             style={{ cursor: 'pointer' }}
           >
             {t.label}
@@ -66,8 +66,8 @@ export function ZiyoPreviewChat() {
         Savolingizni yozing yoki ayting…
         <span
           aria-hidden="true"
-          className="ml-auto flex h-[26px] w-[26px] flex-shrink-0 items-center justify-center rounded-full text-deep-fg"
-          style={{ background: 'var(--land-brand-500)' }}
+          className="ml-auto flex h-[26px] w-[26px] flex-shrink-0 items-center justify-center rounded-full"
+          style={{ background: 'var(--land-brand-500)', color: 'var(--land-text-on-dark)' }}
         >
           <SendIcon width={12} height={12} />
         </span>

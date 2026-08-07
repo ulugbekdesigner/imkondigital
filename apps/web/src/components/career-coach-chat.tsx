@@ -189,7 +189,7 @@ export function CareerCoachChat({
             aria-pressed={listening}
             aria-label={listening ? 'Tinglanmoqda…' : 'Ovozli xabar yozish'}
             className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus ${
-              listening ? 'bg-error text-white' : 'bg-surface-2 text-ink-soft hover:text-ink'
+              listening ? 'bg-error text-error-fg' : 'bg-surface-2 text-ink-soft hover:text-ink'
             }`}
           >
             <MicIcon width={18} height={18} />

@@ -165,10 +165,12 @@
   --warn: #f0c178;
   --warn-bg: #2b2103;
   --error: 255 180 171; /* #ffb4ab */
+  --error-fg: #2b0705;
   --error-bg: #2e0b08;
   --info: #a8cdf0;
   --info-bg: #10203f;
   --success: #6fe0b4;
+  --success-fg: #052e20;
   --success-bg: #05291d;
   --step-0: #a5b4fc;
   --step-1: #a5b4fc;

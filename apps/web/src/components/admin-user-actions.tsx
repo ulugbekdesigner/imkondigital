@@ -71,7 +71,7 @@ export function AdminUserActions({
           aria-label={`${fullName} uchun amallar`}
           className={cn(
             'absolute right-0 top-full z-20 mt-2 w-72 rounded-xl border border-line bg-paper p-3',
-            'shadow-[0_16px_40px_-12px_rgb(15_23_42_/_0.25)]',
+            'shadow-card-lg',
           )}
         >
           <AdminUserActionsPanel

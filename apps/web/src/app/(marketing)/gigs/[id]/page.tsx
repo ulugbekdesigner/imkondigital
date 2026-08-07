@@ -69,7 +69,7 @@ export default async function GigDetailPage({ params }: { params: { id: string }
               <span className="inline-flex items-center gap-1 font-sans text-sm text-mist">
                 <StarIcon width={14} height={14} className="text-gold" aria-hidden="true" />
                 {gig.average_rating.toFixed(1)}
-                <span className="text-mist/70">({gig.review_count})</span>
+                <span className="text-mist">({gig.review_count})</span>
               </span>
             )}
           </Link>

@@ -84,7 +84,7 @@ export default function ContactPage() {
               <span className="imk-card__label">{c.label}</span>
               <a
                 href={c.href}
-                className="-mt-2 text-lg font-bold no-underline hover:underline"
+                className="-mt-2 rounded text-lg font-bold no-underline hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
                 style={{ color: 'white' }}
                 target={c.href.startsWith('http') ? '_blank' : undefined}
                 rel={c.href.startsWith('http') ? 'noopener noreferrer' : undefined}

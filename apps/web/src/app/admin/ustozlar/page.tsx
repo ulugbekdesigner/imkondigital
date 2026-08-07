@@ -6,6 +6,7 @@ import { getMe } from '@/lib/server-api';
 import { getAdminInstructors } from '@/lib/admin-api';
 import { avatarGradient, initialsOf } from '@/lib/avatar';
 import { CabinetPageHeader } from '@/components/cabinet-shell';
+import { ErrorState } from '@/components/state-panels';
 import { BookIcon, ChevronRightIcon, SearchIcon, StarIcon, UsersIcon } from '@/components/shell-icons';
 
 export const metadata: Metadata = {
@@ -45,6 +46,15 @@ export default async function AdminInstructorsPage({
     cursor: cursor ? Number(cursor) : undefined,
     search,
   });
+
+  if (!page) {
+    return (
+      <div className="max-w-5xl">
+        <CabinetPageHeader title="Ustozlar" />
+        <ErrorState />
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-5xl">

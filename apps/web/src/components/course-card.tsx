@@ -29,7 +29,7 @@ export function CourseCard({ course }: { course: CourseCardType }) {
               className="absolute inset-0 h-full w-full object-cover"
             />
           )}
-          <span className="relative rounded-full bg-paper/90 px-2.5 py-1 font-sans text-xs font-bold text-primary">
+          <span className="relative rounded-full bg-paper px-2.5 py-1 font-sans text-xs font-bold text-primary">
             {course.ladder_step}-pog'ona
           </span>
           {course.is_free ? (
