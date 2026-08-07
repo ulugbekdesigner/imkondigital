@@ -9,7 +9,12 @@ from app.models.enums import RoleCode
 from app.models.user import User
 from app.modules.auth.deps import get_current_user, require_roles
 from app.modules.subscriptions import service
-from app.schemas.subscription import SubscriptionGrantIn, SubscriptionOut
+from app.schemas.subscription import (
+    SubscriptionCheckoutIn,
+    SubscriptionCheckoutOut,
+    SubscriptionGrantIn,
+    SubscriptionOut,
+)
 
 router = APIRouter(tags=["subscriptions"])
 _admin = require_roles(RoleCode.ADMIN)
@@ -40,3 +45,14 @@ async def admin_set_subscription(
     db: AsyncSession = Depends(get_db),
 ) -> SubscriptionOut:
     return await service.admin_set_plan(db, user_id, data.plan, admin.id)
+
+
+@router.post("/subscriptions/checkout", response_model=SubscriptionCheckoutOut)
+async def subscription_checkout(
+    data: SubscriptionCheckoutIn,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> SubscriptionCheckoutOut:
+    return await service.create_checkout(
+        db, user_id=user.id, plan=data.plan, provider=data.provider
+    )

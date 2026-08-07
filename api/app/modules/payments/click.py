@@ -3,10 +3,11 @@
 Rasmiy protokol: https://docs.click.uz/en/click-api-request-from-click-to-merchant/
 action=0 -> Prepare, action=1 -> Complete. Imzo MD5 (app/core/payment_sign.py).
 
-`merchant_trans_id` ikki turdagi "to'lanadigan"ni ifodalaydi: buyurtma
-(oddiy raqam, masalan "42") yoki xayriya — V2-2, `d` prefiksi bilan
-(masalan "d42") — Click uchun bitta qiymat fazosi bo'lgani sabab shu tarzda
-farqlanadi (Payme'da esa alohida "account" maydon nomi orqali).
+`merchant_trans_id` uch turdagi "to'lanadigan"ni ifodalaydi: buyurtma
+(oddiy raqam, masalan "42"), xayriya — V2-2, `d` prefiksi bilan (masalan
+"d42") yoki obuna sotib olish — 4-bo'lim, `s` prefiksi bilan (masalan "s42")
+— Click uchun bitta qiymat fazosi bo'lgani sabab shu tarzda farqlanadi
+(Payme'da esa alohida "account" maydon nomi orqali).
 """
 
 from typing import Any
@@ -22,6 +23,7 @@ from app.core.payment_sign import (
 )
 from app.models.donation import Donation
 from app.models.enums import OrderStatus, PaymentProvider, PaymentStatus
+from app.models.subscription_purchase import SubscriptionPurchase
 from app.modules.payments import service
 
 settings = get_settings()
@@ -36,6 +38,7 @@ ERR_TRANSACTION_NOT_FOUND = -6
 ERR_TRANSACTION_CANCELLED = -9
 
 _DONATION_PREFIX = "d"
+_SUBSCRIPTION_PREFIX = "s"
 
 
 def _resp(
@@ -55,6 +58,15 @@ def _parse_donation_id(merchant_trans_id: str) -> int | None:
         return None
     try:
         return int(merchant_trans_id[len(_DONATION_PREFIX) :])
+    except ValueError:
+        return None
+
+
+def _parse_subscription_purchase_id(merchant_trans_id: str) -> int | None:
+    if not merchant_trans_id.startswith(_SUBSCRIPTION_PREFIX):
+        return None
+    try:
+        return int(merchant_trans_id[len(_SUBSCRIPTION_PREFIX) :])
     except ValueError:
         return None
 
@@ -137,9 +149,99 @@ async def _click_prepare_donation(
     )
 
 
+async def _click_prepare_subscription(
+    db: AsyncSession,
+    *,
+    click_trans_id: str,
+    merchant_trans_id: str,
+    purchase_id: int,
+    form: dict[str, Any],
+) -> dict[str, Any]:
+    amount = str(form.get("amount", "0"))
+    sign_time = str(form.get("sign_time", ""))
+    received_sign = str(form.get("sign_string", ""))
+
+    expected_sign = click_prepare_signature(
+        click_trans_id=click_trans_id,
+        service_id=str(form.get("service_id", "")),
+        secret_key=settings.click_secret_key,
+        merchant_trans_id=merchant_trans_id,
+        amount=amount,
+        action="0",
+        sign_time=sign_time,
+    )
+    if not verify_click_signature(received_sign, expected_sign):
+        return _resp(
+            click_trans_id=click_trans_id,
+            merchant_trans_id=merchant_trans_id,
+            error=ERR_SIGN_FAILED,
+            error_note="SIGN CHECK FAILED",
+        )
+
+    purchase = await service.get_subscription_purchase(db, purchase_id)
+    if purchase is None:
+        return _resp(
+            click_trans_id=click_trans_id,
+            merchant_trans_id=merchant_trans_id,
+            error=ERR_ORDER_NOT_FOUND,
+            error_note="Subscription purchase not found",
+        )
+    if purchase.status != PaymentStatus.PENDING:
+        return _resp(
+            click_trans_id=click_trans_id,
+            merchant_trans_id=merchant_trans_id,
+            error=ERR_ALREADY_PAID,
+            error_note="Subscription purchase is not payable",
+        )
+
+    expected_tiyin = purchase.amount * 100
+    if sum_to_tiyin(amount) != expected_tiyin:
+        return _resp(
+            click_trans_id=click_trans_id,
+            merchant_trans_id=merchant_trans_id,
+            error=ERR_INCORRECT_AMOUNT,
+            error_note="Incorrect amount",
+        )
+
+    existing = await service.find_subscription_purchase_by_transaction(
+        db, PaymentProvider.CLICK, click_trans_id
+    )
+    if existing is not None:
+        return _resp(
+            click_trans_id=click_trans_id,
+            merchant_trans_id=merchant_trans_id,
+            error=ERR_SUCCESS,
+            error_note="Success",
+            merchant_prepare_id=str(existing.id),
+        )
+
+    await service.attach_subscription_purchase_transaction(
+        db, purchase=purchase, provider=PaymentProvider.CLICK, transaction_id=click_trans_id
+    )
+    await db.commit()
+
+    return _resp(
+        click_trans_id=click_trans_id,
+        merchant_trans_id=merchant_trans_id,
+        error=ERR_SUCCESS,
+        error_note="Success",
+        merchant_prepare_id=str(purchase.id),
+    )
+
+
 async def handle_click_prepare(db: AsyncSession, form: dict[str, Any]) -> dict[str, Any]:
     click_trans_id = str(form.get("click_trans_id", ""))
     merchant_trans_id = str(form.get("merchant_trans_id", ""))
+
+    purchase_id = _parse_subscription_purchase_id(merchant_trans_id)
+    if purchase_id is not None:
+        return await _click_prepare_subscription(
+            db,
+            click_trans_id=click_trans_id,
+            merchant_trans_id=merchant_trans_id,
+            purchase_id=purchase_id,
+            form=form,
+        )
 
     donation_id = _parse_donation_id(merchant_trans_id)
     if donation_id is not None:
@@ -239,7 +341,12 @@ async def _find_payable_by_click_transaction(db: AsyncSession, click_trans_id: s
     payment = await service.find_payment_by_transaction(db, PaymentProvider.CLICK, click_trans_id)
     if payment is not None:
         return payment
-    return await service.find_donation_by_transaction(db, PaymentProvider.CLICK, click_trans_id)
+    donation = await service.find_donation_by_transaction(db, PaymentProvider.CLICK, click_trans_id)
+    if donation is not None:
+        return donation
+    return await service.find_subscription_purchase_by_transaction(
+        db, PaymentProvider.CLICK, click_trans_id
+    )
 
 
 async def handle_click_complete(db: AsyncSession, form: dict[str, Any]) -> dict[str, Any]:
@@ -287,11 +394,14 @@ async def handle_click_complete(db: AsyncSession, form: dict[str, Any]) -> dict[
         )
 
     is_donation = isinstance(payable, Donation)
+    is_subscription = isinstance(payable, SubscriptionPurchase)
 
     # Click o'zi xato bergan bo'lsa (masalan mijoz bekor qildi) — biz ham bekor qilamiz
     if click_error < 0:
         if is_donation:
             await service.mark_donation_cancelled(db, payable)
+        elif is_subscription:
+            await service.mark_subscription_purchase_cancelled(db, payable)
         else:
             await service.mark_payment_cancelled(db, payable)
         await db.commit()
@@ -306,6 +416,8 @@ async def handle_click_complete(db: AsyncSession, form: dict[str, Any]) -> dict[
     if payable.status != PaymentStatus.PAID:
         if is_donation:
             await service.mark_donation_paid(db, payable)
+        elif is_subscription:
+            await service.mark_subscription_purchase_paid(db, payable)
         else:
             await service.mark_payment_paid(db, payable)
         await db.commit()

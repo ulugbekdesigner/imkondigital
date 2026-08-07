@@ -5,7 +5,8 @@ import { getMySubscription, getSubscriptionPricing } from '@/lib/subscription-ap
 import { LandingSection, CursorGlow } from '@/components/landing/primitives';
 import { LandingEffects } from '@/components/landing/landing-effects';
 import { CheckIcon, InfoIcon, ChevronRightIcon } from '@/components/shell-icons';
-import { formatThousands } from '@/lib/format';
+import { formatThousands, formatDate } from '@/lib/format';
+import { SubscriptionCheckoutButtons } from '@/components/subscription-checkout-buttons';
 
 export const metadata: Metadata = {
   title: 'Tariflar',
@@ -160,14 +161,23 @@ export default async function TariflarPage() {
                 style={{ background: 'var(--land-brand-100)', color: 'var(--land-brand-700)' }}
               >
                 Joriy tarifingiz{subscription?.granted_by === 'stipend' ? ' (stipendiya)' : ''}
+                {subscription?.granted_by === 'purchase' && subscription.expires_at
+                  ? ` — ${formatDate(subscription.expires_at)}gacha`
+                  : ''}
               </span>
+            ) : me ? (
+              <SubscriptionCheckoutButtons
+                plan="plus"
+                className="mt-auto"
+                primaryStyle={{ background: 'var(--land-brand-500)', color: 'var(--land-text-on-dark)' }}
+              />
             ) : (
               <Link
-                href="/aloqa"
+                href="/royxatdan-otish"
                 className="mt-auto inline-flex min-h-touch items-center justify-center rounded-full text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
                 style={{ border: '1px solid var(--land-line-light)', color: 'var(--land-brand-700)' }}
               >
-                Faollashtirish uchun bog&apos;lanish
+                Ro&apos;yxatdan o&apos;tib faollashtirish
               </Link>
             )}
           </div>
@@ -201,14 +211,23 @@ export default async function TariflarPage() {
                 style={{ background: 'var(--land-brand-500)', color: 'var(--land-text-on-dark)' }}
               >
                 Joriy tarifingiz
+                {subscription?.granted_by === 'purchase' && subscription.expires_at
+                  ? ` — ${formatDate(subscription.expires_at)}gacha`
+                  : ''}
               </span>
+            ) : me ? (
+              <SubscriptionCheckoutButtons
+                plan="pro"
+                className="mt-auto text-white"
+                primaryStyle={{ background: 'var(--land-brand-500)', color: 'var(--land-text-on-dark)' }}
+              />
             ) : (
               <Link
-                href="/aloqa"
+                href="/royxatdan-otish"
                 className="mt-auto inline-flex min-h-touch items-center justify-center rounded-full text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
                 style={{ background: 'rgba(255,255,255,0.1)', color: 'var(--land-text-on-dark)' }}
               >
-                Faollashtirish uchun bog&apos;lanish
+                Ro&apos;yxatdan o&apos;tib faollashtirish
               </Link>
             )}
           </div>
@@ -228,15 +247,9 @@ export default async function TariflarPage() {
           <p className="text-sm leading-relaxed" style={{ color: 'var(--land-brand-700)' }}>
             <strong>Nogironligi bor tasdiqlangan foydalanuvchilar uchun</strong> PLUS darajasi
             donor fondi hisobidan avtomatik ochiladi — profilingiz moderator tomonidan
-            tasdiqlangach, hech qanday to&apos;lovsiz. Hozircha o&apos;z-o&apos;zidan to&apos;lov
-            (karta orqali) qabul qilinmaydi — faollashtirish uchun{' '}
-            <Link
-              href="/aloqa"
-              className="rounded underline underline-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
-            >
-              biz bilan bog&apos;laning
-            </Link>
-            .
+            tasdiqlangach, hech qanday to&apos;lovsiz. PLUS/PRO — Payme yoki Click orqali oylik
+            to&apos;lov bilan ham faollashtiriladi (30 kunlik muddat, tugashi yaqinlashganda
+            bildirishnoma keladi).
           </p>
         </div>
 

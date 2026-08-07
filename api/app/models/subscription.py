@@ -5,11 +5,12 @@ sukut bo'yicha FREE hisoblanadi (`DisabilityProfile`/`UserStreak`dagi
 "kerak bo'lganda yarat" naqshiga o'xshash, lekin bu yerda "qatorsiz
 = eng past daraja" ma'nosi borligi uchun ataylab shunday).
 
-Hozircha o'z-o'zidan to'lov qabul qiluvchi (Payme/Click obuna) oqim
-YO'Q — bu alohida, kattaroq integratsiya talab qiladi. PRO/PLUS ikki
-yo'l bilan beriladi: (1) STIPEND — nogironlik profili tasdiqlanganda
-avtomatik (4.1-bo'lim "Muhim himoya qoidasi"), (2) ADMIN — qo'lda
-faollashtirish (hozircha to'lov administratsiya orqali).
+PRO/PLUS uch yo'l bilan beriladi: (1) STIPEND — nogironlik profili
+tasdiqlanganda avtomatik (4.1-bo'lim "Muhim himoya qoidasi"), (2) ADMIN —
+qo'lda faollashtirish, (3) PURCHASE — Payme/Click orqali o'z-o'zidan sotib
+olingan (`SubscriptionPurchase`, app/modules/payments). `expires_at` faqat
+PURCHASE uchun to'ldiriladi — ADMIN/STIPEND muddatsiz (Celery
+`expire_subscriptions` faqat PURCHASE qatorlarini tekshiradi).
 """
 
 from __future__ import annotations
@@ -39,3 +40,4 @@ class Subscription(Base):
     started_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
+    expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)

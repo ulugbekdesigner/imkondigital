@@ -7,13 +7,15 @@ CancelTransaction, CheckTransaction, GetStatement.
 Holat modeli (Payme tomonidan belgilangan): 1=yaratilgan, 2=bajarilgan,
 -1=bekor qilingan (to'lovdan oldin), -2=bekor qilingan (to'lovdan keyin).
 
-Ikki "account" turi qo'llab-quvvatlanadi — `account.order_id` (marketplace
-buyurtmasi, `Payment` jadvali orqali) va `account.donation_id` (V2-2 ochiq
-xayriya, `Donation` o'zi holatni saqlaydi). Payme uchun bular alohida nomlangan
-maydonlar bo'lgani sabab to'qnashuv xavfi yo'q — CheckPerformTransaction/
-CreateTransaction shu maydon nomiga qarab tarmoqlanadi; Perform/Cancel/
-CheckTransaction esa Payme o'zi bergan `transaction_id` orqali avval Payment,
-topilmasa Donation'dan qidiradi (ikkalasi ham shu qiymat fazosida noyob).
+Uch "account" turi qo'llab-quvvatlanadi — `account.order_id` (marketplace
+buyurtmasi, `Payment` jadvali orqali), `account.donation_id` (V2-2 ochiq
+xayriya, `Donation` o'zi holatni saqlaydi) va `account.subscription_purchase_id`
+(4-bo'lim, PLUS/PRO oylik to'lov, `SubscriptionPurchase` o'zi holatni saqlaydi).
+Payme uchun bular alohida nomlangan maydonlar bo'lgani sabab to'qnashuv xavfi
+yo'q — CheckPerformTransaction/CreateTransaction shu maydon nomiga qarab
+tarmoqlanadi; Perform/Cancel/CheckTransaction esa Payme o'zi bergan
+`transaction_id` orqali avval Payment, keyin Donation, keyin
+SubscriptionPurchase'dan qidiradi (barchasi shu qiymat fazosida noyob).
 """
 
 import base64
@@ -25,6 +27,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.config import get_settings
 from app.models.donation import Donation
 from app.models.enums import OrderStatus, PaymentProvider, PaymentStatus
+from app.models.subscription_purchase import SubscriptionPurchase
 from app.modules.payments import service
 
 settings = get_settings()
@@ -99,9 +102,37 @@ def _is_donation_request(params: dict[str, Any]) -> bool:
     return "donation_id" in params.get("account", {})
 
 
+def _extract_subscription_purchase_id(params: dict[str, Any]) -> int | None:
+    account = params.get("account", {})
+    raw_id = account.get("subscription_purchase_id")
+    if raw_id is None:
+        return None
+    try:
+        return int(raw_id)
+    except (TypeError, ValueError):
+        return None
+
+
+def _is_subscription_request(params: dict[str, Any]) -> bool:
+    return "subscription_purchase_id" in params.get("account", {})
+
+
 async def _check_perform_transaction(
     db: AsyncSession, params: dict[str, Any], request_id: Any
 ) -> dict[str, Any]:
+    if _is_subscription_request(params):
+        purchase_id = _extract_subscription_purchase_id(params)
+        if purchase_id is None:
+            raise PaymeError(ERR_ORDER_NOT_FOUND, "Subscription purchase not found")
+        purchase = await service.get_subscription_purchase(db, purchase_id)
+        if purchase is None:
+            raise PaymeError(ERR_ORDER_NOT_FOUND, "Subscription purchase not found")
+        if purchase.status != PaymentStatus.PENDING:
+            raise PaymeError(ERR_UNABLE_TO_PERFORM, "Subscription purchase is not payable")
+        if int(params.get("amount", -1)) != purchase.amount * TIYIN_PER_SUM:
+            raise PaymeError(ERR_INVALID_AMOUNT, "Invalid amount")
+        return _rpc_result(request_id, {"allow": True})
+
     if _is_donation_request(params):
         donation_id = _extract_donation_id(params)
         if donation_id is None:
@@ -141,7 +172,10 @@ async def _create_transaction(
     existing_donation = await service.find_donation_by_transaction(
         db, PaymentProvider.PAYME, transaction_id
     )
-    existing = existing_payment or existing_donation
+    existing_subscription = await service.find_subscription_purchase_by_transaction(
+        db, PaymentProvider.PAYME, transaction_id
+    )
+    existing = existing_payment or existing_donation or existing_subscription
     if existing is not None:
         # Idempotent — bir xil so'rov qayta kelsa, mavjud holatni qaytaramiz
         state = 2 if existing.status == PaymentStatus.PAID else 1
@@ -151,6 +185,31 @@ async def _create_transaction(
                 "create_time": _timestamp_ms(existing.created_at),
                 "transaction": str(existing.id),
                 "state": state,
+            },
+        )
+
+    if _is_subscription_request(params):
+        purchase_id = _extract_subscription_purchase_id(params)
+        if purchase_id is None:
+            raise PaymeError(ERR_ORDER_NOT_FOUND, "Subscription purchase not found")
+        purchase = await service.get_subscription_purchase(db, purchase_id)
+        if purchase is None:
+            raise PaymeError(ERR_ORDER_NOT_FOUND, "Subscription purchase not found")
+        if purchase.status != PaymentStatus.PENDING:
+            raise PaymeError(ERR_UNABLE_TO_PERFORM, "Subscription purchase is not payable")
+        if amount != purchase.amount * TIYIN_PER_SUM:
+            raise PaymeError(ERR_INVALID_AMOUNT, "Invalid amount")
+
+        await service.attach_subscription_purchase_transaction(
+            db, purchase=purchase, provider=PaymentProvider.PAYME, transaction_id=transaction_id
+        )
+        await db.commit()
+        return _rpc_result(
+            request_id,
+            {
+                "create_time": _timestamp_ms(purchase.created_at),
+                "transaction": str(purchase.id),
+                "state": 1,
             },
         )
 
@@ -210,7 +269,12 @@ async def _find_payable_by_transaction(db: AsyncSession, transaction_id: str) ->
     payment = await service.find_payment_by_transaction(db, PaymentProvider.PAYME, transaction_id)
     if payment is not None:
         return payment
-    return await service.find_donation_by_transaction(db, PaymentProvider.PAYME, transaction_id)
+    donation = await service.find_donation_by_transaction(db, PaymentProvider.PAYME, transaction_id)
+    if donation is not None:
+        return donation
+    return await service.find_subscription_purchase_by_transaction(
+        db, PaymentProvider.PAYME, transaction_id
+    )
 
 
 async def _perform_transaction(
@@ -227,6 +291,8 @@ async def _perform_transaction(
     if payable.status != PaymentStatus.PAID:
         if isinstance(payable, Donation):
             await service.mark_donation_paid(db, payable)
+        elif isinstance(payable, SubscriptionPurchase):
+            await service.mark_subscription_purchase_paid(db, payable)
         else:
             await service.mark_payment_paid(db, payable)
         await db.commit()
@@ -254,6 +320,8 @@ async def _cancel_transaction(
     if payable.status != PaymentStatus.CANCELLED:
         if isinstance(payable, Donation):
             await service.mark_donation_cancelled(db, payable)
+        elif isinstance(payable, SubscriptionPurchase):
+            await service.mark_subscription_purchase_cancelled(db, payable)
         else:
             await service.mark_payment_cancelled(db, payable)
         await db.commit()

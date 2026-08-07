@@ -183,6 +183,8 @@ class NotificationType(StrEnum):
     BENEFIT_MATCH = "benefit_match"
     ASSIGNMENT_REVIEWED = "assignment_reviewed"
     STUDENT_PLACED = "student_placed"
+    SUBSCRIPTION_ACTIVATED = "subscription_activated"
+    SUBSCRIPTION_EXPIRING = "subscription_expiring"
 
 
 class NotificationCategory(StrEnum):
@@ -215,6 +217,7 @@ class SubscriptionPlan(StrEnum):
 class SubscriptionGrantedBy(StrEnum):
     ADMIN = "admin"
     STIPEND = "stipend"
+    PURCHASE = "purchase"
 
 
 class MessageRole(StrEnum):

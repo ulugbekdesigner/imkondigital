@@ -95,6 +95,7 @@ from app.models.peer_support import PeerSupportPost, PeerSupportReport, PeerSupp
 from app.models.portfolio import PortfolioItem, PortfolioItemStep
 from app.models.streak import UserStreak
 from app.models.subscription import Subscription
+from app.models.subscription_purchase import SubscriptionPurchase
 from app.models.success_story import SuccessStory
 from app.models.support import SupportContent, SupportResource
 from app.models.telegram import TelegramLink, TelegramLinkCode
@@ -201,6 +202,7 @@ __all__ = [
     "Subscription",
     "SubscriptionGrantedBy",
     "SubscriptionPlan",
+    "SubscriptionPurchase",
     "SuccessStory",
     "SuccessStoryStatus",
     "SupportContent",

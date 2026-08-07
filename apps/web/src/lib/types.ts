@@ -1004,13 +1004,19 @@ export interface InstructorSubmissionItem {
 
 export interface SubscriptionOut {
   plan: 'free' | 'plus' | 'pro';
-  granted_by: 'admin' | 'stipend' | null;
+  granted_by: 'admin' | 'stipend' | 'purchase' | null;
   started_at: string | null;
+  expires_at: string | null;
 }
 
 export interface SubscriptionPricing {
   plus_price_som: number;
   pro_price_som: number;
+}
+
+export interface SubscriptionCheckoutOut {
+  purchase_id: number;
+  checkout_url: string;
 }
 
 export interface PeerSupportRoomOut {

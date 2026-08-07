@@ -27,7 +27,12 @@ async def test_default_plan_is_free(client: httpx.AsyncClient) -> None:
     _, hdr = await _make_user_id(client, "+998919001100")
     resp = await client.get("/v1/me/subscription", headers=hdr)
     assert resp.status_code == 200
-    assert resp.json() == {"plan": "free", "granted_by": None, "started_at": None}
+    assert resp.json() == {
+        "plan": "free",
+        "granted_by": None,
+        "started_at": None,
+        "expires_at": None,
+    }
 
 
 async def test_admin_can_grant_and_revoke_plan(

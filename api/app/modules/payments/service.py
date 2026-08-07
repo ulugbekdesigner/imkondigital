@@ -1,10 +1,11 @@
 """To'lov servisi — Payme/Click webhooklari uchun umumiy DB operatsiyalari.
 
-Ikki mustaqil "to'lanadigan" tur bor: marketplace `Order` (escrow, `Payment`
-jadvali orqali) va `Donation` (V2-2, holatni o'zida saqlaydi — escrow kerak
-emas, bitta martalik to'lov). Ikkalasi bir xil Payme/Click webhook orqali
-o'tadi (app/modules/payments/payme.py, click.py) — shu sabab ikkalasi ham
-shu yerda, lekin bir-biriga bog'liq emas.
+Uchta mustaqil "to'lanadigan" tur bor: marketplace `Order` (escrow, `Payment`
+jadvali orqali), `Donation` (V2-2, holatni o'zida saqlaydi — escrow kerak
+emas, bitta martalik to'lov) va `SubscriptionPurchase` (4-bo'lim, PLUS/PRO
+oylik to'lov — xuddi Donation kabi holatni o'zida saqlaydi). Uchalasi bir xil
+Payme/Click webhook orqali o'tadi (app/modules/payments/payme.py, click.py)
+— shu sabab barchasi shu yerda, lekin bir-biriga bog'liq emas.
 """
 
 from datetime import UTC, datetime
@@ -22,6 +23,7 @@ from app.models.enums import (
     PaymentStatus,
 )
 from app.models.marketplace import Order, Payment
+from app.models.subscription_purchase import SubscriptionPurchase
 from app.modules.notifications.service import create_notification
 
 
@@ -144,4 +146,61 @@ async def mark_donation_cancelled(db: AsyncSession, donation: Donation) -> None:
         return
     donation.status = PaymentStatus.CANCELLED
     donation.cancelled_at = datetime.now(UTC)
+    await db.flush()
+
+
+# --- SubscriptionPurchase (4-bo'lim — PLUS/PRO o'z-o'zidan sotib olish) ---
+
+
+async def get_subscription_purchase(db: AsyncSession, purchase_id: int) -> SubscriptionPurchase | None:
+    return await db.get(SubscriptionPurchase, purchase_id)
+
+
+async def find_subscription_purchase_by_transaction(
+    db: AsyncSession, provider: str, transaction_id: str
+) -> SubscriptionPurchase | None:
+    return (
+        await db.execute(
+            select(SubscriptionPurchase).where(
+                SubscriptionPurchase.provider == provider,
+                SubscriptionPurchase.provider_transaction_id == transaction_id,
+            )
+        )
+    ).scalar_one_or_none()
+
+
+async def attach_subscription_purchase_transaction(
+    db: AsyncSession, *, purchase: SubscriptionPurchase, provider: str, transaction_id: str
+) -> None:
+    purchase.provider = provider
+    purchase.provider_transaction_id = transaction_id
+    await db.flush()
+
+
+async def mark_subscription_purchase_paid(db: AsyncSession, purchase: SubscriptionPurchase) -> None:
+    if purchase.status == PaymentStatus.PAID:
+        return  # idempotent — takroriy webhook xavfsiz
+    purchase.status = PaymentStatus.PAID
+    purchase.paid_at = datetime.now(UTC)
+
+    from app.modules.subscriptions.service import activate_purchase  # aylanma import'dan qochish
+
+    await activate_purchase(db, purchase)
+    await create_notification(
+        db,
+        user_id=purchase.user_id,
+        notif_type=NotificationType.SUBSCRIPTION_ACTIVATED,
+        category=NotificationCategory.LEARNING,
+        title=f"{purchase.plan.upper()} obuna faollashtirildi",
+        body="Keyingi to'lov muddati /tariflar sahifasida ko'rinadi.",
+        link_url="/tariflar",
+    )
+    await db.flush()
+
+
+async def mark_subscription_purchase_cancelled(db: AsyncSession, purchase: SubscriptionPurchase) -> None:
+    if purchase.status == PaymentStatus.CANCELLED:
+        return
+    purchase.status = PaymentStatus.CANCELLED
+    purchase.cancelled_at = datetime.now(UTC)
     await db.flush()
