@@ -6,16 +6,62 @@ Server ichki endpoint orqali yuklaydi/oladi; brauzerga public endpoint URL berad
 
 import json
 import mimetypes
+import secrets
 from functools import lru_cache
 from pathlib import Path
 from typing import BinaryIO
 
 import boto3
 from botocore.client import BaseClient, Config
+from fastapi import HTTPException, UploadFile, status
 
 from app.core.config import get_settings
 
 settings = get_settings()
+
+# Kategoriya: (ruxsat etilgan kengaytmalar, maksimal hajm — bayt). Foydalanuvchi
+# yuklaydigan HAR bir joy (kurs materiali, submission, portfolio, buyurtma
+# chati, nogironlik hujjati) shu ro'yxatdan foydalanishi SHART — avval hech
+# qanday hajm/kengaytma tekshiruvi yo'q edi, xom `file.filename` to'g'ridan-
+# to'g'ri saqlash kalitiga qo'yilardi va mijoz yuboradigan `file.content_type`
+# (soxtalashtirilishi oson) S3 metama'lumotiga ishonib yozilardi — bucket
+# public-read bo'lgani uchun bu istalgan turdagi (masalan .html) faylni
+# istalgan Content-Type bilan ochiq xizmat qilish imkonini berardi.
+_UPLOAD_CATEGORIES: dict[str, tuple[frozenset[str], int]] = {
+    "video": (frozenset({".mp4", ".mov", ".mkv", ".webm", ".avi"}), 3 * 1024**3),  # 3 GB
+    "subtitle": (frozenset({".vtt", ".srt"}), 2 * 1024**2),  # 2 MB
+    "document": (frozenset({".pdf", ".jpg", ".jpeg", ".png"}), 8 * 1024**2),  # 8 MB
+    "attachment": (
+        frozenset({".pdf", ".doc", ".docx", ".zip", ".jpg", ".jpeg", ".png", ".webp"}),
+        25 * 1024**2,
+    ),  # 25 MB
+}
+
+
+def validate_upload(file: UploadFile, category: str) -> str:
+    """Kengaytma/hajmni tekshiradi, xavfsiz (tasodifiy) fayl nomini qaytaradi.
+
+    Qaytarilgan nom saqlash kaliti uchun ishlatilsin — xom `file.filename`
+    EMAS (yo'l-navigatsiya belgilari, o'ta uzun/g'alati nomlar, kolliziya
+    xavfisiz; kengaytma tasdiqlangan ro'yxatdan, shu sabab Content-Type
+    ham xavfsiz avtomatik aniqlanadi — `upload_fileobj`ga mijoz
+    `content_type`ini uzatish shart emas).
+    """
+    allowed_ext, max_bytes = _UPLOAD_CATEGORIES[category]
+    ext = Path(file.filename or "").suffix.lower()
+    if ext not in allowed_ext:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Ruxsat etilmagan fayl turi. Qabul qilinadi: {', '.join(sorted(allowed_ext))}",
+        )
+    if not file.size:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Bo'sh fayl")
+    if file.size > max_bytes:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Fayl juda katta (maksimal {max_bytes // (1024 * 1024)} MB)",
+        )
+    return f"{secrets.token_hex(16)}{ext}"
 
 
 @lru_cache

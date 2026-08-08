@@ -287,7 +287,9 @@ async def test_chat_message_with_file_upload(client: httpx.AsyncClient) -> None:
     body = sent.json()
     assert body["body"] == "Mana birinchi variant"
     assert body["file_url"] is not None
-    assert body["file_url"].endswith("logo-v1.png")
+    # Xavfsizlik uchun saqlash kaliti xom fayl nomidan emas, tasodifiy
+    # tokendan yasaladi (app/core/storage.py:validate_upload).
+    assert body["file_url"].endswith(".png")
 
     from_freelancer = await client.get(f"/v1/orders/{order_id}/messages", headers=fhdr)
     assert from_freelancer.json()[0]["file_url"] == body["file_url"]

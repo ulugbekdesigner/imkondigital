@@ -202,9 +202,10 @@ async def upload_lesson_video(
     db: AsyncSession = Depends(get_db),
 ) -> dict[str, object]:
     lesson = await service.owned_lesson(db, lesson_id, user)
+    safe_name = storage.validate_upload(file, "video")
     storage.ensure_bucket()
-    key = f"raw/{lesson_id}/{file.filename}"
-    storage.upload_fileobj(file.file, key, file.content_type)
+    key = f"raw/{lesson_id}/{safe_name}"
+    storage.upload_fileobj(file.file, key)
 
     lesson.raw_video_key = key
     lesson.status = LessonStatus.PROCESSING
@@ -225,8 +226,9 @@ async def upload_lesson_subtitle(
     db: AsyncSession = Depends(get_db),
 ) -> dict[str, object]:
     lesson = await service.owned_lesson(db, lesson_id, user)
+    safe_name = storage.validate_upload(file, "subtitle")
     storage.ensure_bucket()
-    key = f"subtitles/{lesson_id}/{file.filename}"
+    key = f"subtitles/{lesson_id}/{safe_name}"
     url = storage.upload_fileobj(file.file, key, "text/vtt")
     lesson.subtitle_url = url
     await db.commit()
@@ -246,9 +248,10 @@ async def upload_lesson_material(
     db: AsyncSession = Depends(get_db),
 ) -> LessonMaterialOut:
     await service.owned_lesson(db, lesson_id, user)
+    safe_name = storage.validate_upload(file, "attachment")
     storage.ensure_bucket()
-    key = f"materials/{lesson_id}/{file.filename}"
-    file_url = storage.upload_fileobj(file.file, key, file.content_type)
+    key = f"materials/{lesson_id}/{safe_name}"
+    file_url = storage.upload_fileobj(file.file, key)
     return await service.add_material(db, lesson_id, user, title, file_url)
 
 
@@ -329,9 +332,10 @@ async def create_submission(
 ) -> SubmissionOut:
     file_url: str | None = None
     if file is not None:
+        safe_name = storage.validate_upload(file, "attachment")
         storage.ensure_bucket()
-        key = f"submissions/{user.id}/{assignment_id}/{file.filename}"
-        file_url = storage.upload_fileobj(file.file, key, file.content_type)
+        key = f"submissions/{user.id}/{assignment_id}/{safe_name}"
+        file_url = storage.upload_fileobj(file.file, key)
     submission = await service.create_submission(db, user, assignment_id, text, file_url)
     return SubmissionOut.model_validate(submission)
 

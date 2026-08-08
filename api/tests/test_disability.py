@@ -185,7 +185,10 @@ async def test_upload_disability_document_sets_doc_url_and_visible_to_moderator(
     assert upload.status_code == 200
     body = upload.json()
     assert body["doc_url"] is not None
-    assert body["doc_url"].endswith("msek.pdf")
+    # Xavfsizlik uchun saqlash kaliti xom fayl nomidan emas, tasodifiy
+    # tokendan yasaladi (app/core/storage.py:validate_upload) — faqat
+    # tasdiqlangan kengaytma saqlanib qoladi.
+    assert body["doc_url"].endswith(".pdf")
 
     own = (await client.get("/v1/users/me/disability-profile", headers=user_hdr)).json()
     assert own["doc_url"] == body["doc_url"]

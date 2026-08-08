@@ -135,9 +135,10 @@ async def submit_final_exam(
 ) -> FinalExamSubmissionOut:
     file_url: str | None = None
     if file is not None and file.filename:
+        safe_name = storage.validate_upload(file, "attachment")
         storage.ensure_bucket()
-        key = f"final-exam/{user.id}/{course_id}/{file.filename}"
-        file_url = storage.upload_fileobj(file.file, key, file.content_type)
+        key = f"final-exam/{user.id}/{course_id}/{safe_name}"
+        file_url = storage.upload_fileobj(file.file, key)
     return await service.submit_final_exam(db, user, course_id, text, file_url)
 
 

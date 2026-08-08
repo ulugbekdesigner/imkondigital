@@ -19,6 +19,7 @@ SubscriptionPurchase'dan qidiradi (barchasi shu qiymat fazosida noyob).
 """
 
 import base64
+import hmac
 from datetime import datetime
 from typing import Any
 
@@ -75,7 +76,7 @@ def verify_auth(auth_header: str | None) -> bool:
         login, _, password = decoded.partition(":")
     except (ValueError, UnicodeDecodeError):
         return False
-    return login == "Paycom" and password == settings.payme_merchant_key
+    return login == "Paycom" and hmac.compare_digest(password, settings.payme_merchant_key)
 
 
 def _extract_order_id(params: dict[str, Any], request_id: Any) -> int:

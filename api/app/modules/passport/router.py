@@ -59,8 +59,9 @@ async def create_portfolio_item(
         for f in files:
             if not f.filename:
                 continue
-            key = f"portfolio/{user.id}/{f.filename}"
-            media_urls.append(storage.upload_fileobj(f.file, key, f.content_type))
+            safe_name = storage.validate_upload(f, "attachment")
+            key = f"portfolio/{user.id}/{safe_name}"
+            media_urls.append(storage.upload_fileobj(f.file, key))
     item = await service.create_portfolio_item(db, user, title, description, media_urls)
     return PortfolioItemOut.model_validate(item)
 
@@ -97,9 +98,10 @@ async def add_portfolio_step(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ) -> PortfolioStepOut:
+    safe_name = storage.validate_upload(file, "attachment")
     storage.ensure_bucket()
-    key = f"portfolio/{user.id}/steps/{file.filename}"
-    media_url = storage.upload_fileobj(file.file, key, file.content_type)
+    key = f"portfolio/{user.id}/steps/{safe_name}"
+    media_url = storage.upload_fileobj(file.file, key)
     step = await service.add_portfolio_step(db, user, item_id, caption, media_url)
     return PortfolioStepOut.model_validate(step)
 

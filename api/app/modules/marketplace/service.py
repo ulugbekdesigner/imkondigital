@@ -1,6 +1,5 @@
 """Freelancer Marketplace biznes logikasi — gig, buyurtma (escrow), chat, sharh, nizo."""
 
-import secrets
 from datetime import UTC, datetime
 
 from fastapi import HTTPException, UploadFile, status
@@ -427,11 +426,10 @@ async def add_message(
 async def add_message_with_file(
     db: AsyncSession, order_id: int, user: User, body: str, file: UploadFile
 ) -> MessageOut:
+    safe_name = storage.validate_upload(file, "attachment")
     storage.ensure_bucket()
-    # Tasodifiy papka segmenti — bir xil nomli fayllar (masalan "screenshot.png")
-    # ikkala tomondan yuborilganda bir-birini ustidan yozib qo'ymasligi uchun.
-    key = f"orders/{order_id}/{secrets.token_hex(4)}/{file.filename}"
-    file_url = storage.upload_fileobj(file.file, key, file.content_type)
+    key = f"orders/{order_id}/{safe_name}"
+    file_url = storage.upload_fileobj(file.file, key)
     return await add_message(db, order_id, user, MessageCreate(body=body, file_url=file_url))
 
 

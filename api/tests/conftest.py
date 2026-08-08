@@ -16,6 +16,8 @@ from app.models.enums import RoleCode
 from app.models.user import Region, Role
 from app.modules.ai.router import _limit_ziyo
 from app.modules.auth.router import _limit_login, _limit_register, _limit_verify
+from app.modules.donations.router import _limit_donate
+from app.modules.subscriptions.router import _limit_checkout
 
 TEST_DATABASE_URL = os.getenv(
     "TEST_DATABASE_URL",
@@ -145,6 +147,8 @@ async def client() -> AsyncGenerator[httpx.AsyncClient, None]:
     app.dependency_overrides[_limit_login] = _noop_rate_limit
     app.dependency_overrides[_limit_verify] = _noop_rate_limit
     app.dependency_overrides[_limit_ziyo] = _noop_rate_limit
+    app.dependency_overrides[_limit_donate] = _noop_rate_limit
+    app.dependency_overrides[_limit_checkout] = _noop_rate_limit
     transport = httpx.ASGITransport(app=app)
     async with httpx.AsyncClient(transport=transport, base_url="http://test") as c:
         yield c

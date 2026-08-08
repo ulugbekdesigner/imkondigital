@@ -21,9 +21,6 @@ from app.modules.subscriptions import service as subscriptions_service
 from app.schemas.export import DataExportOut
 from app.schemas.user import DisabilityProfileIn, DisabilityProfileOut, UserOut, UserUpdate
 
-_ALLOWED_DOC_CONTENT_TYPES = {"application/pdf", "image/jpeg", "image/png"}
-_MAX_DOC_SIZE_BYTES = 8 * 1024 * 1024  # 8 MB
-
 
 async def serialize_user(db: AsyncSession, user: User) -> UserOut:
     """User modelini xavfsiz UserOut'ga aylantiradi — nogironlik TAFSILOTLARISIZ."""
@@ -121,16 +118,7 @@ async def upload_disability_document(
     imkoni bo'lishi uchun (avval `doc_url` ustuni bor edi, lekin uni
     to'ldiradigan endpoint umuman yo'q edi).
     """
-    if file.content_type not in _ALLOWED_DOC_CONTENT_TYPES:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Faqat PDF, JPG yoki PNG formatidagi fayl qabul qilinadi",
-        )
-    if file.size is not None and file.size > _MAX_DOC_SIZE_BYTES:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Fayl hajmi 8 MB dan oshmasligi kerak",
-        )
+    safe_name = storage.validate_upload(file, "document")
 
     profile = user.disability_profile
     if profile is None:
@@ -138,8 +126,8 @@ async def upload_disability_document(
         db.add(profile)
 
     storage.ensure_bucket()
-    key = f"disability-docs/{user.id}/{file.filename}"
-    profile.doc_url = storage.upload_fileobj(file.file, key, file.content_type)
+    key = f"disability-docs/{user.id}/{safe_name}"
+    profile.doc_url = storage.upload_fileobj(file.file, key)
     # Yangi hujjat — avvalgi qaror (agar bo'lsa) endi eskirgan dalilga
     # asoslangan, shuning uchun qayta ko'rib chiqish navbatiga qaytadi.
     profile.verified_status = VerifiedStatus.PENDING

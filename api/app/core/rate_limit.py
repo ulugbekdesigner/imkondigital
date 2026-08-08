@@ -27,9 +27,25 @@ def _client() -> aioredis.Redis:
 
 
 def _client_ip(request: Request) -> str:
+    """Haqiqiy mijoz IP'sini aniqlaydi — soxtalashtirib bo'lmaydigan manbalarga ustuvorlik bilan.
+
+    MUHIM: avval `X-Forwarded-For`ning BIRINCHI qiymatini (`.split(",")[0]`)
+    ishlatardi — bu mijoz o'zi yuboradigan sarlavha, xohlagan qiymatga
+    o'rnatib, har so'rovda o'zgartirib, HAR QANDAY IP-limitni (login,
+    ro'yxatdan o'tish, Ziyo) butunlay chetlab o'tish mumkin edi (nginx/Railway
+    haqiqiy IP'ni ZANJIR OXIRIGA qo'shadi, boshiga emas). To'g'irlandi:
+    1) `CF-Connecting-IP` — Cloudflare proxy orqali o'tgan so'rovlarda
+       Cloudflare o'zi qo'yadi, mijoz uni qayta yoza olmaydi (eng ishonchli).
+    2) `X-Forwarded-For`ning OXIRGI qiymati — zanjirdagi eng yaqin/ishonchli
+       proksi qo'shgan qiymat (mijozdan uzoqroq, ammo birinchisidan xavfsizroq).
+    3) `request.client.host` — to'g'ridan-to'g'ri ulanish (proksi yo'q holat).
+    """
+    cf_ip = request.headers.get("cf-connecting-ip")
+    if cf_ip:
+        return cf_ip.strip()
     forwarded = request.headers.get("x-forwarded-for")
     if forwarded:
-        return forwarded.split(",")[0].strip()
+        return forwarded.split(",")[-1].strip()
     return request.client.host if request.client else "unknown"
 
 

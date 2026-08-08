@@ -5,6 +5,8 @@ o'rniga umumiy ichki sir (header) bilan tasdiqlanadi (Payme/Click webhook'lari
 kabi — o'z protokoli bilan autentifikatsiya).
 """
 
+import hmac
+
 from fastapi import APIRouter, Depends, Header, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -52,7 +54,9 @@ async def confirm_link(
     db: AsyncSession = Depends(get_db),
     x_internal_secret: str | None = Header(default=None),
 ) -> dict[str, bool]:
-    if x_internal_secret != settings.telegram_internal_secret:
+    if not x_internal_secret or not hmac.compare_digest(
+        x_internal_secret, settings.telegram_internal_secret
+    ):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Ruxsat yo'q")
     await service.confirm_link(db, data.code, data.chat_id)
     return {"ok": True}

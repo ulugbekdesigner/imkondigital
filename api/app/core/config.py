@@ -2,8 +2,22 @@
 
 from functools import lru_cache
 
-from pydantic import Field
+from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+# environment="production" bo'lganda BU qiymatlardan birortasi ham default
+# holida qolishi mumkin emas — masalan secret_key default qolsa, JWT
+# tokenlarni HAR KIM shu (ochiq manbada ko'rinadigan) qiymat bilan soxta
+# yasashi mumkin bo'lib qoladi; xuddi shunday payme/click/telegram sirlari
+# webhook/ichki so'rovlarni soxtalashtirish imkonini beradi. Railway env var
+# qo'yishni unutib qo'yishdan himoya — ilova jim ishlab, xavfsizlik teshigi
+# bilan qolgani o'rniga startupda darhol qulaydi ("fail fast").
+_INSECURE_DEFAULTS = {
+    "secret_key": "dev-secret-change-me-in-production",
+    "payme_merchant_key": "dev-payme-secret-key",
+    "click_secret_key": "dev-click-secret-key",
+    "telegram_internal_secret": "dev-telegram-internal-secret",
+}
 
 
 class Settings(BaseSettings):
@@ -95,6 +109,21 @@ class Settings(BaseSettings):
     @property
     def cors_origin_list(self) -> list[str]:
         return [o.strip() for o in self.cors_origins.split(",") if o.strip()]
+
+    @model_validator(mode="after")
+    def _forbid_insecure_defaults_in_production(self) -> "Settings":
+        if self.environment != "production":
+            return self
+        leaked = [
+            field for field, insecure in _INSECURE_DEFAULTS.items() if getattr(self, field) == insecure
+        ]
+        if leaked:
+            raise ValueError(
+                "production muhitida standart (xavfsiz bo'lmagan) qiymatda qolgan "
+                f"sozlamalar: {', '.join(leaked)}. Railway'da tegishli muhit "
+                "o'zgaruvchilarini o'rnating."
+            )
+        return self
 
 
 @lru_cache

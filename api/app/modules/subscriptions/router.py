@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import get_settings
 from app.core.db import get_db
+from app.core.rate_limit import rate_limit
 from app.models.enums import RoleCode
 from app.models.user import User
 from app.modules.auth.deps import get_current_user, require_roles
@@ -18,6 +19,7 @@ from app.schemas.subscription import (
 
 router = APIRouter(tags=["subscriptions"])
 _admin = require_roles(RoleCode.ADMIN)
+_limit_checkout = rate_limit("subscription-checkout", limit=10, window_seconds=3600)
 settings = get_settings()
 
 
@@ -47,7 +49,11 @@ async def admin_set_subscription(
     return await service.admin_set_plan(db, user_id, data.plan, admin.id)
 
 
-@router.post("/subscriptions/checkout", response_model=SubscriptionCheckoutOut)
+@router.post(
+    "/subscriptions/checkout",
+    response_model=SubscriptionCheckoutOut,
+    dependencies=[Depends(_limit_checkout)],
+)
 async def subscription_checkout(
     data: SubscriptionCheckoutIn,
     user: User = Depends(get_current_user),
