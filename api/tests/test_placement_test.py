@@ -115,8 +115,11 @@ async def test_complete_session_falls_back_on_malformed_json(client: httpx.Async
             f"/v1/ai/placement-test/sessions/{session['id']}/complete", headers=hdr
         )
     body = completed.json()
-    assert body["cefr_level"] == "A1"
-    assert "amalga oshmadi" in body["level_feedback"]
+    # Format xato bo'lganda "A1" (eng past daraja) soxta natija sifatida
+    # QAYTARILMAYDI — foydalanuvchi AI'ning texnik nosozligi tufayli eng
+    # past darajaga tushirilib qo'yilmasligi kerak (null = "qayta urining").
+    assert body["cefr_level"] is None
+    assert "qayta boshlang" in body["level_feedback"]
 
 
 async def test_session_scoped_to_owner(client: httpx.AsyncClient) -> None:

@@ -41,7 +41,12 @@ from app.schemas.ai import (
 )
 
 router = APIRouter(prefix="/ai", tags=["ai"])
-_limit_ziyo = rate_limit("ziyo", limit=30, window_seconds=3600)
+# Mehmon (login qilmagan) foydalanuvchi uchun YAGONA himoya shu IP-limit —
+# check_and_increment_quota faqat `user is not None` bo'lganda ishlaydi.
+# Avval soatlik 30 edi (kuniga 720 tagacha bitta IP'dan) — boshqa AI
+# funksiyalarning kunlik-kvota mantig'iga mos, ancha qattiqroq chegaraga
+# tushirildi (umumiy Gemini kvotasini bitta anonim manba tugatib qo'ymasin).
+_limit_ziyo = rate_limit("ziyo", limit=15, window_seconds=86400)
 
 
 # --- Career Coach ---

@@ -57,7 +57,13 @@ def _verdict_system_prompt(language: str) -> str:
     )
 
 
-def _parse_verdict(reply: str) -> tuple[str, str]:
+def _parse_verdict(reply: str) -> tuple[str | None, str]:
+    """Format xato bo'lsa `None` qaytaradi — bu foydalanuvchining texnik AI
+    nosozligi tufayli soxta "A1" (eng past daraja) bilan belgilanib
+    qolmasligi uchun (avval shunday edi — Ziyo prompt'idagi "hech qachon
+    xijolat qildirmang" tamoyiliga zid edi). Frontend `cefr_level=null`ni
+    "qayta urining" holati sifatida ko'rsatishi kerak.
+    """
     cleaned = reply.strip()
     if cleaned.startswith("```"):
         cleaned = cleaned.strip("`").removeprefix("json").strip()
@@ -68,7 +74,7 @@ def _parse_verdict(reply: str) -> tuple[str, str]:
             raise ValueError(f"noma'lum daraja: {level}")
         return level, str(data["feedback"])[:2000]
     except (KeyError, ValueError, TypeError, json.JSONDecodeError):
-        return "A1", "AI tahlili amalga oshmadi — natija taxminiy, qayta urinib ko'ring."
+        return None, "Natijani aniqlab bo'lmadi — texnik nosozlik yuz berdi. Iltimos, testni qayta boshlang."
 
 
 async def _get_session_or_404(
