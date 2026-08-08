@@ -31,8 +31,21 @@ _UPLOAD_CATEGORIES: dict[str, tuple[frozenset[str], int]] = {
     "video": (frozenset({".mp4", ".mov", ".mkv", ".webm", ".avi"}), 3 * 1024**3),  # 3 GB
     "subtitle": (frozenset({".vtt", ".srt"}), 2 * 1024**2),  # 2 MB
     "document": (frozenset({".pdf", ".jpg", ".jpeg", ".png"}), 8 * 1024**2),  # 8 MB
+    # Kurs materiallari, topshiriqlar, portfolio, buyurtma chati — turli kasb
+    # yo'nalishlari (ofis, IT, dizayn) uchun keng hujjat/media formatlari;
+    # bajariladigan/skript kengaytmalar (masalan .exe, .html, .svg, .js)
+    # ATAYLAB ro'yxatda YO'Q — bucket public-read bo'lgani uchun.
     "attachment": (
-        frozenset({".pdf", ".doc", ".docx", ".zip", ".jpg", ".jpeg", ".png", ".webp"}),
+        frozenset(
+            {
+                ".pdf", ".doc", ".docx", ".rtf", ".txt", ".odt",
+                ".xls", ".xlsx", ".csv", ".ods",
+                ".ppt", ".pptx", ".odp",
+                ".zip", ".rar", ".7z",
+                ".jpg", ".jpeg", ".png", ".webp", ".gif",
+                ".mp3", ".wav", ".m4a",
+            }
+        ),
         25 * 1024**2,
     ),  # 25 MB
 }
