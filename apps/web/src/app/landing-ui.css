@@ -259,7 +259,7 @@
 }
 .imk-ladder-tab:hover { background: rgba(255, 255, 255, 0.08); }
 .imk-ladder-tab--active,
-.imk-ladder-tab--active:hover { background: var(--paper); color: var(--navy-900); }
+.imk-ladder-tab--active:hover { background: var(--land-surface-onlight); color: var(--navy-900); }
 .imk-ladder-tab:focus-visible { outline: 2px solid var(--land-teal-300); outline-offset: 2px; }
 .imk-ladder-step {
   display: flex;
