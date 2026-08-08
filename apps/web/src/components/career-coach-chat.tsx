@@ -115,8 +115,8 @@ export function CareerCoachChat({
             key={m.id}
             className={
               m.role === 'user'
-                ? 'ml-auto max-w-[85%] rounded-[18px] rounded-br-[6px] bg-deep px-4 py-3 text-deep-fg'
-                : 'mr-auto max-w-[88%] rounded-[18px] rounded-bl-[6px] border border-line bg-paper px-4 py-3 text-ink'
+                ? 'ml-auto max-w-[85%] rounded-card rounded-br-[6px] bg-deep px-4 py-3 text-deep-fg'
+                : 'mr-auto max-w-[88%] rounded-card rounded-bl-[6px] border border-line bg-paper px-4 py-3 text-ink'
             }
           >
             {m.role === 'user' ? (
@@ -129,7 +129,7 @@ export function CareerCoachChat({
         {sending && (
           <li
             aria-hidden="true"
-            className="mr-auto flex items-center gap-1.5 rounded-[18px] rounded-bl-[6px] border border-line bg-paper px-4 py-3.5"
+            className="mr-auto flex items-center gap-1.5 rounded-card rounded-bl-[6px] border border-line bg-paper px-4 py-3.5"
           >
             <span className="imk-dot h-1.5 w-1.5 rounded-full bg-ink-soft" />
             <span className="imk-dot h-1.5 w-1.5 rounded-full bg-ink-soft [animation-delay:0.2s]" />

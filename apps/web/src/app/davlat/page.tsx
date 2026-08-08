@@ -27,7 +27,7 @@ export const metadata: Metadata = {
 
 function StatTile({ value, label }: { value: string | number; label: string }) {
   return (
-    <div className="rounded-[18px] border border-line bg-paper p-4">
+    <div className="rounded-card border border-line bg-paper p-4">
       <p className="font-mono text-xl font-bold tabular-nums text-ink">{value}</p>
       <p className="mt-1 font-sans text-xs text-ink-soft">{label}</p>
     </div>
@@ -148,7 +148,7 @@ async function GovOverview() {
               Icon: ShieldIcon,
             },
           ].map((s) => (
-            <div key={s.label} className="rounded-[18px] border border-line bg-paper p-4">
+            <div key={s.label} className="rounded-card border border-line bg-paper p-4">
               <s.Icon className="text-primary" />
               <p className="mt-2 font-mono text-xl font-bold tabular-nums text-ink">
                 {s.value}
@@ -211,7 +211,7 @@ function GovOverviewSkeleton() {
       </span>
       <section aria-hidden="true" className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="rounded-[18px] border border-line bg-paper p-4">
+          <div key={i} className="rounded-card border border-line bg-paper p-4">
             <Skeleton className="h-6 w-14" />
             <Skeleton className="mt-2 h-3 w-16" />
           </div>
@@ -219,14 +219,14 @@ function GovOverviewSkeleton() {
       </section>
       <section aria-hidden="true" className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3">
         {Array.from({ length: 5 }).map((_, i) => (
-          <div key={i} className="rounded-[18px] border border-line bg-paper p-4">
+          <div key={i} className="rounded-card border border-line bg-paper p-4">
             <Skeleton className="h-5 w-5 rounded-full" />
             <Skeleton className="mt-3 h-6 w-14" />
             <Skeleton className="mt-2 h-3 w-20" />
           </div>
         ))}
       </section>
-      <section aria-hidden="true" className="mt-8 rounded-[18px] border border-line bg-paper p-5">
+      <section aria-hidden="true" className="mt-8 rounded-card border border-line bg-paper p-5">
         <Skeleton className="h-5 w-56" />
         <div className="mt-4 flex flex-col gap-2">
           {Array.from({ length: 4 }).map((_, i) => (

@@ -12,7 +12,7 @@ import { ShieldIcon } from '@/components/shell-icons';
  */
 export function CourseCertificateTemplatePreview({ courseTitle }: { courseTitle: string }) {
   return (
-    <section className="mt-10 flex flex-col gap-4 rounded-[18px] border border-line bg-paper p-6">
+    <section className="mt-10 flex flex-col gap-4 rounded-card border border-line bg-paper p-6">
       <div className="flex items-center gap-2">
         <ShieldIcon width={20} height={20} className="text-primary" aria-hidden="true" />
         <h2 className="font-display text-lg font-bold text-ink">Sertifikat shabloni</h2>

@@ -45,7 +45,7 @@ function KpiCard({
   hintClassName?: string;
 }) {
   return (
-    <div className="flex flex-col gap-2 rounded-[18px] border border-line bg-paper p-[18px]">
+    <div className="flex flex-col gap-2 rounded-card border border-line bg-paper p-[18px]">
       <span aria-hidden="true" className="flex h-9 w-9 items-center justify-center rounded-lg bg-mint text-primary">
         <Icon width={18} height={18} />
       </span>
@@ -175,7 +175,7 @@ export default async function MeningYolimPage() {
           />
         </RevealItem>
         <RevealItem>
-          <div className="flex flex-col gap-2 rounded-[18px] border border-line bg-paper p-[18px]">
+          <div className="flex flex-col gap-2 rounded-card border border-line bg-paper p-[18px]">
             <span className="font-sans text-xs font-bold uppercase tracking-wide text-ink-soft">Streak</span>
             <div className="flex items-baseline gap-1.5">
               <span className="font-mono text-2xl font-bold tabular-nums text-ink">{streak?.current_streak ?? 0}</span>
@@ -185,7 +185,7 @@ export default async function MeningYolimPage() {
           </div>
         </RevealItem>
         <RevealItem>
-          <div className="flex flex-col gap-2 rounded-[18px] border border-line bg-paper p-[18px]">
+          <div className="flex flex-col gap-2 rounded-card border border-line bg-paper p-[18px]">
             <span className="font-sans text-xs font-bold uppercase tracking-wide text-ink-soft">Portfolio</span>
             <div className="flex items-baseline gap-1.5">
               <span className="font-mono text-2xl font-bold tabular-nums text-ink">{portfolio.length}</span>
@@ -198,7 +198,7 @@ export default async function MeningYolimPage() {
           </div>
         </RevealItem>
         <RevealItem>
-          <div className="flex flex-col gap-2 rounded-[18px] border border-line bg-paper p-[18px]">
+          <div className="flex flex-col gap-2 rounded-card border border-line bg-paper p-[18px]">
             <span className="font-sans text-xs font-bold uppercase tracking-wide text-ink-soft">Arizalarim</span>
             <div className="flex items-baseline gap-1.5">
               <span className="font-mono text-2xl font-bold tabular-nums text-ink">{activeApplications.length}</span>

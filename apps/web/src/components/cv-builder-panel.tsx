@@ -52,7 +52,7 @@ export function CvBuilderPanel({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="rounded-[18px] border border-line bg-paper p-[18px]">
+      <div className="rounded-card border border-line bg-paper p-[18px]">
         <div className="flex items-center gap-3">
           {me.avatar_url ? (
             // Foydalanuvchi yuklagan tashqi (MinIO) media — next/image optimallashtira olmaydi.

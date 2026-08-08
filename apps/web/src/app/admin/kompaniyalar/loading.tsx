@@ -20,7 +20,7 @@ export default function AdminCompaniesLoading() {
           ))}
         </div>
 
-        <div className="mt-5 flex flex-col gap-0 overflow-hidden rounded-[18px] border border-line">
+        <div className="mt-5 flex flex-col gap-0 overflow-hidden rounded-card border border-line">
           {Array.from({ length: 5 }).map((_, i) => (
             <div
               key={i}

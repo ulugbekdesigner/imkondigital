@@ -97,6 +97,7 @@ const preset = {
         DEFAULT: '0.625rem',
         lg: '1rem',
         xl: '1.5rem',
+        card: 'var(--r-card)',
       },
       ringColor: {
         // DIQQAT (yuqoridagi izohga qarang): --imkon-bright "R G B" formatida

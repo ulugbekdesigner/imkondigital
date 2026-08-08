@@ -72,7 +72,7 @@ export default async function AdminCompaniesPage({
         <div
           role="table"
           aria-label="Kompaniyalar"
-          className="mt-5 rounded-[18px] border border-line bg-paper"
+          className="mt-5 rounded-card border border-line bg-paper"
         >
           <div
             role="row"

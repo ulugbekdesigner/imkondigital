@@ -158,7 +158,7 @@ export default async function AdminUsersPage({
         <div
           role="table"
           aria-label="Foydalanuvchilar"
-          className="mt-5 rounded-[18px] border border-line bg-paper"
+          className="mt-5 rounded-card border border-line bg-paper"
         >
           <div
             role="row"
@@ -221,7 +221,7 @@ export default async function AdminUsersPage({
           ))}
         </div>
       ) : (
-        <div className="mt-5 flex flex-col items-center gap-3 rounded-[18px] border-2 border-dashed border-line px-6 py-12 text-center">
+        <div className="mt-5 flex flex-col items-center gap-3 rounded-card border-2 border-dashed border-line px-6 py-12 text-center">
           <UsersIcon width={26} height={26} className="text-ink-soft" />
           <p className="font-sans text-base text-ink-soft">Hech kim topilmadi.</p>
         </div>
@@ -240,7 +240,7 @@ export default async function AdminUsersPage({
       )}
 
       {moderationQueue.length > 0 && (
-        <div className="mt-6 flex flex-col items-start gap-4 rounded-[18px] border border-line bg-paper p-4 sm:flex-row sm:items-center sm:gap-3.5">
+        <div className="mt-6 flex flex-col items-start gap-4 rounded-card border border-line bg-paper p-4 sm:flex-row sm:items-center sm:gap-3.5">
           <span
             aria-hidden="true"
             className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-warn-bg text-warn"

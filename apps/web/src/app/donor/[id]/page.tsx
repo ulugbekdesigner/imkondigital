@@ -291,7 +291,7 @@ function ApplicationsSkeleton() {
         <Skeleton className="h-5 w-5 rounded-full" />
         <Skeleton className="h-5 w-32" />
       </div>
-      <div aria-hidden="true" className="mt-4 flex flex-col gap-4 rounded-[18px] border border-line bg-paper p-4">
+      <div aria-hidden="true" className="mt-4 flex flex-col gap-4 rounded-card border border-line bg-paper p-4">
         {Array.from({ length: 3 }).map((_, i) => (
           <div key={i} className="flex items-center gap-3">
             <Skeleton className="h-10 w-10 shrink-0 rounded-full" />

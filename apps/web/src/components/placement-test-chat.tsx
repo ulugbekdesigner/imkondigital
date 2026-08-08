@@ -91,8 +91,8 @@ export function PlacementTestChat({ session }: { session: PlacementTestSessionDe
             key={m.id}
             className={
               m.role === 'user'
-                ? 'ml-auto max-w-[85%] rounded-[18px] rounded-br-[6px] bg-bright px-4 py-3 text-white'
-                : 'mr-auto max-w-[88%] rounded-[18px] rounded-bl-[6px] border border-white/15 bg-white/8 px-4 py-3 text-deep-fg'
+                ? 'ml-auto max-w-[85%] rounded-card rounded-br-[6px] bg-bright px-4 py-3 text-white'
+                : 'mr-auto max-w-[88%] rounded-card rounded-bl-[6px] border border-white/15 bg-white/8 px-4 py-3 text-deep-fg'
             }
           >
             {m.role === 'user' ? (
@@ -126,7 +126,7 @@ export function PlacementTestChat({ session }: { session: PlacementTestSessionDe
                 onChange={(e) => setBody(e.target.value)}
                 rows={2}
                 placeholder="Javobingizni yozing yoki mikrofondan ayting…"
-                className="min-h-touch w-full rounded-[18px] border border-white/20 bg-white/5 px-4 py-3 font-sans text-base text-deep-fg placeholder:text-mist focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-deep"
+                className="min-h-touch w-full rounded-card border border-white/20 bg-white/5 px-4 py-3 font-sans text-base text-deep-fg placeholder:text-mist focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-deep"
               />
               {micSupported && (
                 <button
@@ -165,7 +165,7 @@ export function PlacementTestChat({ session }: { session: PlacementTestSessionDe
             </button>
           </div>
         ) : (
-          <div className="flex flex-col gap-2 rounded-[18px] border border-teal/40 bg-teal/10 p-4">
+          <div className="flex flex-col gap-2 rounded-card border border-teal/40 bg-teal/10 p-4">
             <p className="flex items-center gap-1.5 font-display text-lg font-bold text-deep-fg">
               <CheckIcon width={18} height={18} className="shrink-0 text-teal" />
               Sizning darajangiz: {session.cefr_level ?? '—'}

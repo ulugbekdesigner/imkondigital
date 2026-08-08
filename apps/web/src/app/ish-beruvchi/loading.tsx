@@ -19,7 +19,7 @@ export default function EmployerDashboardLoading() {
 
       <div className="grid grid-cols-3 gap-3">
         {[0, 1, 2].map((i) => (
-          <div key={i} className="flex flex-col gap-3 rounded-[18px] border border-line bg-paper p-4">
+          <div key={i} className="flex flex-col gap-3 rounded-card border border-line bg-paper p-4">
             <span className="imk-skeleton w-4/5" />
             <span className="imk-skeleton w-10" />
           </div>

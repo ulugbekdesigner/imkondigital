@@ -113,7 +113,7 @@ export function ApplicantsManager({ initialApplicants }: { initialApplicants: Ap
           onDismiss={() => setCelebrateName(null)}
         />
       )}
-      <ul className="border-line bg-paper overflow-hidden rounded-[18px] border">
+      <ul className="border-line bg-paper overflow-hidden rounded-card border">
         {applicants.map((a) => {
           const experienceParts = [`${a.ladder_step}-pog'ona`];
           if (a.portfolio_count > 0) experienceParts.push(`${a.portfolio_count} portfolio ishi`);

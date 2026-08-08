@@ -82,7 +82,7 @@ export default async function AdminInstructorsPage({
         <div
           role="table"
           aria-label="Ustozlar"
-          className="mt-5 rounded-[18px] border border-line bg-paper"
+          className="mt-5 rounded-card border border-line bg-paper"
         >
           <div
             role="row"
@@ -149,7 +149,7 @@ export default async function AdminInstructorsPage({
           ))}
         </div>
       ) : (
-        <div className="mt-5 flex flex-col items-center gap-3 rounded-[18px] border-2 border-dashed border-line px-6 py-12 text-center">
+        <div className="mt-5 flex flex-col items-center gap-3 rounded-card border-2 border-dashed border-line px-6 py-12 text-center">
           <UsersIcon width={26} height={26} className="text-ink-soft" />
           <p className="font-sans text-base text-ink-soft">Hozircha ustoz yo&apos;q.</p>
         </div>

@@ -15,7 +15,7 @@ export default function ApplicantsLoading() {
         <span className="imk-skeleton w-full" />
       </div>
 
-      <div className="mt-6 overflow-hidden rounded-[18px] border border-line bg-paper">
+      <div className="mt-6 overflow-hidden rounded-card border border-line bg-paper">
         {[0, 1, 2].map((i) => (
           <div key={i} className="flex items-center gap-3.5 border-t border-line p-4 first:border-t-0 sm:p-[18px]">
             <div className="h-10 w-10 shrink-0 rounded-full bg-surface-2" />

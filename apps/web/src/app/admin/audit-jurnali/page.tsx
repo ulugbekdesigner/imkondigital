@@ -61,7 +61,7 @@ export default async function AdminAuditLogPage({
         <div
           role="table"
           aria-label="Audit jurnali"
-          className="rounded-[18px] border border-line bg-paper"
+          className="rounded-card border border-line bg-paper"
         >
           <div
             role="row"

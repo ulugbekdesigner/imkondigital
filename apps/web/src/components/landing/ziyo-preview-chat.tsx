@@ -36,7 +36,7 @@ export function ZiyoPreviewChat() {
 
       <div className="flex flex-col gap-3 py-4">
         <div
-          className="max-w-[88%] self-start rounded-[18px] rounded-bl-md px-4 py-3.5 text-[15px] leading-relaxed"
+          className="max-w-[88%] self-start rounded-card rounded-bl-md px-4 py-3.5 text-[15px] leading-relaxed"
           style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.16)', color: 'var(--land-text-on-dark)' }}
         >
           Salom! Men ZIYO. Kurs, ish yoki rezyume haqida — nimadan boshlaymiz?

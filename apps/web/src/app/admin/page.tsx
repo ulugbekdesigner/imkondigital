@@ -124,7 +124,7 @@ export default async function AdminPage() {
                 {OVERVIEW_CARDS.map(({ key, label, Icon }) => (
                   <div
                     key={key}
-                    className="flex flex-col gap-1.5 rounded-[18px] border border-line bg-paper p-[18px]"
+                    className="flex flex-col gap-1.5 rounded-card border border-line bg-paper p-[18px]"
                   >
                     <Icon width={16} height={16} className="text-ink-soft" />
                     <CountUp value={overview[key]} className="font-mono text-xl font-bold tabular-nums text-ink" />

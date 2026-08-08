@@ -19,7 +19,7 @@ export default function AdminAuditLogLoading() {
 
         <Skeleton className="mb-4 mt-4 h-3.5 w-72" />
 
-        <div className="flex flex-col gap-0 overflow-hidden rounded-[18px] border border-line">
+        <div className="flex flex-col gap-0 overflow-hidden rounded-card border border-line">
           {Array.from({ length: 7 }).map((_, i) => (
             <div
               key={i}

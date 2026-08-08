@@ -98,7 +98,7 @@ async function VacanciesSection({ companyId }: { companyId: number }) {
       {kpis ? (
         <div className="grid grid-cols-3 gap-3">
           {kpis.map((kpi) => (
-            <div key={kpi.label} className="rounded-[18px] border border-line bg-paper p-4">
+            <div key={kpi.label} className="rounded-card border border-line bg-paper p-4">
               <p className="font-sans text-xs font-bold uppercase tracking-wide text-ink-soft">
                 {kpi.label}
               </p>

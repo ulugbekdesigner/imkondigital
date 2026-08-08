@@ -89,7 +89,7 @@ export default async function MyCoursesPage() {
         </div>
       </section>
 
-      <div className="mt-8 flex flex-col gap-3 rounded-[18px] border border-line bg-mint/40 p-6">
+      <div className="mt-8 flex flex-col gap-3 rounded-card border border-line bg-mint/40 p-6">
         <div className="flex items-center gap-2">
           <HeartIcon width={20} height={20} className="text-primary" />
           <h2 className="font-display text-lg font-bold text-ink">Saxovat darajasi</h2>

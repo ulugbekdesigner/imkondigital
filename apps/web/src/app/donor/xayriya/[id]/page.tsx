@@ -90,7 +90,7 @@ export default async function DonorDonationProjectDetailPage({
         </Link>
 
         <div
-          className="mt-4 overflow-hidden rounded-[18px] p-6"
+          className="mt-4 overflow-hidden rounded-card p-6"
           style={{
             background:
               'linear-gradient(118deg, rgb(var(--imkon-deep)) 0%, rgb(var(--imkon-bright)) 55%, rgb(var(--imkon-teal)) 100%)',
@@ -148,19 +148,19 @@ export default async function DonorDonationProjectDetailPage({
         <p className="text-ink-soft mt-5 font-sans text-base">{project.story}</p>
 
         <div className="mt-4 grid grid-cols-3 gap-3">
-          <div className="border-line bg-paper rounded-[18px] border p-4">
+          <div className="border-line bg-paper rounded-card border p-4">
             <p className="text-ink font-mono text-lg font-bold tabular-nums">
               {formatThousands(project.collected_amount)}
             </p>
             <p className="text-ink-soft font-sans text-xs">Yig&apos;ildi (so&apos;m)</p>
           </div>
-          <div className="border-line bg-paper rounded-[18px] border p-4">
+          <div className="border-line bg-paper rounded-card border p-4">
             <p className="text-ink font-mono text-lg font-bold tabular-nums">
               {formatThousands(project.target_amount)}
             </p>
             <p className="text-ink-soft font-sans text-xs">Maqsad (so&apos;m)</p>
           </div>
-          <div className="border-line bg-paper rounded-[18px] border p-4">
+          <div className="border-line bg-paper rounded-card border p-4">
             <p className="text-ink font-mono text-lg font-bold tabular-nums">
               {project.donors_count}
             </p>
@@ -256,7 +256,7 @@ function DonationsSkeleton() {
       <span className="sr-only" role="status">
         Homiylar yuklanmoqda…
       </span>
-      <div aria-hidden="true" className="rounded-[18px] border border-line bg-paper p-6">
+      <div aria-hidden="true" className="rounded-card border border-line bg-paper p-6">
         <Skeleton className="h-5 w-28" />
         <div className="mt-3 flex flex-col gap-2">
           {Array.from({ length: 3 }).map((_, i) => (

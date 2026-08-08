@@ -117,7 +117,7 @@ async function DonorOverview() {
                 Icon: BriefcaseIcon,
               },
             ].map((s) => (
-              <div key={s.label} className="rounded-[18px] border border-line bg-paper p-4">
+              <div key={s.label} className="rounded-card border border-line bg-paper p-4">
                 <s.Icon className="text-primary" />
                 <p className="mt-2 font-mono text-xl font-bold tabular-nums text-ink">
                   {formatThousands(s.value)}
@@ -332,14 +332,14 @@ function DonorOverviewSkeleton() {
       </span>
       <section aria-hidden="true" className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3">
         {Array.from({ length: 5 }).map((_, i) => (
-          <div key={i} className="rounded-[18px] border border-line bg-paper p-4">
+          <div key={i} className="rounded-card border border-line bg-paper p-4">
             <Skeleton className="h-5 w-5 rounded-full" />
             <Skeleton className="mt-3 h-6 w-14" />
             <Skeleton className="mt-2 h-3 w-20" />
           </div>
         ))}
       </section>
-      <section aria-hidden="true" className="mt-10 rounded-[18px] border border-line bg-paper p-6">
+      <section aria-hidden="true" className="mt-10 rounded-card border border-line bg-paper p-6">
         <Skeleton className="h-5 w-32" />
         <div className="mt-4 flex flex-col gap-4">
           {Array.from({ length: 2 }).map((_, i) => (

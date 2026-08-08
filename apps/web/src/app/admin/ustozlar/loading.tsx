@@ -16,7 +16,7 @@ export default function AdminInstructorsLoading() {
 
         <Skeleton className="mt-4 h-11 max-w-md rounded-full" />
 
-        <div className="mt-5 flex flex-col gap-0 overflow-hidden rounded-[18px] border border-line">
+        <div className="mt-5 flex flex-col gap-0 overflow-hidden rounded-card border border-line">
           {Array.from({ length: 6 }).map((_, i) => (
             <div
               key={i}
