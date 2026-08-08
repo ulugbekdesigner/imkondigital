@@ -21,9 +21,9 @@
    Ishlatish: apps/web/src/app/(app)/layout.tsx ichida
    <AppShell fullName={me?.full_name} avatarUrl={me?.avatar_url} unreadCount={n}>.
    ============================================================ */
-import { type ReactNode } from 'react';
+import { type ReactNode, useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@imkon/ui';
 import {
   BellIcon,
@@ -31,6 +31,7 @@ import {
   BriefcaseIcon,
   GearIcon,
   HeartIcon,
+  LogoutIcon,
   RouteIcon,
   SearchIcon,
 } from '@/components/shell-icons';
@@ -65,6 +66,16 @@ export function AppShell({
   children: ReactNode;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const [loggingOut, setLoggingOut] = useState(false);
+
+  async function handleLogout() {
+    setLoggingOut(true);
+    await fetch('/api/auth/logout', { method: 'POST' });
+    router.push('/');
+    router.refresh();
+  }
+
   const matchingHref = ALL_NAV_HREFS.filter(
     (href) => pathname === href || pathname.startsWith(href + '/'),
   ).sort((a, b) => b.length - a.length)[0];
@@ -149,6 +160,19 @@ export function AppShell({
             </span>
             <span className="hidden truncate lg:inline">Sozlamalar</span>
           </Link>
+          <button
+            type="button"
+            onClick={() => void handleLogout()}
+            disabled={loggingOut}
+            className={cn(navItemClass(false), 'w-full disabled:opacity-60')}
+          >
+            <span aria-hidden="true" className={navIconClass(false)}>
+              <LogoutIcon width={20} height={20} />
+            </span>
+            <span className="hidden truncate lg:inline">
+              {loggingOut ? 'Chiqilmoqda…' : 'Chiqish'}
+            </span>
+          </button>
         </div>
       </aside>
 

@@ -72,6 +72,16 @@ export const GearIcon = (p: IconProps) =>
     p,
   );
 
+export const LogoutIcon = (p: IconProps) =>
+  base(
+    <>
+      <path d="M8 17H5a1.5 1.5 0 0 1-1.5-1.5v-11A1.5 1.5 0 0 1 5 3h3" />
+      <path d="M8.5 10h9" />
+      <path d="M14 6.5 17.5 10 14 13.5" />
+    </>,
+    p,
+  );
+
 export const SearchIcon = (p: IconProps) =>
   base(
     <>

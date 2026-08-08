@@ -47,9 +47,9 @@
    ============================================================ */
 import { useEffect, useState, type ReactNode } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@imkon/ui';
-import { CloseIcon, MenuIcon } from '@/components/shell-icons';
+import { CloseIcon, LogoutIcon, MenuIcon } from '@/components/shell-icons';
 import type { CabinetNavItem } from '@/components/cabinet-nav';
 
 export type { CabinetNavItem };
@@ -66,7 +66,16 @@ export function CabinetShell({
   children: ReactNode;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
+
+  async function handleLogout() {
+    setLoggingOut(true);
+    await fetch('/api/auth/logout', { method: 'POST' });
+    router.push('/');
+    router.refresh();
+  }
 
   // Eng aniq (eng uzun) mos keluvchi href — aks holda "/ustoz/kurslar" kabi
   // qisqa yo'l o'zining "/ustoz/kurslar/dashboard" kabi jiyani sahifasida ham
@@ -183,6 +192,19 @@ export function CabinetShell({
           </button>
         </div>
         {navList}
+        <div className="mt-auto px-3 pb-4">
+          <button
+            type="button"
+            onClick={() => void handleLogout()}
+            disabled={loggingOut}
+            className="flex h-11 w-full items-center gap-3 rounded px-4 font-sans text-base text-mist hover:bg-white/5 hover:text-white disabled:opacity-60"
+          >
+            <span aria-hidden="true" className="flex w-5 shrink-0 items-center justify-center">
+              <LogoutIcon width={20} height={20} />
+            </span>
+            <span className="truncate">{loggingOut ? 'Chiqilmoqda…' : 'Chiqish'}</span>
+          </button>
+        </div>
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
