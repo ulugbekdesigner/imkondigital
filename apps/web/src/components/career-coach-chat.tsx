@@ -52,9 +52,11 @@ export function CareerCoachChat({
         setError(
           res.status === 429
             ? "Kunlik so'rovlar limiti tugadi. Ertaga qayta urinib ko'ring."
-            : (data.detail ?? 'Xatolik yuz berdi.'),
+            : res.status === 503
+              ? "AI xizmati hozir judayam band — birozdan so'ng qayta urinib ko'ring."
+              : (data.detail ?? 'Xatolik yuz berdi.'),
         );
-        setLastFailedContent(res.status === 429 ? null : content);
+        setLastFailedContent(res.status === 429 || res.status === 503 ? null : content);
         return;
       }
       setMessages((prev) => [...prev, data]);

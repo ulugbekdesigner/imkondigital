@@ -13,7 +13,13 @@ function weekdayLabel(iso: string): string {
   return WEEKDAY_SHORT[new Date(Date.UTC(y, m - 1, d)).getUTCDay()] ?? '';
 }
 
-export function RegistrationsBarChart({ days }: { days: DailyBucket[] }) {
+export function RegistrationsBarChart({
+  days,
+  title = "Ro'yxatdan o'tish · 7 kun",
+}: {
+  days: DailyBucket[];
+  title?: string;
+}) {
   const max = Math.max(1, ...days.map((d) => d.count));
   const total = days.reduce((sum, d) => sum + d.count, 0);
   const dailyAvg = days.length > 0 ? Math.round(total / days.length) : 0;
@@ -31,7 +37,7 @@ export function RegistrationsBarChart({ days }: { days: DailyBucket[] }) {
   return (
     <div className="flex flex-col gap-4 rounded-xl border border-line bg-paper p-5">
       <div className="flex items-center justify-between">
-        <span className="font-sans text-base font-bold text-ink">Ro&apos;yxatdan o&apos;tish · 7 kun</span>
+        <span className="font-sans text-base font-bold text-ink">{title}</span>
         <span className="font-sans text-sm text-ink-soft">Kunlik o&apos;rtacha {dailyAvg}</span>
       </div>
       <div className="flex h-[150px] items-end gap-2.5" role="img" aria-label={`Oxirgi 7 kunda ${total} ta ro'yxatdan o'tish`}>

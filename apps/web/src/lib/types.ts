@@ -721,6 +721,17 @@ export interface RegistrationsDaily {
   days: DailyBucket[];
 }
 
+export interface AiFeatureUsage {
+  feature: string;
+  total_count: number;
+  active_users: number;
+}
+
+export interface AdminAiUsageOverview {
+  by_feature: AiFeatureUsage[];
+  daily_total: DailyBucket[];
+}
+
 export interface DonorOverview {
   programs_count: number;
   total_applicants: number;

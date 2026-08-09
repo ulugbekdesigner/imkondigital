@@ -11,6 +11,7 @@ from app.models.ai import (
     PlacementTestMessage,
     PlacementTestSession,
     StudyBuddyMessage,
+    ZiyoMessage,
 )
 from app.models.assessment import (
     FinalExamSubmission,
@@ -219,4 +220,5 @@ __all__ = [
     "VacancyStatus",
     "VerifiedStatus",
     "WorkFormat",
+    "ZiyoMessage",
 ]

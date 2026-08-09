@@ -3,6 +3,7 @@ import { API_INTERNAL_URL } from './api-config';
 import { getAccessToken } from './session';
 import type { SuccessStoryOut } from './success-stories-api';
 import type {
+  AdminAiUsageOverview,
   AdminCompanyPage,
   AdminCoursePage,
   AdminDisputePage,
@@ -109,6 +110,10 @@ export function getAdminCompanies(params: {
 
 export function getRegistrationsDaily(): Promise<RegistrationsDaily | null> {
   return authedGet<RegistrationsDaily>('/v1/analytics/admin/registrations-daily');
+}
+
+export function getAdminAiUsage(): Promise<AdminAiUsageOverview | null> {
+  return authedGet<AdminAiUsageOverview>('/v1/analytics/admin/ai-usage');
 }
 
 export function getExternalJobsSyncStatus(): Promise<ExternalJobsSyncStatus | null> {

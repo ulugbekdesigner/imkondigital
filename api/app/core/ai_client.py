@@ -7,6 +7,7 @@ Alohida funksiya sifatida ajratilgan — testlarda mock qilinadi (haqiqiy API
 kalitiga muhtoj emas), Payme/Click/Telegram'dagi bilan bir xil naqsh.
 """
 
+import asyncio
 from typing import TypedDict
 
 from fastapi import HTTPException, status
@@ -18,6 +19,13 @@ from app.core.config import get_settings
 settings = get_settings()
 
 _client = genai.Client(api_key=settings.gemini_api_key)
+
+# Gemini serverida vaqtinchalik nosozlik (5xx) yoki tarmoq xatosi bo'lsa — 2
+# marta qayta urinamiz (1s, keyin 2s kutib). Gemini'ning O'ZI kvota tugatgan
+# holatda (429 RESOURCE_EXHAUSTED) qayta urinish befoyda — kunlik chegara
+# soniyalar ichida tiklanmaydi, shu sabab bu holat pastda alohida ushlanadi.
+_RETRY_DELAYS: tuple[float, ...] = (1.0, 2.0)
+_GENERIC_ERROR_DETAIL = "AI xizmati vaqtincha ishlamayapti. Birozdan so'ng qayta urinib ko'ring."
 
 # Har bir xususiyat (Ziyo/Career Coach/...) o'z tizim promptini yozadi, lekin
 # hech biri foydalanuvchi xabaridagi "avvalgi ko'rsatmalarni unut" kabi
@@ -46,8 +54,11 @@ async def generate_ai_reply(
 ) -> str:
     """Gemini'ga so'rov yuboradi va matn javobini qaytaradi.
 
-    AI provayder xatosini (auth/rate-limit/tarmoq) foydalanuvchiga tushunarli
-    502 xatosiga aylantiradi — xom 500'ni tashqariga chiqarmaydi.
+    AI provayder xatosini foydalanuvchiga tushunarli xatoga aylantiradi — xom
+    500'ni tashqariga chiqarmaydi. Gemini'ning o'z kvotasi tugaganda (429)
+    alohida 503 qaytaradi (ilovaning o'z kunlik kvotasi allaqachon 429
+    ishlatadi — chalkashmaslik uchun), boshqa vaqtinchalik xatolarda
+    (5xx/tarmoq) jimgina 2 marta qayta urinadi.
     """
     contents: list[types.Content] = [
         types.Content(
@@ -55,20 +66,33 @@ async def generate_ai_reply(
         )
         for m in messages
     ]
-    try:
-        response = await _client.aio.models.generate_content(
-            model=settings.gemini_model,
-            # mypy: list[Content] invariance'i tufayli SDK'ning murakkab Union'iga
-            # to'g'ridan-to'g'ri mos kelmaydi — runtime'da to'liq xavfsiz.
-            contents=contents,  # type: ignore[arg-type]
-            config=types.GenerateContentConfig(
-                system_instruction=_INJECTION_GUARD + system,
-                max_output_tokens=max_tokens,
-            ),
-        )
-    except errors.APIError as exc:
-        raise HTTPException(
-            status_code=status.HTTP_502_BAD_GATEWAY,
-            detail="AI xizmati vaqtincha ishlamayapti. Birozdan so'ng qayta urinib ko'ring.",
-        ) from exc
-    return response.text or ""
+    config = types.GenerateContentConfig(
+        system_instruction=_INJECTION_GUARD + system,
+        max_output_tokens=max_tokens,
+    )
+    for delay in (*_RETRY_DELAYS, None):
+        try:
+            response = await _client.aio.models.generate_content(
+                model=settings.gemini_model,
+                # mypy: list[Content] invariance'i tufayli SDK'ning murakkab Union'iga
+                # to'g'ridan-to'g'ri mos kelmaydi — runtime'da to'liq xavfsiz.
+                contents=contents,  # type: ignore[arg-type]
+                config=config,
+            )
+            return response.text or ""
+        except errors.ClientError as exc:
+            if exc.code == 429:
+                raise HTTPException(
+                    status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                    detail="AI xizmati hozir judayam band — birozdan so'ng qayta urinib ko'ring.",
+                ) from exc
+            raise HTTPException(
+                status_code=status.HTTP_502_BAD_GATEWAY, detail=_GENERIC_ERROR_DETAIL
+            ) from exc
+        except Exception as exc:
+            if delay is None:
+                raise HTTPException(
+                    status_code=status.HTTP_502_BAD_GATEWAY, detail=_GENERIC_ERROR_DETAIL
+                ) from exc
+            await asyncio.sleep(delay)
+    raise AssertionError("unreachable")  # pragma: no cover

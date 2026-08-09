@@ -21,6 +21,17 @@ class RegistrationsDaily(BaseModel):
     days: list[DailyBucket]
 
 
+class AiFeatureUsage(BaseModel):
+    feature: str
+    total_count: int
+    active_users: int
+
+
+class AdminAiUsageOverview(BaseModel):
+    by_feature: list[AiFeatureUsage]
+    daily_total: list[DailyBucket]
+
+
 class AdminOverview(BaseModel):
     total_users: int
     active_users: int

@@ -12,6 +12,8 @@ interface ChatMsg {
   content: string;
   navigate?: { path: string; label: string } | null;
   isError?: boolean;
+  /** Gemini o'zi band (429) — qayta urinish darhol yordam bermaydi, tugma yashiriladi. */
+  isQuotaError?: boolean;
 }
 
 interface SpeechRecognitionResultLike {
@@ -91,9 +93,33 @@ export function ZiyoWidget() {
   const supportsVoice = useMemo(() => getSpeechRecognitionCtor() !== null, []);
 
   useEffect(() => {
-    if (open && messages.length === 0) {
-      setMessages([{ role: 'assistant', content: greetingFor(pathname) }]);
-    }
+    if (!open || messages.length > 0) return;
+    let cancelled = false;
+    const fallback = () => {
+      if (!cancelled) setMessages([{ role: 'assistant', content: greetingFor(pathname) }]);
+    };
+    // Faqat kirgan foydalanuvchida saqlangan tarix bor — mehmon uchun bu so'rov
+    // 401 bilan qaytadi va pastdagi fallback (hozirgi salomlashuv) ishga tushadi.
+    fetch('/api/ai/ziyo/messages')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((history: { role: Role; content: string }[] | null) => {
+        if (cancelled) return;
+        if (!history || history.length === 0) {
+          fallback();
+          return;
+        }
+        setMessages(
+          history.map((m) => {
+            if (m.role !== 'assistant') return { role: 'user', content: m.content };
+            const { text, navigate } = extractNavigate(m.content);
+            return { role: 'assistant', content: text, navigate };
+          }),
+        );
+      })
+      .catch(fallback);
+    return () => {
+      cancelled = true;
+    };
   }, [open, pathname, messages.length]);
 
   useEffect(() => {
@@ -145,12 +171,16 @@ export function ZiyoWidget() {
         }),
       });
       if (!res.ok) {
+        const isQuota = res.status === 503;
         setMessages((prev) => [
           ...prev,
           {
             role: 'assistant',
-            content: 'Uzr, hozircha javob bera olmadim. Birozdan so‘ng qayta urinib ko‘ring.',
+            content: isQuota
+              ? 'Ziyo hozir judayam ko‘p so‘rov oldi — birozdan so‘ng qayta urinib ko‘ring.'
+              : 'Uzr, hozircha javob bera olmadim. Birozdan so‘ng qayta urinib ko‘ring.',
             isError: true,
+            isQuotaError: isQuota,
           },
         ]);
         return;
@@ -378,7 +408,7 @@ export function ZiyoWidget() {
                       <ChevronRightIcon width={14} height={14} />
                     </Button>
                   )}
-                  {m.isError && i === messages.length - 1 && (
+                  {m.isError && !m.isQuotaError && i === messages.length - 1 && (
                     <Button type="button" size="sm" variant="secondary" className="mt-2" onClick={() => void retryLast()}>
                       Qayta urinish
                     </Button>

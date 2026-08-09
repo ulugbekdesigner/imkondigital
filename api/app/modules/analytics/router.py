@@ -8,7 +8,13 @@ from app.models.enums import RoleCode
 from app.models.user import User
 from app.modules.analytics import service
 from app.modules.auth.deps import require_roles
-from app.schemas.analytics import AdminOverview, DonorOverview, GovOverview, RegistrationsDaily
+from app.schemas.analytics import (
+    AdminAiUsageOverview,
+    AdminOverview,
+    DonorOverview,
+    GovOverview,
+    RegistrationsDaily,
+)
 
 router = APIRouter(prefix="/analytics", tags=["analytics"])
 
@@ -27,6 +33,14 @@ async def registrations_daily(
     db: AsyncSession = Depends(get_db),
 ) -> RegistrationsDaily:
     return await service.registrations_daily(db)
+
+
+@router.get("/admin/ai-usage", response_model=AdminAiUsageOverview)
+async def admin_ai_usage(
+    _admin: User = Depends(require_roles(RoleCode.ADMIN)),
+    db: AsyncSession = Depends(get_db),
+) -> AdminAiUsageOverview:
+    return await service.admin_ai_usage(db)
 
 
 @router.get("/donor/overview", response_model=DonorOverview)

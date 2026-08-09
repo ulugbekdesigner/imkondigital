@@ -149,3 +149,14 @@ class ZiyoMessageIn(BaseModel):
 
 class ZiyoMessageOut(BaseModel):
     content: str
+
+
+class ZiyoHistoryMessage(BaseModel):
+    """Saqlangan Ziyo tarixi — faqat kirgan foydalanuvchi, faqat standart rejim."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    role: str
+    content: str
+    created_at: datetime

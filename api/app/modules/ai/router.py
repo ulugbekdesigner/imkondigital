@@ -36,6 +36,7 @@ from app.schemas.ai import (
     PlacementTestStartRequest,
     StudyBuddyMessageIn,
     StudyBuddyMessageOut,
+    ZiyoHistoryMessage,
     ZiyoMessageIn,
     ZiyoMessageOut,
 )
@@ -274,3 +275,22 @@ async def ziyo_send(
         db, user, messages, data.page_path, mode=data.mode, language=data.language
     )
     return ZiyoMessageOut(content=reply)
+
+
+# Mehmon uchun auth majburiy emas edi, lekin tarix FAQAT kirgan foydalanuvchiga
+# tegishli — shu sabab bu ikki route `get_current_user` (majburiy) ishlatadi,
+# mehmon 401 oladi, frontend buni "tarix yo'q" deb ko'radi.
+@router.get("/ziyo/messages", response_model=list[ZiyoHistoryMessage])
+async def ziyo_history(
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> list[ZiyoHistoryMessage]:
+    return await ziyo.list_messages(db, user.id)
+
+
+@router.delete("/ziyo/messages", status_code=status.HTTP_204_NO_CONTENT)
+async def ziyo_clear(
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> None:
+    await ziyo.clear_history(db, user.id)

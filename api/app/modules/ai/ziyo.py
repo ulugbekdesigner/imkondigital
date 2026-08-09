@@ -1,17 +1,27 @@
 """Ziyo — sayt bo'ylab yo'lboshchi + mini-kasb maslahatchisi AI yordamchi.
 
 Career Coach'dan farqli o'laroq: (1) mehmon (login qilmagan) foydalanuvchiga
-ham ishlaydi, (2) suhbat tarixi DB'da saqlanmaydi — frontend har so'rovda
-oxirgi xabarlarni o'zi yuboradi (statesiz, oddiy), (3) tizim prompti sayt
-xaritasini biladi va kerak bo'lsa to'g'ri sahifaga havola taklif qiladi.
+ham ishlaydi, (2) simli protokol STATESIZ qoladi — frontend har so'rovda
+oxirgi xabarlarni o'zi yuboradi (Gemini chaqiruv yo'liga hech narsa
+o'zgarmaydi), lekin kirgan foydalanuvchi uchun javob hisoblab bo'lingandan
+KEYIN qo'shimcha ravishda `ZiyoMessage`ga yozib qo'yiladi — panel qayta
+ochilganda tarixni yuklash uchun (pastdagi `list_messages`/`clear_history`).
+Amaliyot (practice) rejimidagi xabarlar ATAYLAB saqlanmaydi — aks holda
+keyingi standart o'zbekcha savolga Gemini kontekstiga chet tilidagi
+rolli-o'yin xabarlari aralashib, javob sifatini pasaytiradi. (3) tizim
+prompti sayt xaritasini biladi va kerak bo'lsa to'g'ri sahifaga havola
+taklif qiladi.
 """
 
+from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.ai_client import AiMessage, generate_ai_reply
 from app.core.ai_quota import check_and_increment_quota
-from app.models.enums import AiFeature
+from app.models.ai import ZiyoMessage
+from app.models.enums import AiFeature, MessageRole
 from app.models.user import User
+from app.schemas.ai import ZiyoHistoryMessage
 
 _SITEMAP = """
 Sayt xaritasi (havola — nima uchun):
@@ -131,4 +141,33 @@ async def send_message(
 
     # max_tokens standart (1024) ba'zan javobni NAVIGATE qatori o'rtasida kesib
     # qo'yadi (xuddi shu sinf muammo exam_grader'da ham topilgan edi) — oshirildi.
-    return await generate_ai_reply(system=system, messages=trimmed, max_tokens=2048)
+    reply = await generate_ai_reply(system=system, messages=trimmed, max_tokens=2048)
+
+    if user is not None and mode != "practice":
+        last_user = trimmed[-1] if trimmed and trimmed[-1]["role"] == "user" else None
+        if last_user is not None:
+            db.add(ZiyoMessage(user_id=user.id, role=MessageRole.USER, content=last_user["content"]))
+        db.add(ZiyoMessage(user_id=user.id, role=MessageRole.ASSISTANT, content=reply))
+        await db.commit()
+
+    return reply
+
+
+async def list_messages(db: AsyncSession, user_id: int) -> list[ZiyoHistoryMessage]:
+    rows = (
+        (
+            await db.execute(
+                select(ZiyoMessage)
+                .where(ZiyoMessage.user_id == user_id)
+                .order_by(ZiyoMessage.created_at.asc())
+            )
+        )
+        .scalars()
+        .all()
+    )
+    return [ZiyoHistoryMessage.model_validate(m) for m in rows]
+
+
+async def clear_history(db: AsyncSession, user_id: int) -> None:
+    await db.execute(delete(ZiyoMessage).where(ZiyoMessage.user_id == user_id))
+    await db.commit()

@@ -1,6 +1,7 @@
 """Analitika — RBAC va anonimlashtirish (kichik hujayra bostirilishi)."""
 
 from datetime import UTC, datetime, timedelta
+from unittest.mock import AsyncMock, patch
 
 import httpx
 from sqlalchemy import select
@@ -141,6 +142,45 @@ async def test_registrations_daily_buckets_by_day(
     assert sum(d["count"] for d in days) == 2  # admin (bugun) + backdated foydalanuvchi
     assert days[-1]["count"] == 1  # bugun — faqat admin
     assert days[-4]["count"] == 1  # 3 kun oldin — backdated foydalanuvchi
+
+
+async def test_ai_usage_requires_admin(client: httpx.AsyncClient) -> None:
+    tokens = await register_and_verify(client, phone="+998940000050")
+    resp = await client.get(
+        "/v1/analytics/admin/ai-usage", headers=auth_header(tokens["access_token"])
+    )
+    assert resp.status_code == 403
+
+
+async def test_ai_usage_aggregates_by_feature_and_day(
+    client: httpx.AsyncClient, db: AsyncSession
+) -> None:
+    admin_tokens = await register_and_verify(client, phone="+998940000051")
+    await grant_role(db, "+998940000051", RoleCode.ADMIN)
+    admin_hdr = auth_header(admin_tokens["access_token"])
+
+    with patch(
+        "app.modules.ai.ziyo.generate_ai_reply", new=AsyncMock(return_value="Javob")
+    ):
+        await client.post(
+            "/v1/ai/ziyo/messages",
+            headers=admin_hdr,
+            json={"messages": [{"role": "user", "content": "Salom"}]},
+        )
+        await client.post(
+            "/v1/ai/ziyo/messages",
+            headers=admin_hdr,
+            json={"messages": [{"role": "user", "content": "Yana"}]},
+        )
+
+    resp = await client.get("/v1/analytics/admin/ai-usage", headers=admin_hdr)
+    assert resp.status_code == 200
+    body = resp.json()
+    ziyo_bucket = next(f for f in body["by_feature"] if f["feature"] == "ziyo")
+    assert ziyo_bucket["total_count"] == 2
+    assert ziyo_bucket["active_users"] == 1
+    assert len(body["daily_total"]) == 7
+    assert sum(d["count"] for d in body["daily_total"]) >= 2
 
 
 async def test_gov_breakdown_suppresses_small_cells(

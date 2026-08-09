@@ -121,6 +121,85 @@ async def test_practice_mode_also_includes_crisis_safety_note(client: httpx.Asyn
     assert "/ruhiy-kuch" in system_prompt
 
 
+async def test_guest_cannot_read_ziyo_history(client: httpx.AsyncClient) -> None:
+    resp = await client.get("/v1/ai/ziyo/messages")
+    assert resp.status_code == 401
+
+
+async def test_authenticated_default_mode_persists_history(client: httpx.AsyncClient) -> None:
+    tokens = await register_and_verify(client, phone="+998915009900")
+    hdr = auth_header(tokens["access_token"])
+
+    with patch(
+        "app.modules.ai.ziyo.generate_ai_reply", new=AsyncMock(return_value="Kurslar bo'limiga o'ting")
+    ):
+        await client.post(
+            "/v1/ai/ziyo/messages",
+            headers=hdr,
+            json={"messages": [{"role": "user", "content": "Salom Ziyo"}]},
+        )
+
+    history = await client.get("/v1/ai/ziyo/messages", headers=hdr)
+    assert history.status_code == 200
+    body = history.json()
+    assert len(body) == 2
+    assert body[0]["role"] == "user"
+    assert body[0]["content"] == "Salom Ziyo"
+    assert body[1]["role"] == "assistant"
+    assert body[1]["content"] == "Kurslar bo'limiga o'ting"
+
+
+async def test_guest_chat_is_not_persisted(client: httpx.AsyncClient) -> None:
+    tokens = await register_and_verify(client, phone="+998915009901")
+    hdr = auth_header(tokens["access_token"])
+
+    with patch("app.modules.ai.ziyo.generate_ai_reply", new=AsyncMock(return_value="Javob")):
+        await client.post(
+            "/v1/ai/ziyo/messages",
+            json={"messages": [{"role": "user", "content": "Mehmon savoli"}]},
+        )
+
+    history = await client.get("/v1/ai/ziyo/messages", headers=hdr)
+    assert history.json() == []
+
+
+async def test_practice_mode_is_not_persisted(client: httpx.AsyncClient) -> None:
+    tokens = await register_and_verify(client, phone="+998915009902")
+    hdr = auth_header(tokens["access_token"])
+
+    with patch("app.modules.ai.ziyo.generate_ai_reply", new=AsyncMock(return_value="Hello!")):
+        await client.post(
+            "/v1/ai/ziyo/messages",
+            headers=hdr,
+            json={
+                "messages": [{"role": "user", "content": "Salom"}],
+                "mode": "practice",
+                "language": "en",
+            },
+        )
+
+    history = await client.get("/v1/ai/ziyo/messages", headers=hdr)
+    assert history.json() == []
+
+
+async def test_clear_ziyo_history(client: httpx.AsyncClient) -> None:
+    tokens = await register_and_verify(client, phone="+998915009903")
+    hdr = auth_header(tokens["access_token"])
+
+    with patch("app.modules.ai.ziyo.generate_ai_reply", new=AsyncMock(return_value="Javob")):
+        await client.post(
+            "/v1/ai/ziyo/messages",
+            headers=hdr,
+            json={"messages": [{"role": "user", "content": "Salom"}]},
+        )
+
+    cleared = await client.delete("/v1/ai/ziyo/messages", headers=hdr)
+    assert cleared.status_code == 204
+
+    history = await client.get("/v1/ai/ziyo/messages", headers=hdr)
+    assert history.json() == []
+
+
 async def test_invalid_language_rejected(client: httpx.AsyncClient) -> None:
     resp = await client.post(
         "/v1/ai/ziyo/messages",

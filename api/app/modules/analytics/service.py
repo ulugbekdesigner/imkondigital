@@ -13,6 +13,7 @@ from zoneinfo import ZoneInfo
 from sqlalchemy import Select, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.models.ai import AiUsage
 from app.models.benefits import UserBenefit
 from app.models.course import Course, Enrollment
 from app.models.donor import DonorProgram, ProgramEnrollment
@@ -33,7 +34,9 @@ from app.models.marketplace import Gig, Order
 from app.models.mentorship import Mentorship
 from app.models.user import DisabilityProfile, Region, User
 from app.schemas.analytics import (
+    AdminAiUsageOverview,
     AdminOverview,
+    AiFeatureUsage,
     BucketStat,
     DailyBucket,
     DonorOverview,
@@ -131,6 +134,45 @@ async def registrations_daily(db: AsyncSession) -> RegistrationsDaily:
         d = start_date + timedelta(days=i)
         days.append(DailyBucket(date=d.isoformat(), count=counts.get(d, 0)))
     return RegistrationsDaily(days=days)
+
+
+async def admin_ai_usage(db: AsyncSession) -> AdminAiUsageOverview:
+    """AI xususiyatlari ishlatilishi — xususiyat bo'yicha jami + oxirgi 7 kun.
+
+    `AiUsage.usage_date` allaqachon sana (Toshkent kunidan olinadi, `check_and_
+    increment_quota`da yaratiladi) — `registrations_daily`dagi kabi
+    `func.timezone()` konvertatsiyasi shart emas.
+    """
+    feature_rows = (
+        await db.execute(
+            select(
+                AiUsage.feature,
+                func.sum(AiUsage.count),
+                func.count(func.distinct(AiUsage.user_id)),
+            ).group_by(AiUsage.feature)
+        )
+    ).all()
+    by_feature = [
+        AiFeatureUsage(feature=row[0], total_count=row[1] or 0, active_users=row[2] or 0)
+        for row in feature_rows
+    ]
+
+    today = datetime.now(UTC).astimezone(_TASHKENT).date()
+    start_date = today - timedelta(days=6)
+    daily_rows = (
+        await db.execute(
+            select(AiUsage.usage_date, func.sum(AiUsage.count))
+            .where(AiUsage.usage_date >= start_date)
+            .group_by(AiUsage.usage_date)
+        )
+    ).all()
+    daily_counts = {row[0]: row[1] or 0 for row in daily_rows}
+    daily_total = [
+        DailyBucket(date=d.isoformat(), count=daily_counts.get(d, 0))
+        for d in (start_date + timedelta(days=i) for i in range(7))
+    ]
+
+    return AdminAiUsageOverview(by_feature=by_feature, daily_total=daily_total)
 
 
 def _suppress(rows: list[tuple[str | None, int]]) -> list[BucketStat]:
