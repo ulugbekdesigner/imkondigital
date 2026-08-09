@@ -105,6 +105,14 @@ class ApplicationStatus(StrEnum):
     REJECTED = "rejected"
 
 
+class TaskSubmissionStatus(StrEnum):
+    """Ko'r baholash topshirig'i — bajarilgan/rad kabi yollash qarori EMAS
+    (bu allaqachon Application.status'da bor), faqat ko'rib chiqilganmi."""
+
+    SUBMITTED = "submitted"
+    REVIEWED = "reviewed"
+
+
 class CompanyMemberRole(StrEnum):
     OWNER = "owner"
     RECRUITER = "recruiter"

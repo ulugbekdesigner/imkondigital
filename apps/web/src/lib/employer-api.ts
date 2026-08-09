@@ -4,11 +4,13 @@ import { getAccessToken } from './session';
 import type {
   ApplicantOut,
   ApplicationOut,
+  BlindTaskSubmissionOut,
   Company,
   CompanyStats,
   EmployerPublicStatsOut,
   VacancyDetail,
   VacancyPage,
+  VacancyTaskOut,
 } from './types';
 
 export async function getVacancyCatalog(params: {
@@ -108,7 +110,7 @@ export async function getCompanyStats(companyId: number): Promise<CompanyStats |
  * qat'i nazar (qoralama/yopilgan vakansiya arizachilar sahifasida kerak). */
 export async function getOwnedVacancy(
   vacancyId: number,
-): Promise<{ id: number; title: string; status: string } | null> {
+): Promise<{ id: number; title: string; status: string; task: VacancyTaskOut | null } | null> {
   const token = getAccessToken();
   if (!token) return null;
   const res = await fetch(`${API_INTERNAL_URL}/v1/vacancies/${vacancyId}/owner`, {
@@ -116,7 +118,12 @@ export async function getOwnedVacancy(
     cache: 'no-store',
   }).catch(() => null);
   if (!res || !res.ok) return null;
-  return (await res.json()) as { id: number; title: string; status: string };
+  return (await res.json()) as {
+    id: number;
+    title: string;
+    status: string;
+    task: VacancyTaskOut | null;
+  };
 }
 
 export async function getApplicants(vacancyId: number): Promise<ApplicantOut[]> {
@@ -128,4 +135,15 @@ export async function getApplicants(vacancyId: number): Promise<ApplicantOut[]> 
   }).catch(() => null);
   if (!res || !res.ok) return [];
   return (await res.json()) as ApplicantOut[];
+}
+
+export async function getTaskSubmissions(vacancyId: number): Promise<BlindTaskSubmissionOut[]> {
+  const token = getAccessToken();
+  if (!token) return [];
+  const res = await fetch(`${API_INTERNAL_URL}/v1/vacancies/${vacancyId}/task-submissions`, {
+    headers: { Authorization: `Bearer ${token}` },
+    cache: 'no-store',
+  }).catch(() => null);
+  if (!res || !res.ok) return [];
+  return (await res.json()) as BlindTaskSubmissionOut[];
 }

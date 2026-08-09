@@ -2,8 +2,10 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 import { getMe } from '@/lib/server-api';
-import { getApplicants, getOwnedVacancy } from '@/lib/employer-api';
+import { getApplicants, getOwnedVacancy, getTaskSubmissions } from '@/lib/employer-api';
 import { ApplicantsManager } from '@/components/applicants-manager';
+import { VacancyTaskForm } from '@/components/vacancy-task-form';
+import { TaskSubmissionsManager } from '@/components/task-submissions-manager';
 import { CabinetPageHeader } from '@/components/cabinet-shell';
 import { ArrowLeftIcon, LockIcon } from '@/components/shell-icons';
 
@@ -38,9 +40,10 @@ export default async function VacancyApplicantsPage({ params }: { params: { id: 
   }
 
   const vacancyId = Number(params.id);
-  const [vacancy, applicants] = await Promise.all([
+  const [vacancy, applicants, taskSubmissions] = await Promise.all([
     getOwnedVacancy(vacancyId),
     getApplicants(vacancyId),
+    getTaskSubmissions(vacancyId),
   ]);
   if (!vacancy) notFound();
 
@@ -79,8 +82,25 @@ export default async function VacancyApplicantsPage({ params }: { params: { id: 
       </div>
 
       <div className="mt-6">
+        <VacancyTaskForm vacancyId={vacancyId} initialTask={vacancy.task} />
+      </div>
+
+      <div className="mt-6">
         <ApplicantsManager initialApplicants={applicants} />
       </div>
+
+      {vacancy.task && (
+        <div className="mt-8">
+          <h2 className="font-display text-lg font-bold text-ink">Ko'r baholash</h2>
+          <p className="mt-1 font-sans text-xs text-ink-soft">
+            Topshiriq javoblari ism/rasmsiz ko'rinadi — avval baholang, keyin kerak bo'lsa ismini
+            oching. Bu nogironligi bor va boshqa noaniq omillarga bog'liq noxolislikni kamaytiradi.
+          </p>
+          <div className="mt-3">
+            <TaskSubmissionsManager initialSubmissions={taskSubmissions} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

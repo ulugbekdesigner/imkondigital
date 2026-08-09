@@ -502,7 +502,12 @@ async def test_owner_can_view_draft_and_closed_vacancy_summary(
     # Qoralama holatida ham egasi ko'ra oladi — jamoat /v1/vacancies/{id} bunda 404 beradi
     draft_summary = await client.get(f"/v1/vacancies/{draft_id}/owner", headers=hdr)
     assert draft_summary.status_code == 200, draft_summary.text
-    assert draft_summary.json() == {"id": draft_id, "title": "Qoralama rol", "status": "draft"}
+    assert draft_summary.json() == {
+        "id": draft_id,
+        "title": "Qoralama rol",
+        "status": "draft",
+        "task": None,
+    }
 
     public_view = await client.get(f"/v1/vacancies/{draft_id}")
     assert public_view.status_code == 404
@@ -543,6 +548,206 @@ async def test_foreign_employer_cannot_view_company_stats(
 
     stranger_hdr = await _make_employer(client, db, "+998905556677")
     resp = await client.get(f"/v1/companies/{company_id}/stats", headers=stranger_hdr)
+    assert resp.status_code == 403
+
+
+async def test_employer_sets_task_and_it_appears_on_public_vacancy(
+    client: httpx.AsyncClient, db: AsyncSession
+) -> None:
+    hdr = await _make_employer(client, db, "+998907778899")
+    _, vacancy_id = await _create_published_vacancy(client, hdr)
+
+    task = await client.post(
+        f"/v1/vacancies/{vacancy_id}/task",
+        headers=hdr,
+        json={"title": "Mini-vazifa", "description": "Excel jadval tuzing"},
+    )
+    assert task.status_code == 200, task.text
+    assert task.json()["title"] == "Mini-vazifa"
+
+    public = await client.get(f"/v1/vacancies/{vacancy_id}")
+    assert public.json()["task"]["title"] == "Mini-vazifa"
+
+    # Qayta yuborish — yangilaydi, ikkinchi qator yaratmaydi
+    updated = await client.post(
+        f"/v1/vacancies/{vacancy_id}/task",
+        headers=hdr,
+        json={"title": "Yangilangan vazifa", "description": ""},
+    )
+    assert updated.json()["id"] == task.json()["id"]
+    assert updated.json()["title"] == "Yangilangan vazifa"
+
+
+async def test_stranger_cannot_set_vacancy_task(client: httpx.AsyncClient, db: AsyncSession) -> None:
+    owner_hdr = await _make_employer(client, db, "+998907778899")
+    _, vacancy_id = await _create_published_vacancy(client, owner_hdr)
+
+    stranger_hdr = await _make_employer(client, db, "+998905556677")
+    resp = await client.post(
+        f"/v1/vacancies/{vacancy_id}/task",
+        headers=stranger_hdr,
+        json={"title": "Begona vazifa"},
+    )
+    assert resp.status_code == 403
+
+
+async def test_task_submission_rejected_without_vacancy_task(
+    client: httpx.AsyncClient, db: AsyncSession
+) -> None:
+    hdr = await _make_employer(client, db, "+998907778899")
+    _, vacancy_id = await _create_published_vacancy(client, hdr)
+
+    learner = await register_and_verify(client, phone="+998901112233")
+    lhdr = auth_header(learner["access_token"])
+    apply_resp = await client.post(
+        f"/v1/vacancies/{vacancy_id}/apply", headers=lhdr, json={"share_disability_profile": False}
+    )
+    application_id = apply_resp.json()["id"]
+
+    resp = await client.post(
+        f"/v1/applications/{application_id}/task-submission",
+        headers=lhdr,
+        data={"text": "Mening javobim"},
+    )
+    assert resp.status_code == 400
+
+
+async def test_blind_task_submission_hides_identity_until_revealed(
+    client: httpx.AsyncClient, db: AsyncSession
+) -> None:
+    hdr = await _make_employer(client, db, "+998907778899")
+    _, vacancy_id = await _create_published_vacancy(client, hdr)
+    await client.post(
+        f"/v1/vacancies/{vacancy_id}/task",
+        headers=hdr,
+        json={"title": "Mini-vazifa", "description": "Namuna yozing"},
+    )
+
+    learner = await register_and_verify(client, phone="+998901112233")
+    lhdr = auth_header(learner["access_token"])
+    apply_resp = await client.post(
+        f"/v1/vacancies/{vacancy_id}/apply", headers=lhdr, json={"share_disability_profile": False}
+    )
+    application_id = apply_resp.json()["id"]
+
+    submit = await client.post(
+        f"/v1/applications/{application_id}/task-submission",
+        headers=lhdr,
+        data={"text": "Mening javobim"},
+    )
+    assert submit.status_code == 200, submit.text
+    assert submit.json()["text"] == "Mening javobim"
+
+    blind_list = await client.get(f"/v1/vacancies/{vacancy_id}/task-submissions", headers=hdr)
+    assert blind_list.status_code == 200
+    submissions = blind_list.json()
+    assert len(submissions) == 1
+    entry = submissions[0]
+    assert entry["blind_index"] == 1
+    assert entry["revealed"] is False
+    assert entry["full_name"] is None
+    assert entry["username"] is None
+
+    submission_id = entry["id"]
+    feedback = await client.post(
+        f"/v1/task-submissions/{submission_id}/feedback",
+        headers=hdr,
+        json={"feedback": "Yaxshi ishlangan"},
+    )
+    assert feedback.status_code == 200, feedback.text
+    assert feedback.json()["status"] == "reviewed"
+    assert feedback.json()["feedback"] == "Yaxshi ishlangan"
+    assert feedback.json()["revealed"] is False
+
+    reveal = await client.post(f"/v1/task-submissions/{submission_id}/reveal", headers=hdr)
+    assert reveal.status_code == 200, reveal.text
+    assert reveal.json()["revealed"] is True
+    assert reveal.json()["full_name"]
+    assert reveal.json()["username"]
+
+    # Reveal'dan keyin ham ro'yxatda ko'rinadi
+    after = (await client.get(f"/v1/vacancies/{vacancy_id}/task-submissions", headers=hdr)).json()
+    assert after[0]["revealed"] is True
+    assert after[0]["full_name"]
+
+
+async def test_candidate_sees_own_submission_via_my_applications(
+    client: httpx.AsyncClient, db: AsyncSession
+) -> None:
+    hdr = await _make_employer(client, db, "+998907778899")
+    _, vacancy_id = await _create_published_vacancy(client, hdr)
+    await client.post(
+        f"/v1/vacancies/{vacancy_id}/task", headers=hdr, json={"title": "Mini-vazifa"}
+    )
+
+    learner = await register_and_verify(client, phone="+998901112233")
+    lhdr = auth_header(learner["access_token"])
+    apply_resp = await client.post(
+        f"/v1/vacancies/{vacancy_id}/apply", headers=lhdr, json={"share_disability_profile": False}
+    )
+    application_id = apply_resp.json()["id"]
+    await client.post(
+        f"/v1/applications/{application_id}/task-submission",
+        headers=lhdr,
+        data={"text": "Birinchi javob"},
+    )
+
+    mine = (await client.get("/v1/me/applications", headers=lhdr)).json()
+    assert mine[0]["task_submission"]["text"] == "Birinchi javob"
+
+    # Qayta topshirish — mavjud yozuvni yangilaydi
+    await client.post(
+        f"/v1/applications/{application_id}/task-submission",
+        headers=lhdr,
+        data={"text": "Yangilangan javob"},
+    )
+    mine_after = (await client.get("/v1/me/applications", headers=lhdr)).json()
+    assert mine_after[0]["task_submission"]["text"] == "Yangilangan javob"
+
+    blind_list = (
+        await client.get(f"/v1/vacancies/{vacancy_id}/task-submissions", headers=hdr)
+    ).json()
+    assert len(blind_list) == 1  # qayta topshirish ikkinchi qator yaratmadi
+
+
+async def test_other_candidate_cannot_submit_task_for_foreign_application(
+    client: httpx.AsyncClient, db: AsyncSession
+) -> None:
+    hdr = await _make_employer(client, db, "+998907778899")
+    _, vacancy_id = await _create_published_vacancy(client, hdr)
+    await client.post(
+        f"/v1/vacancies/{vacancy_id}/task", headers=hdr, json={"title": "Mini-vazifa"}
+    )
+
+    owner = await register_and_verify(client, phone="+998901112233")
+    owner_hdr = auth_header(owner["access_token"])
+    apply_resp = await client.post(
+        f"/v1/vacancies/{vacancy_id}/apply",
+        headers=owner_hdr,
+        json={"share_disability_profile": False},
+    )
+    application_id = apply_resp.json()["id"]
+
+    stranger = await register_and_verify(client, phone="+998905556677")
+    stranger_hdr = auth_header(stranger["access_token"])
+    resp = await client.post(
+        f"/v1/applications/{application_id}/task-submission",
+        headers=stranger_hdr,
+        data={"text": "Begona javob"},
+    )
+    assert resp.status_code == 404
+
+
+async def test_stranger_cannot_view_task_submissions(
+    client: httpx.AsyncClient, db: AsyncSession
+) -> None:
+    owner_hdr = await _make_employer(client, db, "+998907778899")
+    _, vacancy_id = await _create_published_vacancy(client, owner_hdr)
+
+    stranger_hdr = await _make_employer(client, db, "+998905556677")
+    resp = await client.get(
+        f"/v1/vacancies/{vacancy_id}/task-submissions", headers=stranger_hdr
+    )
     assert resp.status_code == 403
 
 

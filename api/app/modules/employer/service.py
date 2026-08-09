@@ -10,13 +10,22 @@ from app.core.ladder import ladder_steps_map, user_max_ladder_step
 from app.core.match_score import compute_match_score
 from app.models.certificate import Certificate
 from app.models.course import Course, Enrollment
-from app.models.employer import Application, Company, CompanyMember, Placement, Vacancy
+from app.models.employer import (
+    Application,
+    Company,
+    CompanyMember,
+    Placement,
+    TaskSubmission,
+    Vacancy,
+    VacancyTask,
+)
 from app.models.enums import (
     ApplicationStatus,
     EnrollmentStatus,
     NotificationCategory,
     NotificationType,
     RoleCode,
+    TaskSubmissionStatus,
     VacancyStatus,
 )
 from app.models.portfolio import PortfolioItem
@@ -25,16 +34,20 @@ from app.modules.notifications.service import create_notification
 from app.schemas.employer import (
     ApplicantOut,
     ApplicationOut,
+    BlindTaskSubmissionOut,
     CompanyCreate,
     CompanyOut,
     CompanyStats,
     DisabilitySummary,
     EmployerPublicStatsOut,
     PlacementOut,
+    TaskSubmissionOut,
     VacancyCard,
     VacancyCreate,
     VacancyDetail,
     VacancyPage,
+    VacancyTaskCreate,
+    VacancyTaskOut,
 )
 
 # 3 oylik saqlanish foizini hisoblash uchun "3 oy" aniqligi (kunlarda).
@@ -200,6 +213,165 @@ async def list_my_vacancies(db: AsyncSession, company_id: int, user: User) -> li
     )
 
 
+# --- Vakansiya sinov topshirig'i ("ko'r baholash") ---
+async def get_vacancy_task(db: AsyncSession, vacancy_id: int, user: User) -> VacancyTaskOut | None:
+    await _owned_vacancy(db, vacancy_id, user)
+    task = (
+        await db.execute(select(VacancyTask).where(VacancyTask.vacancy_id == vacancy_id))
+    ).scalar_one_or_none()
+    return VacancyTaskOut.model_validate(task) if task else None
+
+
+async def set_vacancy_task(
+    db: AsyncSession, vacancy_id: int, user: User, data: VacancyTaskCreate
+) -> VacancyTaskOut:
+    await _owned_vacancy(db, vacancy_id, user)
+    task = (
+        await db.execute(select(VacancyTask).where(VacancyTask.vacancy_id == vacancy_id))
+    ).scalar_one_or_none()
+    if task is None:
+        task = VacancyTask(vacancy_id=vacancy_id, title=data.title, description=data.description)
+        db.add(task)
+    else:
+        task.title = data.title
+        task.description = data.description
+    await db.commit()
+    await db.refresh(task)
+    return VacancyTaskOut.model_validate(task)
+
+
+def _blind_submission_out(submission: TaskSubmission, applicant: User) -> BlindTaskSubmissionOut:
+    revealed = submission.revealed_at is not None
+    return BlindTaskSubmissionOut(
+        id=submission.id,
+        blind_index=submission.blind_index,
+        file_url=submission.file_url,
+        text=submission.text,
+        status=submission.status,
+        feedback=submission.feedback,
+        created_at=submission.created_at,
+        revealed=revealed,
+        full_name=applicant.full_name if revealed else None,
+        username=applicant.username if revealed else None,
+    )
+
+
+async def _submission_applicant(db: AsyncSession, submission: TaskSubmission) -> User:
+    application = await db.get(Application, submission.application_id)
+    assert application is not None
+    applicant = await db.get(User, application.user_id)
+    assert applicant is not None
+    return applicant
+
+
+async def list_task_submissions(
+    db: AsyncSession, vacancy_id: int, user: User
+) -> list[BlindTaskSubmissionOut]:
+    await _owned_vacancy(db, vacancy_id, user)
+    rows = (
+        await db.execute(
+            select(TaskSubmission, User)
+            .join(Application, Application.id == TaskSubmission.application_id)
+            .join(User, User.id == Application.user_id)
+            .where(TaskSubmission.vacancy_id == vacancy_id)
+            .order_by(TaskSubmission.blind_index.asc())
+        )
+    ).all()
+    return [_blind_submission_out(s, applicant) for s, applicant in rows]
+
+
+async def _owned_task_submission(
+    db: AsyncSession, submission_id: int, user: User
+) -> TaskSubmission:
+    submission = await db.get(TaskSubmission, submission_id)
+    if submission is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Topshiriq javobi topilmadi"
+        )
+    await _owned_vacancy(db, submission.vacancy_id, user)
+    return submission
+
+
+async def submit_task_feedback(
+    db: AsyncSession, submission_id: int, user: User, feedback: str
+) -> BlindTaskSubmissionOut:
+    submission = await _owned_task_submission(db, submission_id, user)
+    submission.feedback = feedback
+    submission.status = TaskSubmissionStatus.REVIEWED
+    await db.commit()
+    await db.refresh(submission)
+    applicant = await _submission_applicant(db, submission)
+    return _blind_submission_out(submission, applicant)
+
+
+async def reveal_task_submission(
+    db: AsyncSession, submission_id: int, user: User
+) -> BlindTaskSubmissionOut:
+    submission = await _owned_task_submission(db, submission_id, user)
+    if submission.revealed_at is None:
+        submission.revealed_at = datetime.now(UTC)
+        await db.commit()
+        await db.refresh(submission)
+    applicant = await _submission_applicant(db, submission)
+    return _blind_submission_out(submission, applicant)
+
+
+async def create_task_submission(
+    db: AsyncSession, user: User, application_id: int, text: str, file_url: str | None
+) -> TaskSubmissionOut:
+    application = await db.get(Application, application_id)
+    if application is None or application.user_id != user.id:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Ariza topilmadi")
+    task = (
+        await db.execute(
+            select(VacancyTask).where(VacancyTask.vacancy_id == application.vacancy_id)
+        )
+    ).scalar_one_or_none()
+    if task is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Bu vakansiyada sinov topshirig'i yo'q",
+        )
+    submission = (
+        await db.execute(
+            select(TaskSubmission).where(TaskSubmission.application_id == application_id)
+        )
+    ).scalar_one_or_none()
+    if submission is None:
+        next_index = (
+            await db.execute(
+                select(func.coalesce(func.max(TaskSubmission.blind_index), 0)).where(
+                    TaskSubmission.vacancy_id == application.vacancy_id
+                )
+            )
+        ).scalar_one() + 1
+        submission = TaskSubmission(
+            application_id=application_id,
+            vacancy_id=application.vacancy_id,
+            blind_index=next_index,
+        )
+        db.add(submission)
+    submission.text = text
+    submission.file_url = file_url or submission.file_url
+    submission.status = TaskSubmissionStatus.SUBMITTED
+    await db.commit()
+    await db.refresh(submission)
+    return TaskSubmissionOut.model_validate(submission)
+
+
+async def _task_submission_map(
+    db: AsyncSession, application_ids: list[int]
+) -> dict[int, TaskSubmissionOut]:
+    if not application_ids:
+        return {}
+    rows = (
+        await db.execute(
+            select(TaskSubmission).where(TaskSubmission.application_id.in_(application_ids))
+        )
+    ).scalars()
+    return {s.application_id: TaskSubmissionOut.model_validate(s) for s in rows}
+
+
 async def _portfolio_counts_map(db: AsyncSession, user_ids: list[int]) -> dict[int, int]:
     if not user_ids:
         return {}
@@ -359,12 +531,16 @@ async def vacancy_detail(db: AsyncSession, vacancy_id: int, viewer: User | None)
         region_name,
         score,
     )
+    task = (
+        await db.execute(select(VacancyTask).where(VacancyTask.vacancy_id == vacancy_id))
+    ).scalar_one_or_none()
     return VacancyDetail(
         **card.model_dump(),
         description=vacancy.description,
         accommodations=vacancy.accommodations,
         skills_required=vacancy.skills_required,
         company_id=vacancy.company_id,
+        task=VacancyTaskOut.model_validate(task) if task else None,
     )
 
 
@@ -423,6 +599,7 @@ async def list_my_applications(db: AsyncSession, user: User) -> list[Application
             .order_by(Application.created_at.desc())
         )
     ).all()
+    submissions = await _task_submission_map(db, [a.id for a, _, _ in rows])
     return [
         ApplicationOut(
             id=a.id,
@@ -432,6 +609,7 @@ async def list_my_applications(db: AsyncSession, user: User) -> list[Application
             match_score=a.match_score,
             status=a.status,
             created_at=a.created_at,
+            task_submission=submissions.get(a.id),
         )
         for a, title, company_name in rows
     ]

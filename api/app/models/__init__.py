@@ -37,7 +37,15 @@ from app.models.course_review import CourseReview
 from app.models.donation import Donation, DonationProject
 from app.models.live_lesson import LiveLesson
 from app.models.donor import DonorProgram, ProgramEnrollment
-from app.models.employer import Application, Company, CompanyMember, Placement, Vacancy
+from app.models.employer import (
+    Application,
+    Company,
+    CompanyMember,
+    Placement,
+    TaskSubmission,
+    Vacancy,
+    VacancyTask,
+)
 from app.models.enums import (
     AiFeature,
     ApplicationStatus,
@@ -74,6 +82,7 @@ from app.models.enums import (
     SubscriptionPlan,
     SuccessStoryStatus,
     SupportResourceCategory,
+    TaskSubmissionStatus,
     UserStatus,
     VacancyStatus,
     VerifiedStatus,
@@ -209,6 +218,8 @@ __all__ = [
     "SupportContent",
     "SupportResource",
     "SupportResourceCategory",
+    "TaskSubmission",
+    "TaskSubmissionStatus",
     "TelegramLink",
     "TelegramLinkCode",
     "User",
@@ -218,6 +229,7 @@ __all__ = [
     "UserStreak",
     "Vacancy",
     "VacancyStatus",
+    "VacancyTask",
     "VerifiedStatus",
     "WorkFormat",
     "ZiyoMessage",

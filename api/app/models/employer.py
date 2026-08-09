@@ -22,7 +22,12 @@ from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.db import Base
-from app.models.enums import ApplicationStatus, CompanyMemberRole, VacancyStatus
+from app.models.enums import (
+    ApplicationStatus,
+    CompanyMemberRole,
+    TaskSubmissionStatus,
+    VacancyStatus,
+)
 
 
 class Company(Base):
@@ -73,6 +78,57 @@ class Vacancy(Base):
     accommodations: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict, nullable=False)
     skills_required: Mapped[list[str]] = mapped_column(ARRAY(String), default=list, nullable=False)
     status: Mapped[str] = mapped_column(String(16), default=VacancyStatus.DRAFT, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+
+
+class VacancyTask(Base):
+    """Ish beruvchi qo'yadigan amaliy sinov topshirig'i — "ko'r baholash" uchun.
+
+    Bitta vakansiyaga bitta topshiriq (v1). Matn ochiq — ariza topshirmagan
+    nomzod ham ko'ra oladi (ish beruvchining o'zi yozgan ochiq ko'rsatma,
+    maxfiy emas).
+    """
+
+    __tablename__ = "vacancy_tasks"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    vacancy_id: Mapped[int] = mapped_column(
+        ForeignKey("vacancies.id", ondelete="CASCADE"), unique=True, nullable=False
+    )
+    title: Mapped[str] = mapped_column(String(200), nullable=False)
+    description: Mapped[str] = mapped_column(Text, default="", nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+
+
+class TaskSubmission(Base):
+    """Nomzodning topshiriq javobi — ish beruvchiga standart ro'yxatda ISM/RASMSIZ
+    ko'rinadi (`blind_index` yorlig'i bilan), `revealed_at` o'rnatilgandan keyingina
+    haqiqiy ism ochiladi (app/modules/employer/service.py'ga qarang).
+    """
+
+    __tablename__ = "task_submissions"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    application_id: Mapped[int] = mapped_column(
+        ForeignKey("applications.id", ondelete="CASCADE"), unique=True, nullable=False
+    )
+    # Application.vacancy_id'dan denormallashtirilgan (o'zgarmaydi) — blind_index
+    # hisoblash va ro'yxatlashda join'siz to'g'ridan-to'g'ri filtr uchun.
+    vacancy_id: Mapped[int] = mapped_column(
+        ForeignKey("vacancies.id", ondelete="CASCADE"), index=True, nullable=False
+    )
+    blind_index: Mapped[int] = mapped_column(Integer, nullable=False)
+    file_url: Mapped[str | None] = mapped_column(String(512), nullable=True)
+    text: Mapped[str] = mapped_column(Text, default="", nullable=False)
+    status: Mapped[str] = mapped_column(
+        String(16), default=TaskSubmissionStatus.SUBMITTED, nullable=False
+    )
+    feedback: Mapped[str | None] = mapped_column(Text, nullable=True)
+    revealed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )

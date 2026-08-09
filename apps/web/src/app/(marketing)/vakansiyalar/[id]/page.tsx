@@ -9,6 +9,7 @@ import { getAccessToken } from '@/lib/session';
 import { formatThousands } from '@/lib/format';
 import { accommodationLabel } from '@/lib/vacancy-accommodations';
 import { ApplyForm } from '@/components/apply-form';
+import { TaskSubmissionForm } from '@/components/task-submission-form';
 import { CheckIcon, ChevronRightIcon, CloseIcon, MicIcon } from '@/components/shell-icons';
 
 const WORK_FORMAT_LABEL: Record<string, string> = {
@@ -261,6 +262,15 @@ export default async function VacancyDetailPage({ params }: { params: { id: stri
               authed={authed}
               alreadyApplied={alreadyApplied}
             />
+
+            {vacancy.task && application && (
+              <TaskSubmissionForm
+                applicationId={application.id}
+                taskTitle={vacancy.task.title}
+                taskDescription={vacancy.task.description}
+                initialSubmission={application.task_submission}
+              />
+            )}
 
             {authed && !alreadyApplied && (
               <div className="border-line bg-paper flex flex-col gap-2 rounded-xl border p-4">

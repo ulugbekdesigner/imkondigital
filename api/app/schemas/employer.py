@@ -61,11 +61,26 @@ class VacancyCard(BaseModel):
     is_inclusive: bool
 
 
+class VacancyTaskCreate(BaseModel):
+    title: str = Field(min_length=3, max_length=200)
+    description: str = Field(default="", max_length=4000)
+
+
+class VacancyTaskOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    vacancy_id: int
+    title: str
+    description: str
+
+
 class VacancyDetail(VacancyCard):
     description: str
     accommodations: dict[str, Any]
     skills_required: list[str]
     company_id: int
+    task: VacancyTaskOut | None = None
 
 
 class VacancyPage(BaseModel):
@@ -78,6 +93,20 @@ class ApplicationCreate(BaseModel):
     share_disability_profile: bool = False
 
 
+class TaskSubmissionOut(BaseModel):
+    """Nomzodning o'z topshiriq javobini ko'rishi — o'zi ekanini yashirish shart emas."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    application_id: int
+    file_url: str | None
+    text: str
+    status: str
+    feedback: str | None
+    created_at: datetime
+
+
 class ApplicationOut(BaseModel):
     id: int
     vacancy_id: int
@@ -86,6 +115,7 @@ class ApplicationOut(BaseModel):
     match_score: int
     status: str
     created_at: datetime
+    task_submission: TaskSubmissionOut | None = None
 
 
 class DisabilitySummary(BaseModel):
@@ -129,6 +159,26 @@ class ApplicantOut(BaseModel):
 
 class ApplicationStatusUpdate(BaseModel):
     status: Literal["viewed", "interview", "accepted", "rejected"]
+
+
+class BlindTaskSubmissionOut(BaseModel):
+    """Ish beruvchi ko'rinishi — `revealed=False` bo'lsa ism/username yo'q,
+    o'rniga barqaror `blind_index` yorlig'i ("Nomzod #N") ishlatiladi."""
+
+    id: int
+    blind_index: int
+    file_url: str | None
+    text: str
+    status: str
+    feedback: str | None
+    created_at: datetime
+    revealed: bool
+    full_name: str | None = None
+    username: str | None = None
+
+
+class TaskSubmissionFeedback(BaseModel):
+    feedback: str = Field(min_length=1, max_length=2000)
 
 
 # --- Ish beruvchi kabineti statistikasi ---

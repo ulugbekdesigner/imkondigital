@@ -1,8 +1,9 @@
 """Bandlik endpoint'lari — /v1/companies, /v1/vacancies, /v1/applications, /v1/placements."""
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, File, Form, UploadFile, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core import storage
 from app.core.db import get_db
 from app.models.enums import RoleCode
 from app.models.user import User
@@ -13,15 +14,20 @@ from app.schemas.employer import (
     ApplicationCreate,
     ApplicationOut,
     ApplicationStatusUpdate,
+    BlindTaskSubmissionOut,
     CheckinRequest,
     CompanyCreate,
     CompanyOut,
     CompanyStats,
     EmployerPublicStatsOut,
     PlacementOut,
+    TaskSubmissionFeedback,
+    TaskSubmissionOut,
     VacancyCreate,
     VacancyDetail,
     VacancyPage,
+    VacancyTaskCreate,
+    VacancyTaskOut,
 )
 
 router = APIRouter(tags=["employment"])
@@ -85,7 +91,52 @@ async def vacancy_for_owner(
     db: AsyncSession = Depends(get_db),
 ) -> dict[str, object]:
     vacancy = await service.get_owned_vacancy(db, vacancy_id, user)
-    return {"id": vacancy.id, "title": vacancy.title, "status": vacancy.status}
+    task = await service.get_vacancy_task(db, vacancy_id, user)
+    return {
+        "id": vacancy.id,
+        "title": vacancy.title,
+        "status": vacancy.status,
+        "task": task.model_dump() if task else None,
+    }
+
+
+# ---------- Sinov topshirig'i — "ko'r baholash" (ish beruvchi) ----------
+@router.post("/vacancies/{vacancy_id}/task", response_model=VacancyTaskOut)
+async def set_vacancy_task(
+    vacancy_id: int,
+    data: VacancyTaskCreate,
+    user: User = Depends(_employer),
+    db: AsyncSession = Depends(get_db),
+) -> VacancyTaskOut:
+    return await service.set_vacancy_task(db, vacancy_id, user, data)
+
+
+@router.get("/vacancies/{vacancy_id}/task-submissions", response_model=list[BlindTaskSubmissionOut])
+async def task_submissions(
+    vacancy_id: int,
+    user: User = Depends(_employer),
+    db: AsyncSession = Depends(get_db),
+) -> list[BlindTaskSubmissionOut]:
+    return await service.list_task_submissions(db, vacancy_id, user)
+
+
+@router.post("/task-submissions/{submission_id}/feedback", response_model=BlindTaskSubmissionOut)
+async def task_submission_feedback(
+    submission_id: int,
+    data: TaskSubmissionFeedback,
+    user: User = Depends(_employer),
+    db: AsyncSession = Depends(get_db),
+) -> BlindTaskSubmissionOut:
+    return await service.submit_task_feedback(db, submission_id, user, data.feedback)
+
+
+@router.post("/task-submissions/{submission_id}/reveal", response_model=BlindTaskSubmissionOut)
+async def task_submission_reveal(
+    submission_id: int,
+    user: User = Depends(_employer),
+    db: AsyncSession = Depends(get_db),
+) -> BlindTaskSubmissionOut:
+    return await service.reveal_task_submission(db, submission_id, user)
 
 
 @router.get("/companies/{company_id}/vacancies")
@@ -163,6 +214,23 @@ async def my_applications(
     db: AsyncSession = Depends(get_db),
 ) -> list[ApplicationOut]:
     return await service.list_my_applications(db, user)
+
+
+@router.post("/applications/{application_id}/task-submission", response_model=TaskSubmissionOut)
+async def submit_task_response(
+    application_id: int,
+    text: str = Form(""),
+    file: UploadFile | None = File(None),
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> TaskSubmissionOut:
+    file_url: str | None = None
+    if file is not None:
+        safe_name = storage.validate_upload(file, "attachment")
+        storage.ensure_bucket()
+        key = f"assessment-submissions/{user.id}/{application_id}/{safe_name}"
+        file_url = storage.upload_fileobj(file.file, key)
+    return await service.create_task_submission(db, user, application_id, text, file_url)
 
 
 # ---------- Arizalar (ish beruvchi) ----------

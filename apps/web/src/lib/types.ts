@@ -239,16 +239,47 @@ export interface VacancyCard {
   is_inclusive: boolean;
 }
 
+export interface VacancyTaskOut {
+  id: number;
+  vacancy_id: number;
+  title: string;
+  description: string;
+}
+
 export interface VacancyDetail extends VacancyCard {
   description: string;
   accommodations: Record<string, unknown>;
   skills_required: string[];
   company_id: number;
+  task: VacancyTaskOut | null;
 }
 
 export interface VacancyPage {
   items: VacancyCard[];
   next_cursor: number | null;
+}
+
+export interface TaskSubmissionOut {
+  id: number;
+  application_id: number;
+  file_url: string | null;
+  text: string;
+  status: 'submitted' | 'reviewed';
+  feedback: string | null;
+  created_at: string;
+}
+
+export interface BlindTaskSubmissionOut {
+  id: number;
+  blind_index: number;
+  file_url: string | null;
+  text: string;
+  status: 'submitted' | 'reviewed';
+  feedback: string | null;
+  created_at: string;
+  revealed: boolean;
+  full_name: string | null;
+  username: string | null;
 }
 
 export interface ApplicationOut {
@@ -259,6 +290,7 @@ export interface ApplicationOut {
   match_score: number;
   status: 'submitted' | 'viewed' | 'interview' | 'accepted' | 'rejected';
   created_at: string;
+  task_submission: TaskSubmissionOut | null;
 }
 
 export interface Placement {
