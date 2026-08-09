@@ -753,6 +753,14 @@ export interface RegistrationsDaily {
   days: DailyBucket[];
 }
 
+export interface FeatureFlagOut {
+  name: string;
+  enabled: boolean;
+  rollout_percent: number;
+  description: string;
+  updated_at: string;
+}
+
 export interface AiFeatureUsage {
   feature: string;
   total_count: number;

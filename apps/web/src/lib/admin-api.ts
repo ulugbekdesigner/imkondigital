@@ -15,6 +15,7 @@ import type {
   AuditLogPage,
   DisabilityQueueItem,
   ExternalJobsSyncStatus,
+  FeatureFlagOut,
   RegistrationsDaily,
 } from './types';
 
@@ -114,6 +115,10 @@ export function getRegistrationsDaily(): Promise<RegistrationsDaily | null> {
 
 export function getAdminAiUsage(): Promise<AdminAiUsageOverview | null> {
   return authedGet<AdminAiUsageOverview>('/v1/analytics/admin/ai-usage');
+}
+
+export function getAdminFeatureFlags(): Promise<FeatureFlagOut[] | null> {
+  return authedGet<FeatureFlagOut[]>('/v1/feature-flags/admin');
 }
 
 export function getExternalJobsSyncStatus(): Promise<ExternalJobsSyncStatus | null> {

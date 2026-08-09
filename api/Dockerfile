@@ -1,7 +1,8 @@
 FROM python:3.12-slim AS base
 
-# curl (healthcheck) va ffmpeg (video transcode — worker shu image'dan foydalanadi)
-RUN apt-get update && apt-get install -y --no-install-recommends curl ffmpeg \
+# curl (healthcheck), ffmpeg (video transcode — worker shu image'dan foydalanadi),
+# postgresql-client (pg_dump — kunlik DB backup vazifasi, worker)
+RUN apt-get update && apt-get install -y --no-install-recommends curl ffmpeg postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 
 ENV PYTHONUNBUFFERED=1 \

@@ -89,6 +89,7 @@ from app.models.enums import (
     WorkFormat,
 )
 from app.models.external_job import ExternalJob
+from app.models.feature_flag import FeatureFlag
 from app.models.lesson_material import LessonMaterial
 from app.models.marketplace import (
     Dispute,
@@ -156,6 +157,7 @@ __all__ = [
     "Enrollment",
     "EnrollmentStatus",
     "ExternalJob",
+    "FeatureFlag",
     "FinalExamSubmission",
     "Gender",
     "GeneratedCv",

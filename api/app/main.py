@@ -22,6 +22,7 @@ from app.modules.employer.router import router as employer_router
 from app.modules.external_jobs.router import router as external_jobs_router
 from app.modules.instructor_studio.router import router as instructor_studio_router
 from app.modules.learning_home.router import router as learning_home_router
+from app.modules.feature_flags.router import router as feature_flags_router
 from app.modules.live_lessons.router import router as live_lessons_router
 from app.modules.marketplace.router import router as marketplace_router
 from app.modules.mentorship.router import router as mentorship_router
@@ -112,6 +113,7 @@ v1.include_router(support_public_router)
 v1.include_router(live_lessons_router)
 v1.include_router(peer_support_router)
 v1.include_router(subscriptions_router)
+v1.include_router(feature_flags_router)
 app.include_router(v1)
 
 

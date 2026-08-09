@@ -23,7 +23,12 @@ celery_app = Celery(
     "imkon",
     broker=settings.celery_broker_url,
     backend=settings.celery_result_backend,
-    include=["app.worker.tasks", "app.worker.notification_tasks", "app.worker.subscription_tasks"],
+    include=[
+        "app.worker.tasks",
+        "app.worker.notification_tasks",
+        "app.worker.subscription_tasks",
+        "app.worker.backup_tasks",
+    ],
 )
 
 celery_app.conf.update(
@@ -40,6 +45,10 @@ celery_app.conf.update(
         "remind-expiring-subscriptions-daily": {
             "task": "remind_expiring_subscriptions",
             "schedule": crontab(hour=9, minute=0),
+        },
+        "daily-db-backup": {
+            "task": "daily_db_backup",
+            "schedule": crontab(hour=2, minute=0),
         },
     },
 )

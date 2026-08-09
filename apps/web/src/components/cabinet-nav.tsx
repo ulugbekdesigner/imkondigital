@@ -56,6 +56,7 @@ export const ADMIN_NAV: CabinetNavItem[] = [
   { href: '/admin/ustozlar', label: 'Ustozlar', icon: <BookIcon width={20} height={20} /> },
   { href: '/admin/kompaniyalar', label: 'Kompaniyalar', icon: <BuildingIcon width={20} height={20} /> },
   { href: '/admin/ai-foydalanish', label: 'AI foydalanish', icon: <SparkIcon width={20} height={20} /> },
+  { href: '/admin/xususiyat-bayroqlari', label: 'Bayroqlar', icon: <GearIcon width={20} height={20} /> },
   { href: '/admin/audit-jurnali', label: 'Audit jurnali', icon: <LogIcon width={20} height={20} /> },
 ];
 
