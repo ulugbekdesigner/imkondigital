@@ -33,6 +33,7 @@ from app.modules.payments.router import router as payments_router
 from app.modules.peer_support.router import router as peer_support_router
 from app.modules.regions.router import router as regions_router
 from app.modules.search.router import router as search_router
+from app.modules.service_interest.router import router as service_interest_router
 from app.modules.streak.router import router as streak_router
 from app.modules.subscriptions.router import router as subscriptions_router
 from app.modules.success_stories.router import public_router as success_stories_public_router
@@ -107,6 +108,7 @@ v1.include_router(learning_home_router)
 v1.include_router(streak_router)
 v1.include_router(regions_router)
 v1.include_router(search_router)
+v1.include_router(service_interest_router)
 v1.include_router(external_jobs_router)
 v1.include_router(support_router)
 v1.include_router(support_public_router)

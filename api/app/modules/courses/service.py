@@ -235,6 +235,30 @@ async def publish_course(db: AsyncSession, course_id: int, user: User) -> Course
     return course
 
 
+async def remove_course(db: AsyncSession, course_id: int, user: User) -> str:
+    """QA_AUDIT D5: ustoz o'z kursini o'chira/arxivlay oladi.
+
+    Qoralama VA hech kim ro'yxatdan o'tmagan bo'lsa - to'liq o'chiriladi
+    (CASCADE, hech qanday real ma'lumot yo'qolmaydi). Aks holda - arxivlanadi
+    (status='arxiv', katalogdan yashirinadi, ma'lumot va statistikasi saqlanadi).
+    """
+    course = await _owned_course(db, course_id, user)
+    enrollment_count = (
+        await db.execute(
+            select(func.count(Enrollment.id)).where(Enrollment.course_id == course_id)
+        )
+    ).scalar_one()
+
+    if course.status == CourseStatus.DRAFT and enrollment_count == 0:
+        await db.delete(course)
+        await db.commit()
+        return "deleted"
+
+    course.status = CourseStatus.ARCHIVED
+    await db.commit()
+    return "archived"
+
+
 # --- Katalog / detal (public) ---
 async def _lessons_count_map(db: AsyncSession, course_ids: list[int]) -> dict[int, int]:
     if not course_ids:

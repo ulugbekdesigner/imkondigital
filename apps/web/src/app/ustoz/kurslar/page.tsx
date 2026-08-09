@@ -6,6 +6,7 @@ import { getMe } from '@/lib/server-api';
 import { getMyCourses } from '@/lib/courses-api';
 import { getRegions } from '@/lib/regions-api';
 import { BecomeInstructorButton } from '@/components/become-instructor-button';
+import { CourseRemoveButton } from '@/components/course-remove-button';
 import { CreateCourseForm } from '@/components/create-course-form';
 import { ImpactCertificateButton } from '@/components/impact-certificate-button';
 import { CabinetPageHeader } from '@/components/cabinet-shell';
@@ -57,16 +58,24 @@ export default async function MyCoursesPage() {
       {courses.length > 0 ? (
         <ul className="flex flex-col gap-2">
           {courses.map((c) => (
-            <li key={c.id}>
+            <li
+              key={c.id}
+              className="flex min-h-touch flex-wrap items-center justify-between gap-3 rounded border border-line px-4 py-2"
+            >
               <Link
                 href={`/ustoz/kurslar/${c.id}`}
-                className="flex min-h-touch items-center justify-between gap-3 rounded border border-line px-4 hover:bg-mint focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
+                className="flex min-h-touch flex-1 items-center gap-3 rounded font-sans text-base text-ink hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
               >
-                <span className="font-sans text-base text-ink">{c.title}</span>
+                {c.title}
+              </Link>
+              <span className="flex items-center gap-2">
                 <Badge variant={c.status === 'published' ? 'primary' : 'neutral'}>
                   {STATUS_LABEL[c.status] ?? c.status}
                 </Badge>
-              </Link>
+                {c.status !== 'archived' && (
+                  <CourseRemoveButton courseId={c.id} courseTitle={c.title} />
+                )}
+              </span>
             </li>
           ))}
         </ul>

@@ -1,5 +1,5 @@
 import { CabinetContentSkeleton } from '@/components/cabinet-content-skeleton';
 
-export default function UstozKurslarLoading() {
+export default function DashboardLoading() {
   return <CabinetContentSkeleton />;
 }

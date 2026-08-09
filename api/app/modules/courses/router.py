@@ -121,6 +121,16 @@ async def publish_course(
     return await service.course_detail_by_id(db, course.id)
 
 
+@router.delete("/courses/{course_id}")
+async def remove_course(
+    course_id: int,
+    user: User = Depends(_instructor),
+    db: AsyncSession = Depends(get_db),
+) -> dict[str, str]:
+    action = await service.remove_course(db, course_id, user)
+    return {"action": action}
+
+
 @router.post("/courses/{course_id}/modules", status_code=status.HTTP_201_CREATED)
 async def create_module(
     course_id: int,

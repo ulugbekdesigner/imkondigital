@@ -106,6 +106,8 @@ function AdminUserActionsPanel({
     ASSIGNABLE_ROLES[0],
   );
   const [plan, setPlan] = useState(subscriptionPlan);
+  const [resetLink, setResetLink] = useState<string | null>(null);
+  const [resetLinkCopied, setResetLinkCopied] = useState(false);
 
   async function applyPlan() {
     if (plan === subscriptionPlan) return;
@@ -159,6 +161,28 @@ function AdminUserActionsPanel({
     } finally {
       setLoading(false);
     }
+  }
+
+  async function createResetLink() {
+    setLoading(true);
+    setResetLinkCopied(false);
+    try {
+      const res = await fetch(`/api/admin/users/${userId}/password-reset-link`, {
+        method: 'POST',
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setResetLink(data.link);
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function copyResetLink() {
+    if (!resetLink) return;
+    await navigator.clipboard.writeText(resetLink);
+    setResetLinkCopied(true);
   }
 
   const addableRoles = ASSIGNABLE_ROLES.filter((r) => !roles.includes(r));
@@ -236,6 +260,31 @@ function AdminUserActionsPanel({
         >
           {status === 'blocked' ? 'Blokdan chiqarish' : 'Bloklash'}
         </Button>
+      </div>
+
+      <div className="flex flex-col gap-1.5 border-t border-line pt-2">
+        <Button size="sm" variant="outline" disabled={loading} onClick={createResetLink}>
+          Parolni tiklash havolasi
+        </Button>
+        {resetLink && (
+          <div className="flex flex-col gap-1">
+            <p className="font-sans text-xs text-ink-soft">
+              1 soat amal qiladi. Foydalanuvchiga o&apos;zingiz istagan kanal orqali yuboring -
+              parolning o&apos;zi hech qayerda ko&apos;rinmaydi.
+            </p>
+            <div className="flex items-center gap-2">
+              <input
+                readOnly
+                value={resetLink}
+                onFocus={(e) => e.currentTarget.select()}
+                className="min-h-touch flex-1 rounded border border-line bg-surface-2 px-2 font-mono text-xs text-ink-soft"
+              />
+              <Button type="button" size="sm" variant="ghost" onClick={copyResetLink}>
+                {resetLinkCopied ? 'Nusxalandi' : 'Nusxalash'}
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

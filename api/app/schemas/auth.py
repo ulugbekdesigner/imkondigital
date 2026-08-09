@@ -69,3 +69,15 @@ class TokenResponse(BaseModel):
     refresh_token: str
     token_type: str = "bearer"
     expires_in: int  # access token amal qilish muddati (soniya)
+
+
+class PasswordResetLinkOut(BaseModel):
+    """Admin uchun - havolaning o'zi, parolning o'zi EMAS."""
+
+    link: str
+    expires_at: str
+
+
+class PasswordResetConfirm(BaseModel):
+    token: str
+    new_password: str = Field(min_length=8, max_length=128)

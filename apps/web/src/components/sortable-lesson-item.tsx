@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Badge, Button, ConfirmDialog, ProgressBar } from '@imkon/ui';
+import { Badge, Button, ConfirmDialog, FileInput, ProgressBar } from '@imkon/ui';
 import { CloseIcon, DragIcon } from '@/components/shell-icons';
 import type { LessonItem, LessonMaterialItem } from '@/lib/types';
 
@@ -60,17 +60,13 @@ function VideoUpload({
 
   return (
     <div className="flex flex-col gap-2">
-      <label htmlFor={`video-${lessonId}`} className="font-sans text-sm font-medium text-ink">
-        Video fayl
-      </label>
-      <div className="flex flex-wrap items-center gap-2">
-        <input
+      <div className="flex flex-wrap items-end gap-2">
+        <FileInput
           id={`video-${lessonId}`}
-          type="file"
+          label="Video fayl"
           accept="video/*"
           onChange={(e) => setFile(e.target.files?.[0] ?? null)}
           disabled={busy}
-          className="font-sans text-sm text-ink-soft file:mr-3 file:min-h-touch file:rounded file:border-0 file:bg-primary file:px-4 file:font-sans file:text-base file:text-primary-fg disabled:opacity-60"
         />
         <Button type="button" size="sm" variant="outline" disabled={!file || busy} onClick={upload}>
           {busy ? `Yuklanmoqda · ${progress}%` : 'Video yuklash'}
@@ -175,10 +171,9 @@ function MaterialsManager({
           placeholder="Material nomi…"
           className="min-h-touch rounded border border-line bg-paper px-2 font-sans text-sm text-ink"
         />
-        <input
-          type="file"
+        <FileInput
+          aria-label="Material fayli"
           onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-          className="font-sans text-sm text-ink-soft file:mr-3 file:min-h-touch file:rounded file:border-0 file:bg-primary file:px-4 file:font-sans file:text-base file:text-primary-fg"
         />
         <Button type="submit" size="sm" variant="outline" disabled={!file || !title.trim() || busy}>
           Qo'shish

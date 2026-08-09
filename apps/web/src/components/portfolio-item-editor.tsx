@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button, Input } from '@imkon/ui';
+import { Button, FileInput, Input } from '@imkon/ui';
 import { CheckIcon } from '@/components/shell-icons';
 import { StartCaseStoryButton } from './start-case-story-button';
 import type { PortfolioItem } from '@/lib/types';
@@ -162,20 +162,11 @@ export function PortfolioItemEditor({
             onChange={(e) => setStepCaption(e.target.value)}
             hint="Masalan: Boshlang'ich eskiz"
           />
-          <div>
-            <label
-              className="mb-1.5 block font-sans text-base font-medium text-ink"
-              htmlFor={`step-file-${item.id}`}
-            >
-              Rasm
-            </label>
-            <input
-              id={`step-file-${item.id}`}
-              type="file"
-              onChange={(e) => setStepFile(e.target.files?.[0] ?? null)}
-              className="block font-sans text-base text-ink file:mr-3 file:min-h-touch file:rounded file:border-0 file:bg-primary file:px-4 file:font-sans file:text-base file:text-primary-fg"
-            />
-          </div>
+          <FileInput
+            id={`step-file-${item.id}`}
+            label="Rasm"
+            onChange={(e) => setStepFile(e.target.files?.[0] ?? null)}
+          />
           <Button type="submit" size="sm" disabled={addingStep || !stepFile}>
             {addingStep ? "Qo'shilmoqda…" : "Bosqich qo'shish"}
           </Button>

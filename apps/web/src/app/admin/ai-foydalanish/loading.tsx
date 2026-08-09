@@ -1,4 +1,4 @@
-import { Skeleton } from '@imkon/ui';
+import { Skeleton, StatCardSkeleton } from '@imkon/ui';
 
 /** /admin/ai-foydalanish yuklanayotganda — statistika kartalari va grafik skeleti. */
 export default function AdminAiUsageLoading() {
@@ -13,14 +13,8 @@ export default function AdminAiUsageLoading() {
           <Skeleton className="h-4 w-full max-w-lg" />
         </div>
 
-        <div className="mt-5 grid grid-cols-2 gap-3.5 sm:grid-cols-3 lg:grid-cols-4">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className="flex flex-col gap-1.5 rounded-card border border-line p-[18px]">
-              <Skeleton className="h-4 w-4" />
-              <Skeleton className="h-6 w-16" />
-              <Skeleton className="h-3 w-20" />
-            </div>
-          ))}
+        <div className="mt-5">
+          <StatCardSkeleton count={8} />
         </div>
 
         <div className="mt-6">

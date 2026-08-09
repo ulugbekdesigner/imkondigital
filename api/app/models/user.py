@@ -139,3 +139,24 @@ class PhoneVerification(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
+
+
+class PasswordResetToken(Base):
+    """QA_AUDIT D7: admin foydalanuvchi uchun bir martalik tiklash havolasi
+    yaratadi - parolning o'zini HECH QACHON ko'rmaydi/o'rnatmaydi, faqat shu
+    tokenga ega havolani (istalgan kanal orqali - Telegram, telefon va h.k.)
+    foydalanuvchiga yetkazadi."""
+
+    __tablename__ = "password_reset_tokens"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), index=True, nullable=False
+    )
+    token_hash: Mapped[str] = mapped_column(String(255), nullable=False)
+    created_by: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    consumed: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )

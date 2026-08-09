@@ -21,7 +21,7 @@ from app.core.security import (
 )
 from app.core.usernames import random_suffix, slugify_username
 from app.models.enums import RoleCode, UserStatus
-from app.models.user import PhoneVerification, RefreshToken, Role, User
+from app.models.user import PasswordResetToken, PhoneVerification, RefreshToken, Role, User
 from app.schemas.auth import (
     LoginRequest,
     RegisterRequest,
@@ -29,6 +29,8 @@ from app.schemas.auth import (
     TokenResponse,
     VerifyPhoneRequest,
 )
+
+_RESET_TOKEN_TTL = timedelta(hours=1)
 
 settings = get_settings()
 
@@ -200,3 +202,70 @@ async def logout(db: AsyncSession, refresh_token: str) -> None:
     if stored is not None:
         stored.revoked = True
         await db.commit()
+
+
+async def create_password_reset_link(db: AsyncSession, admin: User, user_id: int) -> tuple[str, datetime]:
+    """QA_AUDIT D7: admin foydalanuvchi parolini KO'RMAYDI/O'RNATMAYDI - faqat
+    bir martalik havola yaratadi, uni o'zi tanlagan kanal orqali (Telegram,
+    telefon va h.k.) foydalanuvchiga yetkazadi."""
+    target = await db.get(User, user_id)
+    if target is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Foydalanuvchi topilmadi")
+
+    raw_token = secrets.token_urlsafe(32)
+    expires_at = datetime.now(UTC) + _RESET_TOKEN_TTL
+    db.add(
+        PasswordResetToken(
+            user_id=user_id,
+            token_hash=hash_code(raw_token),
+            created_by=admin.id,
+            expires_at=expires_at,
+        )
+    )
+    await db.commit()
+    link = f"{settings.site_url}/parolni-tiklash?token={raw_token}"
+    return link, expires_at
+
+
+async def reset_password(db: AsyncSession, token: str, new_password: str) -> None:
+    now = datetime.now(UTC)
+    candidates = (
+        (
+            await db.execute(
+                select(PasswordResetToken).where(
+                    PasswordResetToken.consumed.is_(False),
+                    PasswordResetToken.expires_at > now,
+                )
+            )
+        )
+        .scalars()
+        .all()
+    )
+    matched = next((c for c in candidates if verify_code(token, c.token_hash)), None)
+    if matched is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Havola yaroqsiz yoki muddati tugagan",
+        )
+
+    user = await db.get(User, matched.user_id)
+    if user is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Foydalanuvchi topilmadi")
+
+    user.password_hash = hash_password(new_password)
+    matched.consumed = True
+    # Yangi parol qo'yilgach barcha eski sessiyalar bekor qilinadi (xavfsizlik).
+    active_tokens = (
+        (
+            await db.execute(
+                select(RefreshToken).where(
+                    RefreshToken.user_id == user.id, RefreshToken.revoked.is_(False)
+                )
+            )
+        )
+        .scalars()
+        .all()
+    )
+    for rt in active_tokens:
+        rt.revoked = True
+    await db.commit()

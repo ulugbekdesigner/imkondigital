@@ -8,6 +8,7 @@ export const NAV_LINKS: NavLink[] = [
   { href: '/vakansiyalar', label: 'Vakansiyalar' },
   { href: '/xalqaro-ishlar', label: 'Xalqaro ishlar' },
   { href: '/gigs', label: 'Xizmatlar' },
+  { href: '/xizmatlar', label: 'B2B xizmatlar' },
   { href: '/imtiyozlar', label: 'Imtiyozlar' },
   { href: '/hududlar', label: 'Hududlar' },
   { href: '/ish-beruvchilarga', label: 'Ish beruvchilarga' },

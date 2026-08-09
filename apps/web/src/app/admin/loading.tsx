@@ -1,4 +1,4 @@
-import { Skeleton } from '@imkon/ui';
+import { Skeleton, StatCardSkeleton } from '@imkon/ui';
 
 /** /admin (boshqaruv paneli) yuklanayotganda — KPI panjarasi, grafik+navbat
  * qatori va ikkita 2-ustunli navbat panjarasi bo'yicha skelet, haqiqiy
@@ -15,14 +15,8 @@ export default function AdminDashboardLoading() {
           <Skeleton className="h-4 w-80" />
         </div>
 
-        <div className="mb-8 grid grid-cols-2 gap-3.5 sm:grid-cols-3 lg:grid-cols-4">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className="flex flex-col gap-2 rounded-card border border-line bg-paper p-[18px]">
-              <Skeleton className="h-4 w-4 rounded" />
-              <Skeleton className="h-6 w-16" />
-              <Skeleton className="h-3 w-20" />
-            </div>
-          ))}
+        <div className="mb-8">
+          <StatCardSkeleton count={8} />
         </div>
 
         <div className="mb-8 grid gap-4 lg:grid-cols-[1.4fr_1fr]">

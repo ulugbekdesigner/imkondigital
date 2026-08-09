@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button, ConfirmDialog, Input } from '@imkon/ui';
+import { Button, ConfirmDialog, FileInput, Input } from '@imkon/ui';
 import { ClipboardIcon } from '@/components/shell-icons';
 import { EmptyState } from '@/components/state-panels';
 import { PortfolioCard } from './portfolio-card';
@@ -73,17 +73,7 @@ export function PortfolioManager({ initialItems }: { initialItems: PortfolioItem
           onChange={(e) => setDescription(e.target.value)}
           hint="Ixtiyoriy"
         />
-        <div>
-          <label className="mb-1.5 block font-sans text-base font-medium text-ink" htmlFor="portfolio-file">
-            Fayl (ixtiyoriy)
-          </label>
-          <input
-            id="portfolio-file"
-            type="file"
-            onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-            className="block w-full font-sans text-base text-ink file:mr-3 file:min-h-touch file:rounded file:border-0 file:bg-primary file:px-4 file:font-sans file:text-base file:text-primary-fg"
-          />
-        </div>
+        <FileInput label="Fayl (ixtiyoriy)" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
         {error && (
           <p role="alert" className="font-sans text-base text-error">
             {error}

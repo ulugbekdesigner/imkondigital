@@ -230,3 +230,55 @@ async def test_owned_course_detail_allows_owner_but_not_others(
     other_hdr = await _make_instructor(client, db, "+998907780022")
     forbidden = await client.get(f"/v1/courses/by-id/{course_id}", headers=other_hdr)
     assert forbidden.status_code == 403
+
+
+async def test_draft_course_without_enrollments_is_hard_deleted(
+    client: httpx.AsyncClient, db: AsyncSession
+) -> None:
+    hdr = await _make_instructor(client, db, "+998907780031")
+    draft = await client.post("/v1/courses", headers=hdr, json={"title": "Bekor qilinadigan"})
+    course_id = draft.json()["id"]
+
+    resp = await client.delete(f"/v1/courses/{course_id}", headers=hdr)
+    assert resp.status_code == 200, resp.text
+    assert resp.json()["action"] == "deleted"
+
+    gone = await client.get(f"/v1/courses/by-id/{course_id}", headers=hdr)
+    assert gone.status_code == 404
+
+
+async def test_published_course_with_enrollments_is_archived_not_deleted(
+    client: httpx.AsyncClient, db: AsyncSession
+) -> None:
+    hdr = await _make_instructor(client, db, "+998907780032")
+    slug, _lesson_ids = await _publish_course_with_lessons(client, hdr)
+
+    course_detail = await client.get(f"/v1/courses/{slug}")
+    course_id = course_detail.json()["id"]
+
+    learner = await register_and_verify(client, phone="+998907780033")
+    lhdr = auth_header(learner["access_token"])
+    await client.post("/v1/enrollments", headers=lhdr, data={"course_id": course_id})
+
+    resp = await client.delete(f"/v1/courses/{course_id}", headers=hdr)
+    assert resp.status_code == 200, resp.text
+    assert resp.json()["action"] == "archived"
+
+    own_view = await client.get(f"/v1/courses/by-id/{course_id}", headers=hdr)
+    assert own_view.status_code == 200
+    assert own_view.json()["status"] == "archived"
+
+    catalog = await client.get("/v1/courses")
+    assert course_id not in [c["id"] for c in catalog.json()["items"]]
+
+
+async def test_stranger_instructor_cannot_delete_course(
+    client: httpx.AsyncClient, db: AsyncSession
+) -> None:
+    hdr = await _make_instructor(client, db, "+998907780034")
+    draft = await client.post("/v1/courses", headers=hdr, json={"title": "Begona kurs"})
+    course_id = draft.json()["id"]
+
+    stranger_hdr = await _make_instructor(client, db, "+998907780035")
+    resp = await client.delete(f"/v1/courses/{course_id}", headers=stranger_hdr)
+    assert resp.status_code == 403

@@ -1,7 +1,7 @@
 'use client';
 
 import { type ComponentType, type SVGProps, useState } from 'react';
-import { Badge, Button } from '@imkon/ui';
+import { Badge, Button, FileInput } from '@imkon/ui';
 import type { FinalAssessmentStatus, QuizPublic } from '@/lib/types';
 import { AlertIcon, CheckIcon, RefreshIcon } from '@/components/shell-icons';
 import { QuizTaker } from './quiz-taker';
@@ -87,11 +87,9 @@ export function FinalExamSection({
               placeholder="Ishingiz haqida yozing…"
               className="w-full rounded border border-line bg-paper px-3 py-2 font-sans text-sm text-ink placeholder:text-ink-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
             />
-            <input
-              type="file"
+            <FileInput
               aria-label="Fayl biriktirish (ixtiyoriy)"
               onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-              className="font-sans text-sm text-ink-soft"
             />
             {error && (
               <p role="alert" className="font-sans text-sm text-error">

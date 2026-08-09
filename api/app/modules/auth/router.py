@@ -8,6 +8,7 @@ from app.core.rate_limit import rate_limit
 from app.modules.auth import service
 from app.schemas.auth import (
     LoginRequest,
+    PasswordResetConfirm,
     RefreshRequest,
     RegisterRequest,
     RegisterResponse,
@@ -20,6 +21,7 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 _limit_register = rate_limit("register", limit=5, window_seconds=3600)
 _limit_login = rate_limit("login", limit=10, window_seconds=900)
 _limit_verify = rate_limit("verify-phone", limit=10, window_seconds=900)
+_limit_reset = rate_limit("reset-password", limit=10, window_seconds=3600)
 
 
 @router.post(
@@ -52,3 +54,10 @@ async def refresh(data: RefreshRequest, db: AsyncSession = Depends(get_db)) -> T
 @router.post("/logout", status_code=status.HTTP_204_NO_CONTENT)
 async def logout(data: RefreshRequest, db: AsyncSession = Depends(get_db)) -> None:
     await service.logout(db, data.refresh_token)
+
+
+@router.post(
+    "/reset-password", status_code=status.HTTP_204_NO_CONTENT, dependencies=[Depends(_limit_reset)]
+)
+async def reset_password(data: PasswordResetConfirm, db: AsyncSession = Depends(get_db)) -> None:
+    await service.reset_password(db, data.token, data.new_password)

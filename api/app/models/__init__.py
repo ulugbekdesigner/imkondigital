@@ -104,6 +104,7 @@ from app.models.mentorship import MentorCheckin, Mentorship
 from app.models.notification import Notification
 from app.models.peer_support import PeerSupportPost, PeerSupportReport, PeerSupportRoom
 from app.models.portfolio import PortfolioItem, PortfolioItemStep
+from app.models.service_interest import ServiceInterestSignup
 from app.models.streak import UserStreak
 from app.models.subscription import Subscription
 from app.models.subscription_purchase import SubscriptionPurchase
@@ -112,6 +113,7 @@ from app.models.support import SupportContent, SupportResource
 from app.models.telegram import TelegramLink, TelegramLinkCode
 from app.models.user import (
     DisabilityProfile,
+    PasswordResetToken,
     PhoneVerification,
     RefreshToken,
     Region,
@@ -183,6 +185,7 @@ __all__ = [
     "OrderMilestone",
     "OrderStatus",
     "PassportVisibility",
+    "PasswordResetToken",
     "Payment",
     "PaymentProvider",
     "PaymentStatus",
@@ -207,6 +210,7 @@ __all__ = [
     "Review",
     "Role",
     "RoleCode",
+    "ServiceInterestSignup",
     "SkillsAssessment",
     "StudyBuddyMessage",
     "Submission",

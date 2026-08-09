@@ -7,6 +7,7 @@ from app.core.db import get_db
 from app.models.enums import RoleCode
 from app.models.user import User
 from app.modules.admin import service
+from app.modules.auth import service as auth_service
 from app.modules.auth.deps import require_roles
 from app.schemas.admin import (
     AdminCompanyOut,
@@ -25,6 +26,7 @@ from app.schemas.admin import (
     UserRoleUpdate,
     UserStatusUpdate,
 )
+from app.schemas.auth import PasswordResetLinkOut
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 
@@ -99,6 +101,16 @@ async def revoke_role(
     db: AsyncSession = Depends(get_db),
 ) -> AdminUserOut:
     return await service.revoke_role(db, admin, user_id, role)
+
+
+@router.post("/users/{user_id}/password-reset-link", response_model=PasswordResetLinkOut)
+async def create_password_reset_link(
+    user_id: int,
+    admin: User = Depends(_admin),
+    db: AsyncSession = Depends(get_db),
+) -> PasswordResetLinkOut:
+    link, expires_at = await auth_service.create_password_reset_link(db, admin, user_id)
+    return PasswordResetLinkOut(link=link, expires_at=expires_at.isoformat())
 
 
 @router.get("/audit-log", response_model=AuditLogPage)
