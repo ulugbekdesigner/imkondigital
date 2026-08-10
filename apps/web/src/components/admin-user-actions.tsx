@@ -124,13 +124,13 @@ function AdminUserActionsPanel({
     }
   }
 
-  async function toggleStatus() {
+  async function setStatus(next: string) {
     setLoading(true);
     try {
       await fetch(`/api/admin/users/${userId}/status`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: status === 'blocked' ? 'active' : 'blocked' }),
+        body: JSON.stringify({ status: next }),
       });
       router.refresh();
       onDone();
@@ -251,12 +251,22 @@ function AdminUserActionsPanel({
             </Button>
           </>
         )}
+        {status === 'pending_verification' && (
+          <Button
+            size="sm"
+            variant="outline"
+            disabled={loading}
+            onClick={() => setStatus('active')}
+          >
+            Faollashtirish
+          </Button>
+        )}
         <Button
           size="sm"
           variant={status === 'blocked' ? 'outline' : 'ghost'}
           className={status === 'blocked' ? '' : 'text-error hover:bg-error/10'}
           disabled={loading}
-          onClick={toggleStatus}
+          onClick={() => setStatus(status === 'blocked' ? 'active' : 'blocked')}
         >
           {status === 'blocked' ? 'Blokdan chiqarish' : 'Bloklash'}
         </Button>
