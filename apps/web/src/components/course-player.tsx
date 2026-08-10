@@ -16,10 +16,12 @@ import {
   SparkIcon,
 } from '@/components/shell-icons';
 import { formatDate, formatThousands } from '@/lib/format';
+import { useFlag } from '@/lib/use-feature-flag';
 import { AssignmentSubmission } from './assignment-submission';
 import { CelebrationScreen } from './celebration-screen';
 import { FinalExamSection } from './final-exam-section';
 import { LessonAudioButton } from './lesson-audio-button';
+import { LessonAudioOnlyPlayer } from './lesson-audio-only-player';
 import { QuizTaker } from './quiz-taker';
 import { StudyBuddyPanel } from './study-buddy-panel';
 import { VideoPlayer } from './video-player';
@@ -86,6 +88,18 @@ export function CoursePlayer({
   const [studyBuddyMessages, setStudyBuddyMessages] = useState<StudyBuddyMessageOut[]>([]);
   const [tab, setTab] = useState<PanelTab>('darslar');
   const [contentTab, setContentTab] = useState<'matn' | 'materiallar'>('matn');
+  const voiceTtsEnabled = useFlag('voice_tts');
+  const [audioOnly, setAudioOnly] = useState(false);
+
+  useEffect(() => {
+    setAudioOnly(localStorage.getItem('imkon-audio-only-mode') === '1');
+  }, []);
+
+  function toggleAudioOnly() {
+    const next = !audioOnly;
+    setAudioOnly(next);
+    localStorage.setItem('imkon-audio-only-mode', next ? '1' : '0');
+  }
 
   const selected: LessonItem | undefined = lessons.find((l) => l.id === selectedId);
   const selectedModule = useMemo(
@@ -225,7 +239,20 @@ export function CoursePlayer({
       <div className="grid gap-6 lg:grid-cols-[1fr_22rem] lg:items-start">
         {/* Pleer + transkript */}
         <div>
-          {selected?.hls_url ? (
+          {voiceTtsEnabled && selected?.transcript && (
+            <label className="mb-2 flex items-center justify-end gap-2 font-sans text-sm text-ink-soft">
+              <input
+                type="checkbox"
+                checked={audioOnly}
+                onChange={toggleAudioOnly}
+                className="h-4 w-4 rounded border-line accent-primary"
+              />
+              Faqat audio rejimi
+            </label>
+          )}
+          {audioOnly && voiceTtsEnabled && selected?.transcript ? (
+            <LessonAudioOnlyPlayer lessonId={selected.id} title={selected.title} />
+          ) : selected?.hls_url ? (
             <VideoPlayer
               hlsUrl={selected.hls_url}
               subtitleUrl={selected.subtitle_url}
