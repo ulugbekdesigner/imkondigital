@@ -70,6 +70,12 @@ class User(Base):
     status: Mapped[str] = mapped_column(
         String(32), default=UserStatus.PENDING_VERIFICATION, nullable=False
     )
+    # Tezkor Auth (markazlashgan Telegram-orqali kirish) identifikatori — bu
+    # `TelegramLink.chat_id` bilan ALOQASI YO'Q (u IMKON'ning o'z bildirishnoma
+    # boti uchun, alohida maqsad/xizmat).
+    telegram_user_id: Mapped[int | None] = mapped_column(
+        BigInteger, unique=True, nullable=True
+    )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )

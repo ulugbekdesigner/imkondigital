@@ -76,6 +76,14 @@ class Settings(BaseSettings):
     # Bot -> API ichki so'rovi uchun umumiy sir (JWT emas — bot oddiy foydalanuvchi emas)
     telegram_internal_secret: str = Field(default="dev-telegram-internal-secret")
 
+    # Tezkor Auth — markazlashgan Telegram-orqali kirish mikroservisi (@tezkortasdiqbot,
+    # alohida loyiha). Bo'sh qiymat = xususiyat sukut bo'yicha o'chirilgan (start
+    # chaqiruvi Tezkor Auth'dan xato oladi, funksional muvaffaqiyatsizlik — xavfsizlik
+    # teshigi emas, shu sabab boshqa sirlar kabi fail-fast talab qilinmaydi).
+    tezkor_auth_url: str = Field(default="http://127.0.0.1:8080")
+    tezkor_auth_api_key: str = Field(default="")
+    tezkor_auth_hmac_secret: str = Field(default="")
+
     # AI qatlami — Google Gemini API. Hozircha yagona provayder — sodda
     # savol-javob vazifalari uchun yetarli; kelajakda murakkab vazifalar
     # (masalan chuqur tahlil) uchun qo'shimcha provayder ulanishi mumkin,

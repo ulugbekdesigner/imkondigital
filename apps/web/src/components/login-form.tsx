@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Button, Input } from '@imkon/ui';
+import { TelegramLoginButton } from '@/components/telegram-login-button';
+import { useFlag } from '@/lib/use-feature-flag';
 
 // Grant demo hisobi (barcha rollar bilan) — hakamlar sinab ko'rishi uchun
 // kirish sahifasida doim ko'rinadi.
@@ -33,6 +35,7 @@ export function LoginForm() {
   const router = useRouter();
   const params = useSearchParams();
   const explicitNext = params.get('next');
+  const telegramLoginEnabled = useFlag('telegram_login');
 
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
@@ -75,6 +78,17 @@ export function LoginForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+      {telegramLoginEnabled && (
+        <>
+          <TelegramLoginButton />
+          <div className="flex items-center gap-3" aria-hidden="true">
+            <span className="h-px flex-1 bg-line" />
+            <span className="font-sans text-xs uppercase tracking-wide text-ink-soft">yoki</span>
+            <span className="h-px flex-1 bg-line" />
+          </div>
+        </>
+      )}
+
       {error && (
         <p role="alert" className="rounded-2xl border border-error bg-error-bg p-3 font-sans text-sm text-error">
           {error}

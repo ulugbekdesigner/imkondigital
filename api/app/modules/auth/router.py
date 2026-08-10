@@ -1,5 +1,7 @@
 """Auth endpoint'lari — /v1/auth/*."""
 
+from typing import Any
+
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -12,6 +14,8 @@ from app.schemas.auth import (
     RefreshRequest,
     RegisterRequest,
     RegisterResponse,
+    TelegramLoginStartRequest,
+    TelegramLoginStartResponse,
     TokenResponse,
     VerifyPhoneRequest,
 )
@@ -22,6 +26,7 @@ _limit_register = rate_limit("register", limit=5, window_seconds=3600)
 _limit_login = rate_limit("login", limit=10, window_seconds=900)
 _limit_verify = rate_limit("verify-phone", limit=10, window_seconds=900)
 _limit_reset = rate_limit("reset-password", limit=10, window_seconds=3600)
+_limit_telegram_start = rate_limit("telegram-login-start", limit=10, window_seconds=900)
 
 
 @router.post(
@@ -61,3 +66,25 @@ async def logout(data: RefreshRequest, db: AsyncSession = Depends(get_db)) -> No
 )
 async def reset_password(data: PasswordResetConfirm, db: AsyncSession = Depends(get_db)) -> None:
     await service.reset_password(db, data.token, data.new_password)
+
+
+# --- Tezkor Auth (markazlashgan Telegram-orqali kirish) ---
+@router.post(
+    "/telegram/start",
+    response_model=TelegramLoginStartResponse,
+    dependencies=[Depends(_limit_telegram_start)],
+)
+async def start_telegram_login(data: TelegramLoginStartRequest) -> TelegramLoginStartResponse:
+    return await service.start_telegram_login(data.return_url)
+
+
+@router.get("/telegram/status/{session_id}")
+async def telegram_login_status(session_id: str) -> dict[str, Any]:
+    return await service.telegram_login_status(session_id)
+
+
+@router.post("/telegram/finish/{session_id}", response_model=TokenResponse)
+async def finish_telegram_login(
+    session_id: str, db: AsyncSession = Depends(get_db)
+) -> TokenResponse:
+    return await service.finish_telegram_login(db, session_id)

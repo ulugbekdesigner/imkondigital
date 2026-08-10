@@ -81,3 +81,14 @@ class PasswordResetLinkOut(BaseModel):
 class PasswordResetConfirm(BaseModel):
     token: str
     new_password: str = Field(min_length=8, max_length=128)
+
+
+class TelegramLoginStartRequest(BaseModel):
+    return_url: str
+
+
+class TelegramLoginStartResponse(BaseModel):
+    session_id: str
+    channel: str
+    deep_link: str | None = None
+    masked_phone: str | None = None
