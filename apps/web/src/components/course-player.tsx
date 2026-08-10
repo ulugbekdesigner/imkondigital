@@ -22,6 +22,7 @@ import { CelebrationScreen } from './celebration-screen';
 import { FinalExamSection } from './final-exam-section';
 import { LessonAudioButton } from './lesson-audio-button';
 import { LessonAudioOnlyPlayer } from './lesson-audio-only-player';
+import { LessonVoiceCommandButton } from './lesson-voice-command-button';
 import { QuizTaker } from './quiz-taker';
 import { StudyBuddyPanel } from './study-buddy-panel';
 import { VideoPlayer } from './video-player';
@@ -89,6 +90,7 @@ export function CoursePlayer({
   const [tab, setTab] = useState<PanelTab>('darslar');
   const [contentTab, setContentTab] = useState<'matn' | 'materiallar'>('matn');
   const voiceTtsEnabled = useFlag('voice_tts');
+  const voiceCommandsEnabled = useFlag('voice_commands');
   const [audioOnly, setAudioOnly] = useState(false);
 
   useEffect(() => {
@@ -110,6 +112,11 @@ export function CoursePlayer({
     const idx = lessons.findIndex((l) => l.id === selectedId);
     if (idx === -1) return null;
     return lessons[idx + 1] ?? null;
+  }, [lessons, selectedId]);
+  const prevLesson = useMemo(() => {
+    const idx = lessons.findIndex((l) => l.id === selectedId);
+    if (idx <= 0) return null;
+    return lessons[idx - 1] ?? null;
   }, [lessons, selectedId]);
 
   useEffect(() => {
@@ -219,6 +226,15 @@ export function CoursePlayer({
           </div>
         </div>
         <div className="flex shrink-0 items-center gap-3.5">
+          {voiceCommandsEnabled && (
+            <LessonVoiceCommandButton
+              onNext={() => nextLesson && setSelectedId(nextLesson.id)}
+              onPrev={() => prevLesson && setSelectedId(prevLesson.id)}
+              onFirst={() => lessons[0] && setSelectedId(lessons[0].id)}
+              disabledNext={!nextLesson}
+              disabledPrev={!prevLesson}
+            />
+          )}
           {enrolled && (
             <div className="flex items-center gap-2">
               <div className="h-2 w-24 overflow-hidden rounded-full bg-surface-2 sm:w-32">
