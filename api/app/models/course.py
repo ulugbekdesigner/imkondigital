@@ -105,6 +105,9 @@ class Lesson(Base):
     hls_key_hex: Mapped[str | None] = mapped_column(String(32), nullable=True)
     subtitle_url: Mapped[str | None] = mapped_column(String(512), nullable=True)
     transcript: Mapped[str | None] = mapped_column(Text, nullable=True)
+    # Edge-TTS orqali `transcript`dan generatsiya qilingan ovoz fayli — bir marta
+    # yasalib keshlanadi (voice_tts bayrogʻi ortida, "O'qib ber" tugmasi uchun).
+    audio_url: Mapped[str | None] = mapped_column(String(512), nullable=True)
     duration: Mapped[int | None] = mapped_column(Integer, nullable=True)  # soniya
     status: Mapped[str] = mapped_column(String(16), default=LessonStatus.DRAFT, nullable=False)
     sort: Mapped[int] = mapped_column(Integer, default=0, nullable=False)

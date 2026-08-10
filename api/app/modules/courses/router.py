@@ -75,6 +75,16 @@ async def course_detail(
     return await service.course_detail(db, slug, viewer)
 
 
+@router.post("/lessons/{lesson_id}/audio")
+async def lesson_audio(
+    lesson_id: int,
+    viewer: User | None = Depends(get_current_user_optional),
+    db: AsyncSession = Depends(get_db),
+) -> dict[str, object]:
+    url = await service.lesson_audio_url(db, lesson_id, viewer)
+    return {"audio_url": url}
+
+
 @router.get("/courses/{course_id}/gallery", response_model=list[CourseGalleryItem])
 async def course_gallery(
     course_id: int, db: AsyncSession = Depends(get_db)

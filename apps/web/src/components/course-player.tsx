@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { Button, ProgressBar, ReadAloudButton, buttonVariants, cn } from '@imkon/ui';
+import { Button, ProgressBar, buttonVariants, cn } from '@imkon/ui';
 import {
   ArrowLeftIcon,
   BookIcon,
@@ -19,6 +19,7 @@ import { formatDate, formatThousands } from '@/lib/format';
 import { AssignmentSubmission } from './assignment-submission';
 import { CelebrationScreen } from './celebration-screen';
 import { FinalExamSection } from './final-exam-section';
+import { LessonAudioButton } from './lesson-audio-button';
 import { QuizTaker } from './quiz-taker';
 import { StudyBuddyPanel } from './study-buddy-panel';
 import { VideoPlayer } from './video-player';
@@ -305,7 +306,11 @@ export function CoursePlayer({
                   {contentTab === 'matn' && (
                     selected.transcript ? (
                       <div className="flex max-w-[45rem] flex-col gap-3">
-                        <ReadAloudButton text={selected.transcript} className="self-start" />
+                        <LessonAudioButton
+                          lessonId={selected.id}
+                          text={selected.transcript}
+                          className="self-start"
+                        />
                         <p className="whitespace-pre-wrap font-sans text-base leading-relaxed text-ink">
                           {selected.transcript}
                         </p>

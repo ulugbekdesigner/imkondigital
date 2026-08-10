@@ -8,6 +8,7 @@ from fastapi import HTTPException, status
 from sqlalchemy import delete, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core import tts
 from app.models.assessment import Quiz, QuizAttempt
 from app.models.certificate import Certificate
 from app.models.course import (
@@ -420,6 +421,43 @@ async def course_detail(db: AsyncSession, slug: str, viewer: User | None) -> Cou
         or (viewer is not None and await _is_enrolled(db, course.id, viewer.id))
     )
     return await _build_detail(db, course, reveal=reveal)
+
+
+async def lesson_audio_url(db: AsyncSession, lesson_id: int, viewer: User | None) -> str:
+    """Dars matnini (transcript) ovozga aylantiradi — bir marta yasalib lesson.audio_url'da
+    keshlanadi. Ko'rish huquqi course_detail() bilan bir xil (bepul/egasi/ro'yxatdan o'tgan)."""
+    row = (
+        await db.execute(
+            select(Lesson, Course)
+            .join(CourseModule, CourseModule.id == Lesson.module_id)
+            .join(Course, Course.id == CourseModule.course_id)
+            .where(Lesson.id == lesson_id)
+        )
+    ).first()
+    if row is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Dars topilmadi")
+    lesson, course = row
+
+    is_owner = viewer is not None and (viewer.id == course.instructor_id or _is_admin(viewer))
+    reveal = (
+        course.is_free
+        or is_owner
+        or (viewer is not None and await _is_enrolled(db, course.id, viewer.id))
+    )
+    if not reveal:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, detail="Bu darsga kirish huquqingiz yo'q"
+        )
+
+    if lesson.audio_url:
+        return str(lesson.audio_url)
+    if not lesson.transcript or not lesson.transcript.strip():
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Dars matni mavjud emas")
+
+    url = await tts.synthesize_lesson_audio(lesson.id, lesson.transcript)
+    lesson.audio_url = url
+    await db.commit()
+    return url
 
 
 async def course_detail_by_id(db: AsyncSession, course_id: int) -> CourseDetail:
