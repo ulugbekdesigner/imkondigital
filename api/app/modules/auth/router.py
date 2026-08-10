@@ -27,6 +27,11 @@ _limit_login = rate_limit("login", limit=10, window_seconds=900)
 _limit_verify = rate_limit("verify-phone", limit=10, window_seconds=900)
 _limit_reset = rate_limit("reset-password", limit=10, window_seconds=3600)
 _limit_telegram_start = rate_limit("telegram-login-start", limit=10, window_seconds=900)
+# Frontend har 2 soniyada so'raydi, 5 daqiqagacha (~150 so'rov bitta urinishda) —
+# limit shuni qamrab olishi, lekin cheklovsiz proksi-suiste'mol qilishga yo'l
+# qo'ymasligi kerak.
+_limit_telegram_status = rate_limit("telegram-login-status", limit=200, window_seconds=900)
+_limit_telegram_finish = rate_limit("telegram-login-finish", limit=20, window_seconds=900)
 
 
 @router.post(
@@ -78,12 +83,16 @@ async def start_telegram_login(data: TelegramLoginStartRequest) -> TelegramLogin
     return await service.start_telegram_login(data.return_url)
 
 
-@router.get("/telegram/status/{session_id}")
+@router.get("/telegram/status/{session_id}", dependencies=[Depends(_limit_telegram_status)])
 async def telegram_login_status(session_id: str) -> dict[str, Any]:
     return await service.telegram_login_status(session_id)
 
 
-@router.post("/telegram/finish/{session_id}", response_model=TokenResponse)
+@router.post(
+    "/telegram/finish/{session_id}",
+    response_model=TokenResponse,
+    dependencies=[Depends(_limit_telegram_finish)],
+)
 async def finish_telegram_login(
     session_id: str, db: AsyncSession = Depends(get_db)
 ) -> TokenResponse:
