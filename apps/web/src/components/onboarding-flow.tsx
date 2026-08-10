@@ -13,8 +13,10 @@ import { useRouter } from 'next/navigation';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { Button, Input, buttonVariants, cn } from '@imkon/ui';
 import { ArrowLeftIcon, CheckIcon, ChevronRightIcon } from '@/components/shell-icons';
+import { TelegramLoginButton } from '@/components/telegram-login-button';
 import { COURSE_CATEGORIES } from '@/lib/course-categories';
 import { formatThousands } from '@/lib/format';
+import { useFlag } from '@/lib/use-feature-flag';
 import type { CourseCard } from '@/lib/types';
 
 type Step = 1 | 2 | 3 | 4;
@@ -207,6 +209,7 @@ function NextButton({ children, ...props }: ComponentProps<typeof Button>) {
 export function OnboardingFlow() {
   const router = useRouter();
   const reduce = useReducedMotion();
+  const telegramLoginEnabled = useFlag('telegram_login');
   const [step, setStep] = useState<Step>(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -343,6 +346,16 @@ export function OnboardingFlow() {
                   Ism, telefon raqami va parolingizni kiriting — bir daqiqa vaqt oladi.
                 </p>
               </div>
+              {telegramLoginEnabled && (
+                <>
+                  <TelegramLoginButton />
+                  <div className="flex items-center gap-3" aria-hidden="true">
+                    <span className="h-px flex-1 bg-line" />
+                    <span className="font-sans text-xs uppercase tracking-wide text-ink-soft">yoki</span>
+                    <span className="h-px flex-1 bg-line" />
+                  </div>
+                </>
+              )}
               <Input
                 label="To'liq ism"
                 value={fullName}

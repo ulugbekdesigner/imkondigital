@@ -106,7 +106,7 @@ export function TelegramLoginButton() {
         disabled={status === 'waiting'}
         onClick={start}
       >
-        {status === 'waiting' ? 'Telegramda tasdiqlang…' : 'Telegram bilan kirish'}
+        {status === 'waiting' ? 'Telegramda tasdiqlang…' : 'Telegram orqali davom etish'}
       </Button>
       {error && (
         <p role="alert" className="font-sans text-sm text-error">
